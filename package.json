@@ -1,0 +1,21 @@
+{
+  "name": "ia-en-7-dias",
+  "version": "1.0.0",
+  "description": "Plataforma educativa para el microcurso IA en 7 Días",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "@vercel/blob": "^2.8.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.23.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}

@@ -1,0 +1,382 @@
+[
+  {
+    "id": 1,
+    "day": 1,
+    "title": "Pedir con puntería: El método R-C-T-F",
+    "subtitle": "Las 4 piezas exactas para que la IA te entienda al primer intento sin respuestas genéricas",
+    "duration": "15 min",
+    "objective": "Aprenderás a redactar una instrucción en 4 piezas para que la IA te entregue exactamente lo que necesitas desde el primer intento.",
+    "explanation": "<p>Cuando le pides a la IA <em>\"hazme un correo\"</em>, tiene que adivinar quién eres, a quién le hablas, qué pasó y qué tono usar. Al no saberlo, rellena los huecos con lo más genérico, largo y acartonado que encuentra en internet.</p><p>La IA no lee mentes; procesa parámetros. El método <strong>R-C-T-F</strong> es la estructura más rápida y confiable para que cualquier modelo (ChatGPT, Claude o Gemini) acierte a la primera:</p><ul><li><strong>Rol (Quién habla):</strong> tu profesión o el papel que asume la IA (ej. <em>\"asistente comercial de una ferretería en Cali\"</em>).</li><li><strong>Contexto (Qué está pasando):</strong> la situación en 1 o 2 líneas sin rodeos (quién es el cliente, el antecedente o el problema).</li><li><strong>Tarea (Qué entregable exacto necesitas):</strong> la acción concreta (un mensaje de WhatsApp de 3 líneas, un correo de cobro, una lista de 5 objeciones).</li><li><strong>Formato (Cómo debe salir):</strong> extensión máxima, tono (cercano, formal, directo) y estructura (viñetas, tabla o texto corrido).</li></ul>",
+    "example": {
+      "context": "Camila tiene una tienda de ropa en Medellín y necesita cobrarle a una clienta habitual que lleva 12 días de mora, pero quiere cuidar la relación para que siga comprando.",
+      "before": "Escribe un mensaje de WhatsApp para cobrarle a una clienta que no me paga.",
+      "after": "Soy dueña de una boutique de ropa en Medellín. Una clienta habitual lleva 12 días de retraso con un saldo de $180.000 COP. Siempre ha sido buena clienta y quiero mantener la relación. Redacta un mensaje de WhatsApp recordándole el saldo con mucha calidez y ofreciéndole transferir por Nequi o Bancolombia hoy. Formato: máximo 4 líneas, tono empático pero claro, con un solo emoji y sin sonar agresivo ni protocolario.",
+      "why": "El pedido con R-C-T-F le da a la IA el límite exacto de longitud, el tono humano y el medio de pago colombiano. El mensaje sale listo para copiar y enviar en 30 segundos, sin tener que editar casi nada."
+    },
+    "steps": [
+      "Abre tu herramienta de IA gratuita preferida (ChatGPT, Claude o Gemini).",
+      "Identifica una tarea real pendiente de tu semana (un correo difícil, un mensaje de WhatsApp, una cotización o una duda de trabajo).",
+      "Escribe primero un pedido flojo de una sola línea y observa la respuesta robótica que te entrega.",
+      "Reescribe el pedido usando la plantilla R-C-T-F de la práctica reemplazando los corchetes con tus datos reales.",
+      "Compara ambas respuestas: notarás de inmediato cómo desaparece el lenguaje de robot y queda un texto listo para usar."
+    ],
+    "practice": {
+      "title": "Tu primer pedido maestro con R-C-T-F",
+      "instruction": "Copia esta plantilla y reemplaza lo que está entre corchetes con una situación real de tu trabajo o estudio.",
+      "promptTemplate": "Actúa como mi [tu rol o profesión: ej. asesor comercial, diseñador, administrador, estudiante].\n\nSituación real: [describe en 2 frases qué está pasando, para quién es y qué antecedentes hay].\n\nTarea concreta: [redacta un correo / prepara un mensaje de WhatsApp / haz una lista de 4 puntos / una propuesta corta].\n\nFormato y tono: [máximo X palabras o líneas / tono cercano pero profesional / estructura en viñetas / sin frases acartonadas como 'espero que este mensaje te encuentre bien'].\n\nSi necesitas algún dato adicional antes de redactar, pregúntamelo antes de responder.",
+      "evidenceHint": "Toma una captura de pantalla donde se vea tu prompt con las 4 piezas completadas y la respuesta entregada por la IA."
+    },
+    "closingTip": "Regla de oro: si una instrucción no se la darías así a un compañero humano de tu oficina, tampoco se la pidas así a la IA. La claridad del prompt define el 90% del éxito.",
+    "quiz": [
+      {
+        "question": "Le pides a la IA \"redáctame una propuesta comercial\" y te entrega 4 páginas de texto inútil. ¿Cuál es el error principal?",
+        "options": [
+          "Debiste usar la versión de pago de la IA.",
+          "Faltó definir el contexto real, el formato de salida y el límite de extensión.",
+          "La IA no sirve para redactar propuestas comerciales.",
+          "Había que escribir el pedido completamente en mayúsculas."
+        ],
+        "correctIndex": 1,
+        "explanation": "Sin límites de formato ni contexto específico, la IA genera promedios extensos y genéricos. El método R-C-T-F acota la respuesta a tu necesidad exacta."
+      },
+      {
+        "question": "¿Por qué es tan potente agregar la frase \"si te falta algún dato, pregúntame antes de responder\"?",
+        "options": [
+          "Porque hace que la respuesta tarde más tiempo en generarse.",
+          "Porque la IA se conecta a tus archivos privados automáticamente.",
+          "Porque frena la tendencia de la IA a inventar o asumir datos que tú no le diste.",
+          "Porque reduce el consumo de datos de tu plan de internet."
+        ],
+        "correctIndex": 2,
+        "explanation": "Al darle permiso explícito de preguntar, la IA frena la alucinación y te solicita los detalles clave que necesita para acertar."
+      }
+    ],
+    "video": null
+  },
+  {
+    "id": 2,
+    "day": 2,
+    "title": "Conversar y pulir: Cómo clonar tu propio estilo",
+    "subtitle": "Aprende a iterar en el mismo chat y entrena a la IA para que escriba con tu propia voz",
+    "duration": "15 min",
+    "objective": "Aprenderás a pulir una respuesta en 2 mensajes y lograrás que la IA clone tu vocabulario y estilo de comunicación.",
+    "explanation": "<p>El error más desgastante es abrir un chat nuevo cada vez que la IA no acierta al 100%. Dentro de una misma conversación, la IA <strong>guarda memoria del contexto inmediato</strong>. No vuelvas a empezar: corrígela como a un compañero de escritorio (<em>\"me gustó el inicio, pero haz el cierre más directo\"</em>).</p><p>Además, pedirle <em>\"sé natural\"</em> o <em>\"sé profesional\"</em> es demasiado vago. El método infalible es el <strong>aprendizaje por ejemplos (Few-Shot)</strong>: le pegas 1 o 2 mensajes reales que tú ya hayas escrito en el pasado y le ordenas: <em>\"imita mi forma de saludar, la longitud de mis oraciones y mi calidez\"</em>.</p>",
+    "example": {
+      "context": "Julián es contador independiente en Pereira. Sus clientes le tienen confianza porque explica todo en cristiano por WhatsApp, pero ChatGPT le generaba respuestas que parecían circulares bancarias de los años 90.",
+      "before": "Responde formalmente a una clienta que pregunta qué documentos necesita para la declaración de renta.",
+      "after": "Este es un mensaje real que le envié a un cliente la semana pasada: 'Hola don Carlos, ¡buen día! Le cuento rápido: para lo de la renta solo necesitamos el certificado de ingresos y los extractos bancarios a diciembre. Si quiere me los va mandando por aquí y los reviso 👍'. Con este mismo estilo, longitud corta y tono cercano, respóndele a doña Beatriz que pregunta exactamente lo mismo. Máximo 4 líneas.",
+      "why": "Al ver un ejemplo real de Julián, la IA copia el saludo, el uso de modismos amables y la síntesis. Doña Beatriz recibe un mensaje que se siente 100% redactado por su contador de confianza."
+    },
+    "steps": [
+      "Busca en tu WhatsApp o correo enviado 1 o 2 mensajes que hayas redactado tú y que sientas que representan tu tono real.",
+      "Pégalos en el chat con la instrucción: \"Este es un ejemplo de cómo escribo yo en mi trabajo diario\".",
+      "Pídele la nueva tarea a realizar ordenándole que copie esa cadencia, longitud y estilo.",
+      "Haz al menos una micro-corrección en el mismo hilo: \"Déjalo en la mitad de palabras y quita la palabra 'cordial'\".",
+      "Verifica cómo la segunda versión queda impecable y lista para enviar."
+    ],
+    "practice": {
+      "title": "Clona tu voz y corrige en 2 rondas",
+      "instruction": "Usa un mensaje real tuyo y entrena a la IA en un chat nuevo para redactar una comunicación de esta semana.",
+      "promptTemplate": "Te voy a mostrar cómo escribo yo en mi día a día profesional para que aprendas mi estilo:\n\nEJEMPLO REAL MÍO:\n\"[Pega aquí 1 o 2 párrafos o mensajes reales que hayas redactado tú]\"\n\nAHORA TU TAREA:\nCon ese mismo tono, longitud de oraciones, calidez y vocabulario, redacta lo siguiente: [describe la nueva tarea: ej. responder a un cliente insatisfecho, avisar un retraso de entrega, dar la bienvenida a un proyecto].\n\nReglas estrictas:\n- No uses palabras rebuscadas que yo no usaría.\n- Si mi ejemplo es corto y directo, el tuyo también debe serlo.",
+      "evidenceHint": "Captura donde se aprecie tu ejemplo cargado, la respuesta generada y una corrección en el mismo chat."
+    },
+    "closingTip": "No borres el chat si la primera respuesta no es perfecta. Escríbele: 'Cambia los adjetivos por verbos de acción y déjalo en 3 líneas'. Corregir toma 5 segundos; empezar de cero toma 5 minutos.",
+    "quiz": [
+      {
+        "question": "¿Por qué es mucho más efectivo pegarle a la IA un ejemplo real de cómo escribes en lugar de decirle \"escribe amigable\"?",
+        "options": [
+          "Porque los modelos de lenguaje aprenden por imitación de patrones concretos (puntuación, vocabulario y ritmo).",
+          "Porque la IA necesita verificar que tú eres el dueño de la cuenta.",
+          "Porque si no pones ejemplos, la herramienta cobra una tarifa extra.",
+          "Porque la IA traduce los ejemplos a código binario para procesarlos más rápido."
+        ],
+        "correctIndex": 0,
+        "explanation": "Los LLM son máquinas de reconocimiento de patrones. Un ejemplo concreto define el estilo con 10 veces más precisión que un adjetivo abstracto."
+      },
+      {
+        "question": "La primera respuesta de la IA tiene buena información pero quedó demasiado extensa. ¿Qué debes hacer?",
+        "options": [
+          "Cerrar la ventana, abrir un chat nuevo y volver a escribir todo.",
+          "En el mismo chat, ordenarle: 'Déjalo exactamente en la mitad de extensión y elimina el segundo párrafo'.",
+          "Copiar el texto a Word y recortarlo manualmente durante 20 minutos.",
+          "Cambiar de herramienta de IA porque esa no sirvió."
+        ],
+        "correctIndex": 1,
+        "explanation": "Aprovechar la memoria del chat para iterar es la habilidad central de productividad. En 5 segundos obtienes la versión pulida."
+      }
+    ],
+    "video": null
+  },
+  {
+    "id": 3,
+    "day": 3,
+    "title": "Redacción persuasiva que ahorra 2 horas al día",
+    "subtitle": "Estructuras probadas para correos difíciles, propuestas y mensajes de WhatsApp que sí reciben respuesta",
+    "duration": "15 min",
+    "objective": "Aprenderás a generar textos comerciales y correos profesionales persuasivos en 5 minutos usando la fórmula PAS.",
+    "explanation": "<p>La mayoría de correos y propuestas laborales se ignoran por un motivo simple: son bloques de texto aburridos donde el lector no encuentra qué gana ni qué tiene que hacer. Para persuadir no se necesita ser escritor: se necesita una <strong>estructura con tracción</strong>.</p><p>Usaremos la fórmula <strong>PAS (Problema → Agitación → Solución → Acción)</strong> adaptada al trabajo diario:</p><ul><li><strong>Problema:</strong> el dolor o necesidad concreta de quien lee (1 frase).</li><li><strong>Agitación:</strong> el costo real de no solucionar eso hoy (tiempo perdido, multas, estrés).</li><li><strong>Solución:</strong> cómo tu producto, propuesta o ayuda resuelve el problema sin complicaciones.</li><li><strong>Acción:</strong> qué debe hacer el lector en los próximos 10 segundos (responder por WhatsApp, aprobar una fecha o consignar).</li></ul><p>Tú aportas los datos duros que la IA desconoce (precios, fechas, condiciones) y dejas que la IA arme la estructura persuasiva en 3 variantes distintas.</p>",
+    "example": {
+      "context": "Paola dicta talleres presenciales de repostería en Cali y le quedan 5 cupos libres para el sábado.",
+      "before": "Hazme un post o mensaje invitando a mi taller de repostería este fin de semana.",
+      "after": "Escribe un mensaje de WhatsApp para mi lista de difusión usando la fórmula PAS. Mi público son personas en Cali que quieren emprender desde casa vendiendo postres pero no saben costearlos ni que les queden parejos (Problema). Agitación: intentar aprender solo con videos de TikTok hace perder ingredientes, plata y tiempo. Solución: taller 100% práctico este sábado en Cali (de 9 a.m. a 1 p.m., incluye recetario y materiales, $85.000 COP). Acción: solo quedan 5 cupos, responde 'QUIERO MI CUPO' para enviarte los datos de Nequi. Dame 2 versiones: una directa y otra enfocada en testimonios.",
+      "why": "En vez de decir 'vendo un taller', el mensaje conecta con el miedo de botar ingredientes a la basura y ofrece una salida inmediata con precio y llamado a la acción transparentes."
+    },
+    "steps": [
+      "Elige un texto que tengas pendiente redactar: una cotización, una propuesta a un jefe, un cobro o una publicación.",
+      "Anota en un papel los 3 datos que tú controlas: precio o plazo, beneficio concreto y qué quieres que haga el lector.",
+      "Pídele a la IA 3 versiones usando la fórmula PAS (una directa, una cercana y una ejecutiva).",
+      "Compara las 3 versiones y selecciona la que mejor encaje, o combina el inicio de una con el final de otra.",
+      "Revisa siempre nombres, números y fechas antes de enviar. La responsabilidad final siempre es tuya."
+    ],
+    "practice": {
+      "title": "Generador de comunicaciones persuasivas con PAS",
+      "instruction": "Aplica esta plantilla para redactar un mensaje o correo real que debas enviar esta semana.",
+      "promptTemplate": "Ayúdame a redactar un [correo electrónico / mensaje de WhatsApp / propuesta corta] para [describe a tu cliente, colega o jefe].\n\nDatos clave de mi situación:\n- Problema que tiene el lector: [qué le preocupa, qué le falta o qué cuello de botella tiene]\n- Mi solución o propuesta: [qué ofrezco, en qué condiciones, qué precio o fecha]\n- Lo que quiero que haga al terminar de leer: [responder este mensaje / agendar reunión de 10 min / aprobar presupuesto]\n\nEscribe 3 versiones con la estructura PAS (Problema → Agitación → Solución → Acción clara):\n1. Versión A (Directa y concisa, máximo 70 palabras).\n2. Versión B (Cálida y conversacional con viñetas).\n3. Versión C (Enfocada en el costo de oportunidad).\n\nNo inventes datos de contacto ni cifras que no te di.",
+      "evidenceHint": "Captura con las 3 versiones generadas por la IA y la que elegiste para tu caso de uso real."
+    },
+    "closingTip": "Cuidado con los clichés de IA: elimina siempre frases vacías como 'en el dinámico mundo de hoy', 'sumergirse', o 'esperamos colaborar sinérgicamente'. Reemplázalas por lenguaje directo de negocios.",
+    "quiz": [
+      {
+        "question": "¿Cuál es la principal ventaja de pedirle a la IA 3 versiones distintas de un mismo texto comercial?",
+        "options": [
+          "Que gastas menos créditos de la herramienta.",
+          "Que puedes comparar ángulos (directo vs empático) y elegir en segundos sin tener que reescribir desde cero.",
+          "Que los servidores de la IA responden más rápido cuando el pedido es triple.",
+          "Que es un requisito legal de las plataformas de correo."
+        ],
+        "correctIndex": 1,
+        "explanation": "Elegir entre opciones redactadas toma 30 segundos; redactar una sola desde la página en blanco toma media hora. Ese es el verdadero ahorro de tiempo."
+      },
+      {
+        "question": "¿Qué elementos NUNCA debes dejar que la IA invente por su cuenta en una propuesta?",
+        "options": [
+          "Precios, fechas de entrega, nombres de clientes y compromisos contractuales.",
+          "El tono del saludo.",
+          "El uso de viñetas.",
+          "La cantidad de párrafos."
+        ],
+        "correctIndex": 0,
+        "explanation": "La IA inventará números que suenan verosímiles pero son ficticios. Los datos reales siempre los suministras tú."
+      }
+    ],
+    "video": null
+  },
+  {
+    "id": 4,
+    "day": 4,
+    "title": "Auditoría de documentos y Excel en segundos",
+    "subtitle": "Extrae lo crítico de contratos largos y crea fórmulas avanzadas de Excel explicadas en español",
+    "duration": "15 min",
+    "objective": "Aprenderás a interrogar documentos largos citando cláusulas específicas y a generar fórmulas de Excel describiendo la lógica en español.",
+    "explanation": "<p>Subir un PDF de 30 páginas y escribir <em>\"resúmelo\"</em> produce un resumen superficial e inservible. El método profesional consiste en <strong>hacerle preguntas de auditoría precisas</strong>: ¿cuándo me pueden penalizar?, ¿cómo se termina el contrato?, ¿qué fechas límite existen? Y exigirle que <strong>cite el número de página o cláusula</strong> para que tú verifiques en 5 segundos sin leer todo el mamotreto.</p><p>Con Excel sucede igual: no necesitas memorizar la sintaxis de <code>BUSCARX</code>, <code>INDICE</code> o <code>SUMAR.SI.CONJUNTO</code>. Solo debes describir qué columnas tienes, qué tipo de dato hay en cada una y qué resultado quieres obtener. La IA te entregará la fórmula exacta adaptada a la configuración regional de Colombia (separador de listas por punto y coma).</p>",
+    "example": {
+      "context": "Mario administra un conjunto residencial en Medellín y la empresa de vigilancia le envió un contrato de renovación de 22 páginas.",
+      "before": "Resume este contrato de vigilancia.",
+      "after": "Lee este contrato de prestación de servicios y organízame una tabla con estos 4 puntos críticos: 1) Causales de terminación anticipada y plazo de preaviso necesario, 2) Incrementos de tarifa anuales pactados y fórmula de ajuste, 3) Responsabilidad en caso de hurto dentro de la copropiedad, 4) Puntos ambiguos donde deberíamos solicitar aclaración jurídica antes de firmar. En cada fila de la tabla cita obligatoriamente el número de cláusula y página del documento.",
+      "why": "Mario no pierde 2 horas leyendo; va directo a las cláusulas citadas por la IA para confirmar los compromisos económicos y legales del conjunto."
+    },
+    "steps": [
+      "Elige un documento de trabajo (contrato, informe, reglamento o cotización) o abre tu archivo de Excel.",
+      "Regla legal en Colombia: elimina previamente nombres completos, números de cédula, cuentas bancarias o datos sensibles protegidos por la Ley 1581 de 2012.",
+      "Pide el análisis en formato de tabla con preguntas concretas exigiendo la cita de la cláusula o página.",
+      "Si usas Excel: describe claramente tus encabezados (ej. 'Columna A: Fecha, Columna B: Vendedor, Columna C: Monto en COP') y pide la fórmula con explicación.",
+      "Comprueba al menos una cita en el documento original o pega la fórmula en tu hoja para validar el cálculo."
+    ],
+    "practice": {
+      "title": "Auditoría de texto o fórmula de Excel a medida",
+      "instruction": "Escoge una de las dos opciones y aplícala a una tarea real de tu trabajo.",
+      "promptTemplate": "OPCIÓN 1 (Para auditar un texto o contrato):\nTe voy a compartir este fragmento de documento: [pega el texto o sube el PDF sin datos sensibles].\n\nRespóndeme en una tabla clara:\n1. Obligaciones y compromisos a mi cargo.\n2. Fechas límite, plazos y pagos obligatorios.\n3. Penalidades, multas o riesgos que detectes.\n4. Aspectos confusos que debería negociar antes de aceptar.\nExigencia: En cada respuesta cita la cláusula o párrafo exacto. Si un dato no aparece, escribe 'No especificado' en lugar de inventar.\n\n---\nOPCIÓN 2 (Para fórmulas de Excel en español):\nNecesito una fórmula de Excel para Colombia (separador de argumentos con punto y coma ';').\nMis columnas son:\n- Columna A: [qué dato contiene, ej. Nombres de clientes]\n- Columna B: [qué dato contiene, ej. Fecha de factura]\n- Columna C: [qué dato contiene, ej. Estado: Pagado o Pendiente]\n- Columna D: [qué dato contiene, ej. Valor en COP]\n\nNecesito que calcule: [describe exactamente la operación que quieres hacer].\nExplícame dónde pego la fórmula y cómo funciona en lenguaje sencillo.",
+      "evidenceHint": "Captura de la tabla de análisis con cláusulas citadas o de la fórmula de Excel funcionando en tu hoja de cálculo."
+    },
+    "closingTip": "La frase mágica contra las alucinaciones al analizar documentos es: 'Si el dato no está textualmente en el archivo, responde No se menciona'. Eso evita que la IA llene vacíos con su propia imaginación.",
+    "quiz": [
+      {
+        "question": "¿Por qué es indispensable exigirle a la IA que cite la cláusula o número de página al analizar un contrato?",
+        "options": [
+          "Para que el documento se vea más elegante ante un juez.",
+          "Para poder verificar en 10 segundos en el texto original si la IA interpretó correctamente y no alucinó.",
+          "Porque sin citas, la IA consume el doble de tokens.",
+          "Porque es una exigencia obligatoria de la Ley de Comercio Electrónico."
+        ],
+        "correctIndex": 1,
+        "explanation": "La cita textual te permite auditar al asistente. La IA procesa y sintetiza, pero la validación humana siempre es el filtro de seguridad."
+      },
+      {
+        "question": "¿Qué debes hacer antes de cargar un archivo con información de clientes o balances financieros a una IA pública?",
+        "options": [
+          "Nada, las herramientas gratuitas son 100% confidenciales por ley.",
+          "Anonimizar o eliminar datos sensibles (cédulas, saldos bancarios, direcciones) en cumplimiento de la Ley 1581 de 2012 de Habeas Data.",
+          "Convertir el archivo a formato Word para encriptarlo.",
+          "Ponerle marca de agua al documento."
+        ],
+        "correctIndex": 1,
+        "explanation": "La protección de datos personales de terceros es una obligación legal en Colombia. Nunca alimentes modelos de IA con datos confidenciales de tus clientes o pacientes."
+      }
+    ],
+    "video": null
+  },
+  {
+    "id": 5,
+    "day": 5,
+    "title": "Imágenes y gráficos comerciales con IA",
+    "subtitle": "Dirige como fotógrafo profesional para obtener creativos de alto impacto sin deformidades",
+    "duration": "15 min",
+    "objective": "Aprenderás a dirigir la generación de imágenes con IA usando parámetros de composición, luz y estilo para crear piezas comerciales listas para publicar.",
+    "explanation": "<p>Cuando escribes <em>\"hazme una foto bonita de café para Instagram\"</em>, la IA genera una taza plástica con humo falso, colores chillones y una atmósfera artificial que espanta a los clientes. Las IA generativas de imagen (DALL-E en ChatGPT, Gemini Imagen, Microsoft Designer, Midjourney) piensan como cámaras fotográficas: responden a la óptica, la luz y la materia.</p><p>Para lograr resultados profesionales, debes estructurar tu pedido en <strong>5 variables fotográficas</strong>:</p><ul><li><strong>Sujeto:</strong> el producto o elemento central con texturas y materiales reales (ej. <em>\"frasco de vidrio ámbar con gotero negro mate\"</em>).</li><li><strong>Entorno:</strong> la superficie y el fondo inmediato (ej. <em>\"mesa de mármol blanco con hojas de eucalipto desenfocadas\"</em>).</li><li><strong>Iluminación:</strong> tipo de luz (ej. <em>\"luz natural suave de mañana entrando por una ventana lateral\"</em>).</li><li><strong>Cámara y Ángulo:</strong> encuadre (ej. <em>\"plano medio corto, ángulo a nivel de ojos, lente de 50mm con fondo borroso\"</em>).</li><li><strong>Restricciones negativas:</strong> qué NO debe aparecer (ej. <em>\"sin letras, sin logos inventados, sin personas con extremidades deformes\"</em>).</li></ul>",
+    "example": {
+      "context": "Camila vende café especial de origen de Pitalito (Huila) por canales digitales y necesita fotos para pauta publicitaria en redes.",
+      "before": "Foto de café colombiano para Instagram.",
+      "after": "Fotografía publicitaria de producto. Una bolsa de café de papel kraft de 500g sellada, sin marcas visibles, sobre una mesa de madera rústica de roble. Al lado de la bolsa, una taza de cerámica artesanal con café negro humeante y un puñado de granos de café tostado esparcidos con elegancia. Iluminación natural cálida de atardecer lateral. Plano cenital suave (ángulo de 45 grados), enfoque nítido en la textura del empaque con fondo sutilmente desenfocado. Estilo editorial de revista gastronómica, formato vertical 4:5. Sin texto, sin tipografías inventadas, sin marcas comerciales.",
+      "why": "Al describir la madera, la cerámica, el vapor y la luz natural, la imagen adquiere textura orgánica y credibilidad comercial, alejándose por completo del aspecto de imagen genérica de stock."
+    },
+    "steps": [
+      "Abre una herramienta con capacidad de generación visual gratuita (ChatGPT, Microsoft Designer o Gemini).",
+      "Define el objetivo de la imagen: post de producto, banner de sitio web, portada o recurso para presentación.",
+      "Construye tu prompt con los 5 bloques: Sujeto + Entorno + Luz + Ángulo + Restricciones.",
+      "Agrega siempre la regla: 'Sin texto, sin letras deformadas ni logos'.",
+      "Genera la imagen. Si hay algún detalle que no te convence, no cambies todo el prompt: pide un ajuste puntual (ej. 'Mantén el mismo estilo pero cambia el fondo por una cocina moderna')."
+    ],
+    "practice": {
+      "title": "Crea una fotografía publicitaria para tu marca o proyecto",
+      "instruction": "Personaliza la plantilla con un producto, servicio o concepto visual que realmente puedas utilizar.",
+      "promptTemplate": "Fotografía profesional de producto para uso publicitario en [redes sociales / página web / presentación].\n\n- Sujeto central: [describe el objeto o escena principal con materiales, colores y texturas exactas].\n- Fondo y entorno: [describe la superficie donde reposa y los elementos decorativos del fondo desenfocado].\n- Iluminación: [luz natural suave de ventana / luz dorada de atardecer / iluminación de estudio blanca y limpia].\n- Composición y ángulo: [plano detalle cercano / plano cenital desde arriba / ángulo frontal], profundidad de campo reducida (bokeh suave).\n- Estilo: Fotografía publicitaria limpia, hiperrealista, colores naturales y calibrados.\n- Prohibido: Sin textos escritos, sin marcas comerciales registradas, sin dedos ni extremidades deformes, sin efectos plásticos irreales.",
+      "evidenceHint": "Captura de pantalla donde se aprecie tu descripción fotográfica y la imagen resultante generada por la IA."
+    },
+    "closingTip": "La IA aún tiene dificultades para renderizar tipografía perfecta dentro de imágenes. La mejor práctica profesional es generar la imagen completamente limpia de texto e incorporar los títulos y precios en Canva o tu herramienta de diseño habitual.",
+    "quiz": [
+      {
+        "question": "¿Cuál es la forma más rápida de arruinar una imagen comercial generada con IA?",
+        "options": [
+          "Usar adjetivos vagos como 'ultra bonita, 8K, hiper increíble' en vez de describir la luz, la textura y el ángulo.",
+          "Describir la superficie sobre la que reposa el producto.",
+          "Especificar que la iluminación sea natural de mañana.",
+          "Pedir que la imagen tenga formato vertical."
+        ],
+        "correctIndex": 0,
+        "explanation": "Las palabras vacías como '8K' o 'hermosa' no le dan coordenadas técnicas a la IA. Describir la fuente de luz, la lente y los materiales es lo que genera realismo."
+      },
+      {
+        "question": "¿Por qué es recomendable solicitar imágenes 'sin texto' a la IA?",
+        "options": [
+          "Porque las imágenes con texto pagan impuestos adicionales.",
+          "Porque los modelos visuales suelen generar letras borrosas o palabras inventadas que lucen poco profesionales.",
+          "Porque el texto consume la memoria RAM de tu computador.",
+          "Porque la IA no sabe ningún idioma escrito."
+        ],
+        "correctIndex": 1,
+        "explanation": "Los generadores visuales dibujan letras como patrones de píxeles, no como tipografía real. Es mucho más limpio agregar textos en Canva o Photoshop sobre una foto limpia."
+      }
+    ],
+    "video": null
+  },
+  {
+    "id": 6,
+    "day": 6,
+    "title": "La IA como abogada del diablo y auditora",
+    "subtitle": "Usa la IA para detectar riesgos ciegos en tus decisiones y audita datos para no tragar entero",
+    "duration": "15 min",
+    "objective": "Aprenderás a exigirle a la IA que desafíe tus ideas de negocio para identificar riesgos ocultos antes de comprometer dinero o tiempo.",
+    "explanation": "<p>Los modelos de IA fueron entrenados para ser amables y serviciales. Si le planteas una idea de negocio diciendo <em>\"¿qué opinas de mi plan?\"</em>, la IA responderá con elogios superficiales que alimentan una falsa seguridad. En los negocios y en el trabajo, los elogios baratos cuestan plata.</p><p>El uso más valioso de la IA en la toma de decisiones consiste en <strong>invertir su rol: forzarla a actuar como un auditor escéptico o inversor con aversión al riesgo</strong>. Le pides que desmonte tus suposiciones, que encuentre los 4 motivos más probables de fracaso y que te proponga pruebas de bajo costo para validar cada riesgo antes de invertir.</p><p>Y una advertencia crítica: <strong>la IA alucina con total convicción</strong>. Jamás tomes una decisión legal, contable o médica basada en un dato de la IA sin verificarlo previamente en la fuente oficial correspondiente (DIAN, ministerios, superintendencias, estatutos vigentes).</p>",
+    "example": {
+      "context": "Sebastián quiere renunciar a su empleo fijo en Barranquilla para montar un negocio de hamburguesas a domicilio con $15.000.000 COP de ahorros.",
+      "before": "¿Es rentable montar un negocio de hamburguesas en Barranquilla con 15 millones?",
+      "after": "Quiero dejar mi empleo para montar hamburguesas a domicilio en Barranquilla. Tengo $15 millones de ahorros y sé cocinar, pero nunca he administrado un negocio. Actúa como un asesor financiero implacable, escéptico y conservador: 1) Dame las 5 razones más probables por las que este negocio se quedaría sin caja en los primeros 6 meses. 2) Para cada riesgo, diseña una prueba barata que pueda hacer en mis fines de semana antes de renunciar. 3) Estructura una matriz comparativa con las métricas mínimas de rentabilidad que debería validar antes de tomar la decisión.",
+      "why": "En lugar de porras motivacionales, Sebastián recibe un mapa de riesgos de inventario, costos ocultos de plataformas de domicilio y un experimento piloto de 30 días sin arriesgar su empleo."
+    },
+    "steps": [
+      "Elige una decisión real pendiente: lanzar un servicio, invertir en un equipo, asociarte con alguien, cambiar de empleo o fijar nuevas tarifas.",
+      "Escribe el contexto con honestidad brutal: presupuesto real disponible, tu experiencia y lo que arriesgas si sale mal.",
+      "Asigna a la IA el rol de 'auditor crítico, implacable y con aversión al riesgo'.",
+      "Pídele los riesgos ciegos y experimentos piloto de bajo costo para probar cada uno.",
+      "Identifica cualquier cifra o norma mencionada y márcala como 'pendiente de verificación en fuente oficial'."
+    ],
+    "practice": {
+      "title": "Auditoría implacable de tu próxima decisión",
+      "instruction": "Somete a prueba una decisión real que estés considerando en tu ámbito profesional o comercial.",
+      "promptTemplate": "Actúa como un asesor de negocios senior, altamente crítico, pragmático y con fuerte aversión al riesgo.\n\nEstoy evaluando tomar la siguiente decisión: [describe la idea, inversión, proyecto o cambio laboral].\n\nMi situación real:\n- Presupuesto o recursos con los que cuento: [monto en COP o tiempo disponible]\n- Mi experiencia en este campo: [poca / media / alta]\n- Lo que está en juego si sale mal: [pérdida económica, reputación, estabilidad laboral]\n\nInstrucciones estrictas:\n1. No me adules ni me des respuestas de autoayuda. Desafía mi razonamiento.\n2. Enumera los 4 mayores riesgos ocultos o 'puntos ciegos' que probablemente estoy subestimando.\n3. Para cada riesgo, plantea un experimento pequeño y barato que pueda ejecutar en menos de 7 días para comprobar si el riesgo es real.\n4. Si citas leyes, porcentajes o normas colombianas, indica explícitamente en qué entidad oficial debo verificar el dato.",
+      "evidenceHint": "Captura de la matriz de riesgos y experimentos piloto generada por la IA tras desafiar tu propuesta."
+    },
+    "closingTip": "Cada vez que la IA te dé un porcentaje o una norma jurídica, pregúntale de inmediato: '¿En qué decreto o resolución oficial se basa esa afirmación?'. Si no puede citar la norma con fecha y número, trátalo como una conjetura no verificada.",
+    "quiz": [
+      {
+        "question": "¿Por qué es peligroso usar la IA para validar una idea de negocio preguntando simplemente \"¿qué opinas de mi plan?\"?",
+        "options": [
+          "Porque la IA tiende por defecto a ser complaciente y adular tus ideas, ocultando los riesgos críticos.",
+          "Porque la IA le avisa a tu competencia sobre tu idea de negocio.",
+          "Porque las IA solo pueden opinar sobre empresas que cotizan en la bolsa de valores.",
+          "Porque está prohibido por los términos de servicio de OpenAI."
+        ],
+        "correctIndex": 0,
+        "explanation": "El sesgo de complacencia de los modelos hace que validen casi cualquier idea a menos que les ordenes explícitamente adoptar una postura crítica y adversaria."
+      },
+      {
+        "question": "Si la IA te asegura que 'en Colombia los contratos de prestación de servicios pagan un 4% de retención', ¿cuál es tu conducta profesional correcta?",
+        "options": [
+          "Aplicar el 4% de inmediato porque los algoritmos no cometen errores matemáticos.",
+          "Verificar la tarifa en la tabla oficial de retención en la fuente de la DIAN para el año gravable vigente antes de hacer cualquier retención.",
+          "Preguntarle a otra IA diferente y si dice lo mismo, darlo por bueno.",
+          "Ignorar cualquier pago de impuestos."
+        ],
+        "correctIndex": 1,
+        "explanation": "Dos modelos pueden compartir la misma alucinación si fueron entrenados con datos similares. La única fuente válida ante la ley y las finanzas es la entidad oficial competente (en este caso, la DIAN)."
+      }
+    ],
+    "video": null
+  },
+  {
+    "id": 7,
+    "day": 7,
+    "title": "Tu Asistente Personalizado y Rutina Semanal",
+    "subtitle": "Configura tu IA una sola vez para que recuerde tu contexto y automatiza tus 3 tareas fijas semanales",
+    "duration": "15 min",
+    "objective": "Aprenderás a programar las Instrucciones Personalizadas de tu IA para que nunca más tengas que repetir quién eres ni qué formato exiges.",
+    "explanation": "<p>Hasta hoy le has explicado a la IA quién eres y qué tono usar en cada mensaje. Las herramientas modernas cuentan con una función transformadora: las <strong>Instrucciones Personalizadas (Custom Instructions en ChatGPT, Gems en Gemini o Proyectos en Claude)</strong>. Te permiten definir tu perfil una sola vez en los ajustes de tu cuenta.</p><p>A partir de ese instante, cada chat nuevo que abras <strong>ya sabrá tu profesión, que trabajas en Colombia, tu público objetivo y las reglas de formato que exiges</strong> (ej. <em>\"sé directo, usa viñetas, sin introducciones vacías\"</em>).</p><p>El proyecto final de graduación consiste en dejar configuradas tus instrucciones y blindar una <strong>rutina de 3 tareas fijas a la semana</strong> para que el uso de la IA no sea una moda de un fin de semana, sino una ventaja profesional permanente.</p>",
+    "example": {
+      "context": "Luisa es coordinadora de talento humano en una empresa de 80 personas en Bogotá.",
+      "before": "En cada conversación nueva: 'Hola, soy coordinadora de talento humano de una empresa de Bogotá, redacta con tono formal pero empático, usa viñetas, ten en cuenta la legislación laboral colombiana... ahora redacta un correo para la fiesta de fin de año'.",
+      "after": "Configuración guardada una sola vez en su perfil: 'Soy coordinadora de Talento Humano en una empresa de 80 empleados en Bogotá. Comunico con calidez, cercanía y mucha claridad ejecutiva. Prefiero respuestas directas con viñetas. Siempre que redacte sobre temas laborales, recuérdame verificar en el Código Sustantivo del Trabajo. No uses lenguaje de relleno'. En cada chat nuevo solo escribe: 'Redacta la invitación a la pausa activa del viernes con temática saludable'. La IA responde con el tono exacto de la empresa de inmediato.",
+      "why": "Luisa ahorra 15 minutos en cada consulta diaria. La IA se comporta como una asistente privada entrenada específicamente para su cargo."
+    },
+    "steps": [
+      "Abre los ajustes de tu cuenta en tu plataforma favorita: En ChatGPT (Perfil → Personalización → Instrucciones personalizadas); en Gemini (Gems); en Claude (Proyectos o perfil).",
+      "Completa el Campo 1 con tu identidad laboral (profesión, industria, clientes y ubicación Colombia).",
+      "Completa el Campo 2 con tus reglas de estilo (longitud preferida, tono, qué prohibir y estructura en viñetas).",
+      "Guarda los cambios y abre un chat completamente nuevo.",
+      "Hazle una pregunta de trabajo sin explicar quién eres y comprueba cómo la IA responde adaptada a tu perfil.",
+      "Define tus 3 tareas fijas de la semana que desde mañana harás con tu asistente (ej. correos difíciles del lunes, actas de reuniones y publicaciones).",
+      "Sube tu captura de pantalla final para habilitar la descarga de tu Certificado Oficial en PDF."
+    ],
+    "practice": {
+      "title": "Proyecto de Graduación: Tu Asistente IA Configurado",
+      "instruction": "Copia esta plantilla, reemplaza tus datos reales y pégala en las Instrucciones Personalizadas de tu cuenta.",
+      "promptTemplate": "[CAMPO 1: ¿QUÉ INFORMACIÓN SOBRE TI DEBE SABER LA IA?]\n- Nombre profesional: [tu nombre]\n- Mi rol o actividad principal: [tu profesión, oficio o negocio]\n- Ciudad y País: [tu ciudad], Colombia (usa modismos, referencias y moneda COP cuando aplique)\n- A quién me dirijo habitualmente: [mis clientes, mi equipo de trabajo, mis jefes, mis estudiantes]\n- Mis principales responsabilidades semanales: [menciona 2 o 3 tareas recurrentes]\n\n[CAMPO 2: ¿CÓMO QUIERES QUE RESPONDA LA IA SIEMPRE?]\n- Tono de comunicación: [cercano y profesional / formal y analítico / directo y comercial]\n- Estructura preferida: Frases directas, respuestas al grano, uso de viñetas para pasos a seguir, sin párrafos de introducción o despedida innecesarios.\n- Reglas estrictas: Si te faltan datos clave, hazme preguntas puntuales antes de suponer. No uses clichés como 'espero que este mensaje te encuentre bien'. Si mencionas leyes o normas tributarias, añade un recordatorio para verificarlas en fuentes oficiales.\n\n[MIS 3 TAREAS FIJAS SEMANALES CON IA]\n1. Tarea recurrente 1: [ej. redactar las cotizaciones de la semana]\n2. Tarea recurrente 2: [ej. resumir los informes y actas de reuniones]\n3. Tarea recurrente 3: [ej. preparar las publicaciones y mensajes de difusión para clientes]",
+      "evidenceHint": "Captura donde se aprecie tu pantalla de Instrucciones Personalizadas guardada en tu cuenta de IA o un chat nuevo demostrando que ya conoce tu perfil sin recordárselo."
+    },
+    "closingTip": "¡Felicitaciones por completar el microcurso IA en 7 Días! La inteligencia artificial no te va a reemplazar; te va a reemplazar quien aprenda a usarla para entregar resultados el doble de rápido con la mitad del esfuerzo. Al adjuntar esta última evidencia, tu Certificado Oficial de Finalización se activará para descarga inmediata en PDF de alta resolución.",
+    "quiz": [
+      {
+        "question": "¿Cuál es el beneficio de configurar las Instrucciones Personalizadas en tu cuenta de IA?",
+        "options": [
+          "Que nunca más tienes que perder tiempo explicando quién eres, en qué país estás ni qué tono necesitas en cada nuevo chat.",
+          "Que la plataforma se vuelve completamente gratis para siempre.",
+          "Que la IA adquiere acceso a tu cuenta bancaria para pagar tus compras.",
+          "Que las respuestas se descargan en formato video automáticamente."
+        ],
+        "correctIndex": 0,
+        "explanation": "La personalización inyecta tu contexto y reglas de estilo en todas las conversaciones en segundo plano, ahorrándote minutos valiosos en cada interacción."
+      },
+      {
+        "question": "¿Cuál es el método más efectivo para garantizar que lo aprendido en estos 7 días se convierta en un hábito productivo real?",
+        "options": [
+          "Revisar las lecciones una vez al año sin practicar.",
+          "Asignarle a la IA 3 tareas fijas y recurrentes en tu calendario semanal desde mañana mismo.",
+          "Guardar 500 prompts en una carpeta de favoritos y no volver a abrirlos.",
+          "Esperar a que salga una nueva versión de la herramienta."
+        ],
+        "correctIndex": 1,
+        "explanation": "La consistencia vence a la teoría. Vincular la IA a 3 tareas fijas de tu semana (correos del lunes, informes del viernes) convierte la herramienta en una extensión natural de tu productividad."
+      }
+    ],
+    "video": null
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "schemaVersion": 2,
+    "courseName": "IA en 7 Días",
+    "coursePriceCOP": 24900,
+    "nequiNumber": "3158422894",
+    "supportWhatsApp": "3158422894",
+    "adminPasswordHash": "1aa2006bf04e06802e6477283b390dc0502560b9cfd87dca653fdd535de8d04c43747b079345f97deaae9159310209fbffbdbc62811c814706755babba9213c2",
+    "adminPasswordSalt": "48093424c466c54236d9b7f643c165c0"
+  },
+  "students": []
+}

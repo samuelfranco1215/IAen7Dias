@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "{data/**,private/**,supabase-schema.sql}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/gestion-ia7d-privado(.*)",
+      "destination": "/api"
+    }
+  ]
+}

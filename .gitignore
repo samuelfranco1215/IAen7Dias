@@ -1,0 +1,13 @@
+node_modules/
+.vercel/
+.agents/
+skills-lock.json
+.env
+.env.*
+*.log
+scratch/
+data/*.tmp
+data/*.backup*
+data/ADMIN-CLAVE-INICIAL.txt
+data/uploads/receipts/*
+data/uploads/evidence/*

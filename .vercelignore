@@ -1,0 +1,11 @@
+.git
+node_modules
+scratch
+.env
+.env.*
+*.log
+data/*.tmp
+data/*.backup*
+data/ADMIN-CLAVE-INICIAL.txt
+data/uploads/receipts/*
+data/uploads/evidence/*
