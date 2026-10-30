@@ -250,8 +250,14 @@ const AdminApp = {
         statusBadge = `<span class="badge badge-rejected">✕ Rechazado</span>`;
       }
 
+      const receiptImgUrl = `/api/admin/students/${s.id}/receipt?token=${encodeURIComponent(this.token)}`;
       const receiptBtn = hasReceipt
-        ? `<button class="btn btn-secondary btn-sm" onclick="AdminApp.viewReceipt('${s.id}')">📸 Ver Nequi</button>`
+        ? `<div style="display: flex; align-items: center; gap: 0.55rem;">
+             <div onclick="AdminApp.viewReceipt('${s.id}')" title="Clic para ampliar comprobante" style="width: 46px; height: 46px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg-card); overflow: hidden; cursor: zoom-in; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+               <img src="${receiptImgUrl}" alt="Comprobante ${s.name}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\\'font-size:1.15rem;\\'>🧾</span>';">
+             </div>
+             <button type="button" class="btn btn-secondary btn-sm" onclick="AdminApp.viewReceipt('${s.id}')">🔍 Ampliar</button>
+           </div>`
         : `<span style="color: var(--text-dim); font-size: 0.78rem;">Sin comprobante</span>`;
 
       let accessColumn = '';
@@ -329,14 +335,49 @@ const AdminApp = {
     }).join('');
   },
 
+  receiptZoomed: false,
+
+  toggleReceiptZoom: function() {
+    const imgEl = document.getElementById('receipt-img');
+    const zoomBtn = document.getElementById('btn-zoom-receipt');
+    if (!imgEl) return;
+    this.receiptZoomed = !this.receiptZoomed;
+    if (this.receiptZoomed) {
+      imgEl.style.maxHeight = 'none';
+      imgEl.style.width = '100%';
+      imgEl.style.cursor = 'zoom-out';
+      if (zoomBtn) zoomBtn.textContent = '🔎 Reducir zoom';
+    } else {
+      imgEl.style.maxHeight = '460px';
+      imgEl.style.width = 'auto';
+      imgEl.style.cursor = 'zoom-in';
+      if (zoomBtn) zoomBtn.textContent = '🔍 Ampliar / Zoom';
+    }
+  },
+
   viewReceipt: function(studentId) {
     const student = this.students.find(s => s.id === studentId);
     if (!student || !student.receipt) return;
 
     this.activeStudentForApproval = student;
+    this.receiptZoomed = false;
     document.getElementById('modal-receipt-title').textContent = `Comprobante Nequi: ${student.name}`;
+    const fullUrl = `/api/admin/students/${student.id}/receipt?token=${encodeURIComponent(this.token)}&t=${Date.now()}`;
     const imgEl = document.getElementById('receipt-img');
-    imgEl.src = `/api/admin/students/${student.id}/receipt?token=${encodeURIComponent(this.token)}&t=${Date.now()}`;
+    const errEl = document.getElementById('receipt-img-error');
+    const openTabBtn = document.getElementById('btn-open-receipt-tab');
+    const zoomBtn = document.getElementById('btn-zoom-receipt');
+
+    if (errEl) errEl.style.display = 'none';
+    if (imgEl) {
+      imgEl.style.display = 'block';
+      imgEl.style.maxHeight = '460px';
+      imgEl.style.width = 'auto';
+      imgEl.style.cursor = 'zoom-in';
+      imgEl.src = fullUrl;
+    }
+    if (openTabBtn) openTabBtn.href = fullUrl;
+    if (zoomBtn) zoomBtn.textContent = '🔍 Ampliar / Zoom';
 
     const metaEl = document.getElementById('receipt-meta');
     metaEl.innerHTML = `

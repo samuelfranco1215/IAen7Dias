@@ -216,7 +216,7 @@ function migrate(db) {
       const backup = path.join(DATA_DIR, `database.backup-v1-${Date.now()}.json`);
       fs.copyFileSync(DB_PATH, backup);
       console.log(`[migración] Copia de seguridad creada: ${path.basename(backup)}`);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   for (const s of db.students || []) {
@@ -303,22 +303,43 @@ function saveImage(dataUrl, subdir, baseName) {
   return `${subdir}/${fileName}`;
 }
 
-/** Devuelve { buffer, mime } de una imagen guardada (Blob, archivo o data URL heredada). */
+/** Devuelve { buffer, mime } de una imagen guardada (objeto receipt/evidence, data URL, Supabase/Blob o archivo local). */
 async function readImage(ref) {
-  if (!ref || typeof ref !== 'string') return null;
+  if (!ref) return null;
+
+  // Si se pasa el objeto completo s.receipt o s.evidence[n]
+  if (typeof ref === 'object') {
+    if (typeof ref.dataUrl === 'string' && ref.dataUrl.startsWith('data:')) {
+      const m = /^data:([^;]+);base64,(.+)$/.exec(ref.dataUrl);
+      if (m) return { buffer: Buffer.from(m[2], 'base64'), mime: m[1] };
+    }
+    const candidateRef = ref.file || ref.image || ref.dataUrl;
+    if (!candidateRef || typeof candidateRef !== 'string') return null;
+    return readImage(candidateRef);
+  }
+
+  if (typeof ref !== 'string') return null;
+
   if (ref.startsWith('data:')) {
     const m = /^data:([^;]+);base64,(.+)$/.exec(ref);
     return m ? { buffer: Buffer.from(m[2], 'base64'), mime: m[1] } : null;
   }
-  if (ref.startsWith('blob:')) {
-    if (!isCloud()) return null;
-    try {
-      return await storage.getImage(ref.slice(5));
-    } catch (e) {
-      console.error('[db] Error leyendo imagen desde almacenamiento en la nube:', e);
-      return null;
+
+  if (ref.startsWith('blob:') || ref.startsWith('pending:') || isCloud()) {
+    const cleanRef = ref.replace(/^(blob:|pending:)/, '');
+    if (isCloud()) {
+      try {
+        const cloudImg = await storage.getImage(cleanRef);
+        if (cloudImg) return cloudImg;
+      } catch (e) {
+        console.error('[db] Error leyendo imagen desde almacenamiento en la nube:', e);
+      }
+    }
+    if (ref.startsWith('blob:') || ref.startsWith('pending:')) {
+      ref = cleanRef.replace(/^uploads\//, '');
     }
   }
+
   let full = path.isAbsolute(ref) ? path.normalize(ref) : path.normalize(path.join(UPLOADS_DIR, ref));
   if (!fs.existsSync(full)) {
     const fallback = path.join(BUNDLED_DATA_DIR, 'uploads', ref);
@@ -485,6 +506,7 @@ function saveReceipt(studentId, { image, reference }) {
   if (s.receipt) s.receiptHistory = [...(s.receiptHistory || []), s.receipt];
   s.receipt = {
     file,
+    dataUrl: image,
     reference: reference || '',
     uploadedAt: new Date().toISOString()
   };
@@ -630,7 +652,7 @@ function completeLesson(studentId, lessonId, { image, quizScore }) {
 
   s.evidence = s.evidence || {};
   if (image) {
-    s.evidence[n] = { image: saveImage(image, 'evidence', `${s.id}-d${n}`), submittedAt: new Date().toISOString() };
+    s.evidence[n] = { image: saveImage(image, 'evidence', `${s.id}-d${n}`), dataUrl: image, submittedAt: new Date().toISOString() };
   }
   if (!s.evidence[n] || !s.evidence[n].image) {
     return { error: 'Sube la captura de tu práctica antes de completar la lección.' };

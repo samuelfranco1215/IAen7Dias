@@ -296,61 +296,103 @@ async function supabaseSaveDb(data) {
 async function supabasePutImage(pathname, buffer, mime) {
   await ensureSupabaseSchema();
   const sb = getSupabase();
+  let savedAny = false;
+
+  // 1) Intentar guardar en Supabase Storage Bucket
   if (sb && (await ensureSupabaseBucket())) {
-    const { error } = await sb.storage
-      .from(SUPABASE_BUCKET)
-      .upload(pathname, buffer, { contentType: mime, upsert: true });
-    if (!error) return pathname;
+    try {
+      const { error } = await sb.storage
+        .from(SUPABASE_BUCKET)
+        .upload(pathname, buffer, { contentType: mime, upsert: true });
+      if (!error) savedAny = true;
+    } catch (e) {
+      console.warn('[storage] Error subiendo a bucket Supabase:', e.message);
+    }
   }
 
+  // 2) Guardar también en la tabla public.ia7d_uploads como respaldo directo en PostgreSQL
   const b64 = buffer.toString('base64');
   const pool = getPgPool();
   if (pool) {
-    await pool.query(
-      `INSERT INTO public.ia7d_uploads (pathname, mime, content_base64)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (pathname) DO UPDATE SET mime = EXCLUDED.mime, content_base64 = EXCLUDED.content_base64`,
-      [pathname, mime, b64]
-    );
-    return pathname;
-  }
-  if (sb) {
+    try {
+      await pool.query(
+        `INSERT INTO public.ia7d_uploads (pathname, mime, content_base64)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (pathname) DO UPDATE SET mime = EXCLUDED.mime, content_base64 = EXCLUDED.content_base64`,
+        [pathname, mime, b64]
+      );
+      savedAny = true;
+    } catch (e) {
+      console.warn('[storage] Error guardando imagen en ia7d_uploads (pg):', e.message);
+    }
+  } else if (sb) {
     const { error } = await sb
       .from('ia7d_uploads')
       .upsert({ pathname, mime, content_base64: b64 }, { onConflict: 'pathname' });
-    if (error) throw new Error(`Error subiendo imagen a Supabase: ${error.message}`);
-    return pathname;
+    if (!error) {
+      savedAny = true;
+    } else if (!savedAny) {
+      throw new Error(`Error subiendo imagen a Supabase: ${error.message}`);
+    }
   }
+
+  if (savedAny) return pathname;
   throw new Error('No se pudo guardar la imagen en Supabase.');
 }
 
 async function supabaseGetImage(pathname) {
   await ensureSupabaseSchema();
-  const sb = getSupabase();
-  if (sb && bucketReady) {
-    const { data, error } = await sb.storage.from(SUPABASE_BUCKET).download(pathname);
-    if (!error && data) {
-      const ab = await data.arrayBuffer();
-      return { buffer: Buffer.from(ab), mime: data.type || 'image/jpeg' };
-    }
-  }
+  const cleanPath = String(pathname || '').replace(/^blob:/, '').trim();
+  if (!cleanPath) return null;
+
+  const candidatePaths = Array.from(new Set([
+    cleanPath,
+    cleanPath.startsWith('uploads/') ? cleanPath.slice(8) : `uploads/${cleanPath}`
+  ]));
+
+  // 1) Buscar primero en la tabla public.ia7d_uploads (PostgreSQL directo o REST)
   const pool = getPgPool();
   if (pool) {
-    const { rows } = await pool.query('SELECT mime, content_base64 FROM public.ia7d_uploads WHERE pathname = $1 LIMIT 1', [pathname]);
-    if (rows.length) {
-      return { buffer: Buffer.from(rows[0].content_base64, 'base64'), mime: rows[0].mime || 'image/jpeg' };
+    try {
+      const { rows } = await pool.query(
+        'SELECT mime, content_base64 FROM public.ia7d_uploads WHERE pathname = ANY($1::text[]) LIMIT 1',
+        [candidatePaths]
+      );
+      if (rows.length && rows[0].content_base64) {
+        return { buffer: Buffer.from(rows[0].content_base64, 'base64'), mime: rows[0].mime || 'image/jpeg' };
+      }
+    } catch (e) {
+      console.warn('[storage] Error consultando ia7d_uploads (pg):', e.message);
     }
   }
+
+  const sb = getSupabase();
   if (sb) {
-    const { data } = await sb
-      .from('ia7d_uploads')
-      .select('mime, content_base64')
-      .eq('pathname', pathname)
-      .maybeSingle();
-    if (data && data.content_base64) {
-      return { buffer: Buffer.from(data.content_base64, 'base64'), mime: data.mime || 'image/jpeg' };
+    try {
+      for (const p of candidatePaths) {
+        const { data } = await sb
+          .from('ia7d_uploads')
+          .select('mime, content_base64')
+          .eq('pathname', p)
+          .maybeSingle();
+        if (data && data.content_base64) {
+          return { buffer: Buffer.from(data.content_base64, 'base64'), mime: data.mime || 'image/jpeg' };
+        }
+      }
+    } catch (e) {}
+
+    // 2) Buscar en Supabase Storage Bucket (sin depender de bucketReady en frío)
+    for (const p of candidatePaths) {
+      try {
+        const { data, error } = await sb.storage.from(SUPABASE_BUCKET).download(p);
+        if (!error && data) {
+          const ab = await data.arrayBuffer();
+          return { buffer: Buffer.from(ab), mime: data.type || 'image/jpeg' };
+        }
+      } catch (e) {}
     }
   }
+
   return null;
 }
 

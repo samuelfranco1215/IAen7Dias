@@ -364,7 +364,7 @@ app.post('/api/me/lessons/:id/complete', requireStudent, requireApproved, (req, 
 
 app.get('/api/me/evidence/:lessonId', requireStudent, requireApproved, (req, res) => {
   const ev = (req.student.evidence || {})[Number(req.params.lessonId)];
-  sendImage(res, ev && (ev.file || ev.image));
+  sendImage(res, ev);
 });
 
 // Datos del certificado: solo si completó las 7 lecciones y el pago está aprobado
@@ -491,13 +491,13 @@ app.get('/api/admin/students', requireAdmin, (req, res) => {
 
 app.get('/api/admin/students/:id/receipt', requireAdmin, (req, res) => {
   const s = db.getStudentById(req.params.id);
-  sendImage(res, s && s.receipt && (s.receipt.file || s.receipt.image));
+  sendImage(res, s && s.receipt);
 });
 
 app.get('/api/admin/students/:id/evidence/:lessonId', requireAdmin, (req, res) => {
   const s = db.getStudentById(req.params.id);
   const ev = s && (s.evidence || {})[Number(req.params.lessonId)];
-  sendImage(res, ev && (ev.file || ev.image));
+  sendImage(res, ev);
 });
 
 app.post('/api/admin/students/:id/approve', requireAdmin, (req, res) => {

@@ -505,7 +505,7 @@
 
   <!-- Modal: Ver Comprobante Nequi -->
   <div id="modal-receipt" class="modal-overlay">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width: 680px;">
       <div class="modal-header">
         <h3 id="modal-receipt-title" style="font-size: 1.1rem;">Comprobante de Pago Nequi</h3>
         <button class="modal-close" onclick="AdminApp.closeModal('modal-receipt')">&times;</button>
@@ -514,12 +514,32 @@
         <div id="receipt-meta" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; text-align: left; background: var(--bg-card); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-hairline);">
           <!-- Meta data -->
         </div>
-        <div style="background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; padding: 0.5rem;">
-          <img id="receipt-img" src="" alt="Comprobante Nequi" style="max-height: 450px; width: auto; margin: 0 auto; display: block; border-radius: 6px;">
+        <div id="receipt-img-container" style="background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 8px; overflow: auto; max-height: 62vh; margin-bottom: 1rem; padding: 0.75rem;">
+          <img
+            id="receipt-img"
+            src=""
+            alt="Comprobante Nequi"
+            title="Haz clic para ampliar o reducir"
+            onclick="AdminApp.toggleReceiptZoom()"
+            style="max-height: 460px; max-width: 100%; width: auto; margin: 0 auto; display: block; border-radius: 6px; cursor: zoom-in; transition: all 0.15s ease;"
+            onload="document.getElementById('receipt-img-error').style.display='none'; this.style.display='block';"
+            onerror="this.style.display='none'; document.getElementById('receipt-img-error').style.display='block';"
+          >
+          <div id="receipt-img-error" style="display: none; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.88rem;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧾</div>
+            <strong>No se pudo mostrar la imagen de este comprobante antiguo.</strong>
+            <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.35rem;">Los nuevos comprobantes subidos quedan almacenados directamente en Supabase y se visualizan aquí con miniatura y zoom.</p>
+          </div>
         </div>
-        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-          <button class="btn btn-secondary btn-sm" onclick="AdminApp.closeModal('modal-receipt')">Cerrar</button>
-          <button id="btn-approve-from-receipt" class="btn btn-success">✓ Aprobar este Pago</button>
+        <div style="display: flex; gap: 0.6rem; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" id="btn-zoom-receipt" class="btn btn-secondary btn-sm" onclick="AdminApp.toggleReceiptZoom()">🔍 Ampliar / Zoom</button>
+            <a id="btn-open-receipt-tab" href="#" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">↗ Abrir en pestaña</a>
+          </div>
+          <div style="display: flex; gap: 0.6rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="AdminApp.closeModal('modal-receipt')">Cerrar</button>
+            <button type="button" id="btn-approve-from-receipt" class="btn btn-success">✓ Aprobar este Pago</button>
+          </div>
         </div>
       </div>
     </div>
@@ -822,8 +842,14 @@ const AdminApp = {
         statusBadge = `<span class="badge badge-rejected">✕ Rechazado</span>`;
       }
 
+      const receiptImgUrl = `/api/admin/students/${s.id}/receipt?token=${encodeURIComponent(this.token)}`;
       const receiptBtn = hasReceipt
-        ? `<button class="btn btn-secondary btn-sm" onclick="AdminApp.viewReceipt('${s.id}')">📸 Ver Nequi</button>`
+        ? `<div style="display: flex; align-items: center; gap: 0.55rem;">
+             <div onclick="AdminApp.viewReceipt('${s.id}')" title="Clic para ampliar comprobante" style="width: 46px; height: 46px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg-card); overflow: hidden; cursor: zoom-in; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+               <img src="${receiptImgUrl}" alt="Comprobante ${s.name}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\\'font-size:1.15rem;\\'>🧾</span>';">
+             </div>
+             <button type="button" class="btn btn-secondary btn-sm" onclick="AdminApp.viewReceipt('${s.id}')">🔍 Ampliar</button>
+           </div>`
         : `<span style="color: var(--text-dim); font-size: 0.78rem;">Sin comprobante</span>`;
 
       let accessColumn = '';
@@ -901,14 +927,49 @@ const AdminApp = {
     }).join('');
   },
 
+  receiptZoomed: false,
+
+  toggleReceiptZoom: function() {
+    const imgEl = document.getElementById('receipt-img');
+    const zoomBtn = document.getElementById('btn-zoom-receipt');
+    if (!imgEl) return;
+    this.receiptZoomed = !this.receiptZoomed;
+    if (this.receiptZoomed) {
+      imgEl.style.maxHeight = 'none';
+      imgEl.style.width = '100%';
+      imgEl.style.cursor = 'zoom-out';
+      if (zoomBtn) zoomBtn.textContent = '🔎 Reducir zoom';
+    } else {
+      imgEl.style.maxHeight = '460px';
+      imgEl.style.width = 'auto';
+      imgEl.style.cursor = 'zoom-in';
+      if (zoomBtn) zoomBtn.textContent = '🔍 Ampliar / Zoom';
+    }
+  },
+
   viewReceipt: function(studentId) {
     const student = this.students.find(s => s.id === studentId);
     if (!student || !student.receipt) return;
 
     this.activeStudentForApproval = student;
+    this.receiptZoomed = false;
     document.getElementById('modal-receipt-title').textContent = `Comprobante Nequi: ${student.name}`;
+    const fullUrl = `/api/admin/students/${student.id}/receipt?token=${encodeURIComponent(this.token)}&t=${Date.now()}`;
     const imgEl = document.getElementById('receipt-img');
-    imgEl.src = `/api/admin/students/${student.id}/receipt?token=${encodeURIComponent(this.token)}&t=${Date.now()}`;
+    const errEl = document.getElementById('receipt-img-error');
+    const openTabBtn = document.getElementById('btn-open-receipt-tab');
+    const zoomBtn = document.getElementById('btn-zoom-receipt');
+
+    if (errEl) errEl.style.display = 'none';
+    if (imgEl) {
+      imgEl.style.display = 'block';
+      imgEl.style.maxHeight = '460px';
+      imgEl.style.width = 'auto';
+      imgEl.style.cursor = 'zoom-in';
+      imgEl.src = fullUrl;
+    }
+    if (openTabBtn) openTabBtn.href = fullUrl;
+    if (zoomBtn) zoomBtn.textContent = '🔍 Ampliar / Zoom';
 
     const metaEl = document.getElementById('receipt-meta');
     metaEl.innerHTML = `
