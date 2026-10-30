@@ -162,9 +162,15 @@ async function commit() {
 
   // 1) Subir imágenes pendientes y reemplazar sus referencias temporales
   for (const up of pendingUploads) {
-    const pathname = await storage.putImage(up.pathname, up.buffer, up.mime);
-    const finalRef = `blob:${pathname}`;
-    replaceRef(dbCache, up.tempRef, finalRef);
+    try {
+      const pathname = await storage.putImage(up.pathname, up.buffer, up.mime);
+      const finalRef = `blob:${pathname}`;
+      replaceRef(dbCache, up.tempRef, finalRef);
+    } catch (e) {
+      console.warn('[db] Guardando imagen directamente en estado de Supabase como respaldo:', e.message);
+      const inlineDataUrl = `data:${up.mime};base64,${up.buffer.toString('base64')}`;
+      replaceRef(dbCache, up.tempRef, inlineDataUrl);
+    }
   }
   pendingUploads = [];
 

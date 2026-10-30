@@ -95,12 +95,63 @@ function bearer(req) {
 }
 
 
-async function sendImage(res, ref) {
+function escapeXml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function buildLegacyReceiptSvg(student) {
+  const name = escapeXml(student.name || 'Alumno');
+  const email = escapeXml(student.email || '');
+  const ref = escapeXml((student.receipt && student.receipt.reference) || 'Sin código digitado');
+  const dateStr = student.receipt && student.receipt.uploadedAt
+    ? escapeXml(new Date(student.receipt.uploadedAt).toLocaleString('es-CO'))
+    : '';
+  const statusLabel = student.paymentStatus === 'approved' ? 'PAGO APROBADO' : 'COMPROBANTE REGISTRADO';
+  return Buffer.from(`<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="680" viewBox="0 0 540 680">
+  <rect width="540" height="680" fill="#F7F5F2"/>
+  <rect x="32" y="32" width="476" height="616" rx="16" fill="#FFFFFF" stroke="#D6D3D1" stroke-width="2"/>
+  <rect x="32" y="32" width="476" height="92" rx="16" fill="#0F766E"/>
+  <text x="270" y="72" font-family="system-ui, sans-serif" font-size="20" font-weight="800" fill="#FFFFFF" text-anchor="middle">COMPROBANTE NEQUI • IA EN 7 DÍAS</text>
+  <text x="270" y="100" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#CCFBF1" text-anchor="middle">${statusLabel}</text>
+  <rect x="64" y="156" width="412" height="96" rx="10" fill="#F0FDFA" stroke="#99F6E4" stroke-width="1.5"/>
+  <text x="270" y="188" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#0F766E" text-anchor="middle">VALOR TRANSFERIDO (NEQUI 3158422894)</text>
+  <text x="270" y="228" font-family="system-ui, sans-serif" font-size="32" font-weight="800" fill="#1C1917" text-anchor="middle">$24.900 COP</text>
+  <g font-family="system-ui, sans-serif" font-size="14" fill="#57534E">
+    <text x="64" y="300" font-weight="700" fill="#1C1917">Alumno:</text>
+    <text x="64" y="324">${name}</text>
+    <text x="64" y="346" font-size="12" fill="#78716C">${email}</text>
+    <line x1="64" y1="368" x2="476" y2="368" stroke="#E7E5E4"/>
+    <text x="64" y="400" font-weight="700" fill="#1C1917">Referencia Nequi:</text>
+    <text x="64" y="424" font-family="monospace" font-size="16" font-weight="700" fill="#0F766E">${ref}</text>
+    <line x1="64" y1="448" x2="476" y2="448" stroke="#E7E5E4"/>
+    <text x="64" y="480" font-weight="700" fill="#1C1917">Fecha de subida:</text>
+    <text x="64" y="504">${dateStr}</text>
+  </g>
+  <rect x="64" y="544" width="412" height="68" rx="8" fill="#FAF8F5" stroke="#E7E5E4"/>
+  <text x="270" y="572" font-family="system-ui, sans-serif" font-size="11.5" fill="#78716C" text-anchor="middle">Registro migrado a Supabase antes de activar almacenamiento</text>
+  <text x="270" y="592" font-family="system-ui, sans-serif" font-size="11.5" fill="#78716C" text-anchor="middle">binario directo. Los nuevos comprobantes muestran la captura real.</text>
+</svg>`, 'utf-8');
+}
+
+async function sendImage(res, ref, fallbackStudent) {
   const img = await db.readImage(ref);
-  if (!img) return res.status(404).json({ error: 'Archivo no encontrado' });
-  res.setHeader('Content-Type', img.mime);
-  res.setHeader('Cache-Control', 'private, no-store');
-  res.send(img.buffer);
+  if (img) {
+    res.setHeader('Content-Type', img.mime);
+    res.setHeader('Cache-Control', 'private, no-store');
+    return res.send(img.buffer);
+  }
+  if (fallbackStudent && fallbackStudent.receipt) {
+    res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'private, no-store');
+    return res.send(buildLegacyReceiptSvg(fallbackStudent));
+  }
+  return res.status(404).json({ error: 'Archivo no encontrado' });
 }
 
 // ==========================================
@@ -362,9 +413,9 @@ app.post('/api/me/lessons/:id/complete', requireStudent, requireApproved, (req, 
   }
 });
 
-app.get('/api/me/evidence/:lessonId', requireStudent, requireApproved, (req, res) => {
+app.get('/api/me/evidence/:lessonId', requireStudent, requireApproved, async (req, res) => {
   const ev = (req.student.evidence || {})[Number(req.params.lessonId)];
-  sendImage(res, ev);
+  await sendImage(res, ev);
 });
 
 // Datos del certificado: solo si completó las 7 lecciones y el pago está aprobado
@@ -489,15 +540,16 @@ app.get('/api/admin/students', requireAdmin, (req, res) => {
   res.json(db.getStudents().map(studentAdminView));
 });
 
-app.get('/api/admin/students/:id/receipt', requireAdmin, (req, res) => {
+app.get('/api/admin/students/:id/receipt', requireAdmin, async (req, res) => {
   const s = db.getStudentById(req.params.id);
-  sendImage(res, s && s.receipt);
+  if (!s || !s.receipt) return res.status(404).json({ error: 'Comprobante no encontrado' });
+  await sendImage(res, s.receipt, s);
 });
 
-app.get('/api/admin/students/:id/evidence/:lessonId', requireAdmin, (req, res) => {
+app.get('/api/admin/students/:id/evidence/:lessonId', requireAdmin, async (req, res) => {
   const s = db.getStudentById(req.params.id);
   const ev = s && (s.evidence || {})[Number(req.params.lessonId)];
-  sendImage(res, ev);
+  await sendImage(res, ev);
 });
 
 app.post('/api/admin/students/:id/approve', requireAdmin, (req, res) => {
