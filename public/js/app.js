@@ -568,10 +568,12 @@ const App = {
     this.closeAllModals();
     this.state.currentReceiptImage = null;
 
-    // Resetear a Paso 1
+    // Resetear a Paso 1 y asegurar que el checkbox de tratamiento de datos NO venga premarcado
     document.getElementById('checkout-step-form').style.display = 'block';
     document.getElementById('checkout-step-nequi').style.display = 'none';
     document.getElementById('checkout-step-review').style.display = 'none';
+    const consentCheckbox = document.getElementById('checkout-consent');
+    if (consentCheckbox) consentCheckbox.checked = false;
 
     document.getElementById('checkout-modal-title').textContent = "Inscripción y Pago Nequi";
     document.getElementById('checkout-modal-sub').textContent = "Paso 1 de 2: Datos de registro y certificado";
