@@ -458,13 +458,13 @@ const App = {
         </span>
         <span class="pill pill-subtle" style="font-size: 0.72rem;">Diagnóstico Rápido</span>
       </div>
-      <h3 style="font-size: 1.25rem; margin-bottom: 0.4rem; color: #fff;">${current.title}</h3>
+      <h3 style="font-size: 1.25rem; margin-bottom: 0.4rem; color: var(--text-main);">${current.title}</h3>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">${current.sub}</p>
 
       <div style="display: flex; flex-direction: column; gap: 0.65rem;">
         ${current.options.map((opt, idx) => `
           <button class="quiz-option-item" onclick="App.selectSurveyAnswer('${current.id}', '${opt.label.replace(/'/g, "\\'")}')">
-            <span style="color: var(--accent-cyan); font-weight: 700;">${idx + 1}.</span>
+            <span style="color: var(--accent-primary); font-weight: 700;">${idx + 1}.</span>
             <span style="flex: 1; text-align: left;">${opt.label}</span>
             <span class="pill pill-subtle" style="font-size: 0.75rem;">${opt.badge}</span>
           </button>
@@ -491,7 +491,7 @@ const App = {
     body.innerHTML = `
       <div style="text-align: center; padding: 1rem 0;">
         <span class="pill pill-green" style="margin-bottom: 0.85rem;">✓ Diagnóstico completado</span>
-        <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem; color: #fff;">
+        <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem; color: var(--text-main);">
           Ruta Práctica para ${role}
         </h3>
         <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.5rem;">
@@ -501,9 +501,9 @@ const App = {
         <div style="background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1.75rem; text-align: left;">
           <div style="display: flex; justify-content: space-between; align-items: baseline;">
             <span style="color: var(--text-muted); font-size: 0.9rem;">Inversión única (Pago Nequi):</span>
-            <strong style="font-size: 1.5rem; color: #ff007f;">$24.900 COP</strong>
+            <strong style="font-size: 1.5rem; color: var(--accent-primary);">$24.900 COP</strong>
           </div>
-          <div style="font-size: 0.8rem; color: var(--accent-green); margin-top: 0.35rem;">
+          <div style="font-size: 0.8rem; color: var(--accent-primary); margin-top: 0.35rem;">
             Pago único por Nequi • Acceso de por vida • Certificado incluido
           </div>
         </div>
@@ -982,7 +982,7 @@ const App = {
             <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-lg">
             <div>
               <span class="pill pill-gold" style="margin-bottom: 0.35rem;">Certificado Oficial Desbloqueado</span>
-              <h3 style="font-size: 1.25rem; color: #fff;">¡Felicitaciones! Tu Certificado en PDF está Listo</h3>
+              <h3 style="font-size: 1.25rem; color: var(--text-main);">¡Felicitaciones! Tu Certificado en PDF está Listo</h3>
               <p style="color: var(--text-muted); font-size: 0.88rem;">
                 Completaste las 7 lecciones con sus evidencias aprobadas. Código de verificación: <strong>${current.certificateCode}</strong>
               </p>
@@ -1002,8 +1002,8 @@ const App = {
             <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-lg" style="opacity: 0.85;">
             <div>
               <span class="pill pill-subtle" style="margin-bottom: 0.35rem;">Certificado Protegido</span>
-              <h3 style="font-size: 1.15rem; color: #fff;">Desbloqueo exclusivo al completar el 100% (7 lecciones)</h3>
-              <p style="color: var(--text-dim); font-size: 0.85rem;">
+              <h3 style="font-size: 1.15rem; color: var(--text-main);">Desbloqueo exclusivo al completar el 100% (7 lecciones)</h3>
+              <p style="color: var(--text-muted); font-size: 0.85rem;">
                 Te faltan <strong>${needed} lección${needed === 1 ? '' : 'es'}</strong> con evidencia de práctica para emitir tu certificado oficial.
               </p>
             </div>
@@ -1215,13 +1215,13 @@ const App = {
 
         <div class="lesson-article">
           <!-- 1. OBJETIVO DE LA LECCIÓN (1 línea destacada) -->
-          <div style="background: rgba(14, 165, 233, 0.08); border-left: 4px solid var(--accent-cyan); border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin-bottom: 2rem;">
-            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--accent-cyan); letter-spacing: 0.08em; margin-bottom: 0.25rem;">Objetivo de la sesión</div>
-            <p style="color: #fff; font-size: 1rem; font-weight: 600; margin: 0;">${lesson.objective}</p>
+          <div style="background: #F0FDFA; border-left: 4px solid var(--accent-primary); border-radius: var(--radius-sm); padding: 1.1rem 1.35rem; margin-bottom: 2rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--accent-primary); letter-spacing: 0.06em; margin-bottom: 0.25rem;">Objetivo de la sesión</div>
+            <p style="color: var(--text-main); font-size: 1rem; font-weight: 600; margin: 0;">${lesson.objective}</p>
           </div>
 
           <!-- 2. EXPLICACIÓN CORTA Y CLARA -->
-          <div style="font-size: 1.02rem; line-height: 1.7; margin-bottom: 2rem;">
+          <div style="font-size: 1.02rem; line-height: 1.75; margin-bottom: 2rem;">
             ${lesson.explanation}
           </div>
 
@@ -1229,25 +1229,25 @@ const App = {
           ${lesson.example ? `
             <div class="lesson-example-card">
               <span class="pill pill-gold" style="font-size: 0.75rem;">Caso Práctico Real</span>
-              <p style="font-size: 0.92rem; color: #fff; margin: 0.65rem 0 0.85rem;"><strong>Situación:</strong> ${lesson.example.context}</p>
+              <p style="font-size: 0.94rem; color: var(--text-main); margin: 0.65rem 0 0.85rem;"><strong>Situación:</strong> ${lesson.example.context}</p>
 
               <div class="example-diff-grid">
                 <div class="diff-box before">
-                  <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; color: #f87171; margin-bottom: 0.35rem;">✕ Pedido Débil / Genérico</div>
-                  <p style="margin: 0; font-style: italic;">"${lesson.example.before}"</p>
+                  <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; color: #991B1B; margin-bottom: 0.35rem;">✕ Pedido Débil / Genérico</div>
+                  <p style="margin: 0; font-style: italic; color: #7F1D1D;">"${lesson.example.before}"</p>
                 </div>
                 <div class="diff-box after">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                    <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; color: #34d399;">✓ Pedido con Método Concreto</span>
+                    <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; color: var(--accent-primary);">✓ Pedido con Método Concreto</span>
                     <button type="button" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;" onclick="App.copyPrompt('example', this)">
                       📋 Copiar Prompt
                     </button>
                   </div>
-                  <p id="example-prompt-text" style="margin: 0;">"${this.escapeHtml(lesson.example.after)}"</p>
+                  <p id="example-prompt-text" style="margin: 0; color: #134E4A;">"${this.escapeHtml(lesson.example.after)}"</p>
                 </div>
               </div>
 
-              <div style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.75rem;">
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem;">
                 💡 <strong>Por qué funciona:</strong> ${lesson.example.why}
               </div>
             </div>
@@ -1296,7 +1296,7 @@ const App = {
             <div class="evidence-upload-zone" onclick="document.getElementById('evidence-file-input').click()">
               <input type="file" id="evidence-file-input" accept="image/png,image/jpeg,image/webp" style="display: none;" onchange="App.handleEvidenceFileSelected(event)">
               <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">📁</div>
-              <strong style="color: #fff; font-size: 0.95rem;">Toca aquí para adjuntar la captura de pantalla</strong>
+              <strong style="color: var(--text-main); font-size: 0.95rem;">Toca aquí para adjuntar la captura de pantalla</strong>
               <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">Formatos admitidos: PNG, JPG o WebP</p>
             </div>
 
@@ -1455,9 +1455,9 @@ const App = {
       if (selectedEl) selectedEl.classList.add('correct');
       if (feedbackEl) {
         feedbackEl.style.display = 'block';
-        feedbackEl.style.background = 'rgba(16, 185, 129, 0.12)';
-        feedbackEl.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-        feedbackEl.style.color = '#34d399';
+        feedbackEl.style.background = '#F0FDFA';
+        feedbackEl.style.border = '1px solid #99F6E4';
+        feedbackEl.style.color = '#0F766E';
         feedbackEl.innerHTML = `<strong>✓ Correcto:</strong> ${this.escapeHtml(explanation)}`;
       }
     } else {
@@ -1465,9 +1465,9 @@ const App = {
       if (correctEl) correctEl.classList.add('correct');
       if (feedbackEl) {
         feedbackEl.style.display = 'block';
-        feedbackEl.style.background = 'rgba(239, 68, 68, 0.12)';
-        feedbackEl.style.border = '1px solid rgba(239, 68, 68, 0.3)';
-        feedbackEl.style.color = '#f87171';
+        feedbackEl.style.background = '#FEF2F2';
+        feedbackEl.style.border = '1px solid #FECACA';
+        feedbackEl.style.color = '#991B1B';
         feedbackEl.innerHTML = `<strong>Retroalimentación:</strong> ${this.escapeHtml(explanation)}`;
       }
     }
@@ -1590,14 +1590,16 @@ const App = {
         position: fixed;
         bottom: 2rem;
         right: 2rem;
-        background: #111520;
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: #1C1917;
+        color: #F7F5F2;
+        border: 1px solid #44403C;
         padding: 0.85rem 1.25rem;
         border-radius: 8px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+        box-shadow: 0 8px 24px rgba(28,25,23,0.18);
         z-index: 300;
         font-size: 0.88rem;
+        font-weight: 500;
+        max-width: calc(100vw - 2rem);
         transition: opacity 0.3s ease;
       `;
       document.body.appendChild(toast);

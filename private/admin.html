@@ -12,25 +12,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0a0d14;
-      --bg-surface: #111520;
-      --bg-card: #151a26;
-      --bg-card-hover: #1b2130;
-      --bg-input: #1b2130;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      --accent-primary: #2563eb;
-      --accent-primary-hover: #1d4ed8;
-      --accent-cyan: #0ea5e9;
-      --accent-gold: #d97706;
-      --accent-gold-soft: #fbbf24;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --border-hairline: rgba(255, 255, 255, 0.08);
+      --bg-primary: #F7F5F2;
+      --bg-surface: #FFFFFF;
+      --bg-card: #FAF8F5;
+      --bg-card-hover: #F2EFE9;
+      --bg-input: #FFFFFF;
+      --text-main: #1C1917;
+      --text-muted: #57534E;
+      --text-dim: #78716C;
+      --accent-primary: #0F766E;
+      --accent-primary-hover: #115E59;
+      --accent-cyan: #0F766E;
+      --accent-gold: #B45309;
+      --accent-gold-soft: #B45309;
+      --accent-green: #0F766E;
+      --accent-red: #B91C1C;
+      --border-hairline: #E7E5E4;
+      --border-strong: #D6D3D1;
       --radius-sm: 6px;
       --radius-md: 10px;
-      --radius-lg: 16px;
+      --radius-lg: 14px;
       --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     }
 
@@ -39,21 +40,25 @@
       font-family: var(--font-body);
       background-color: var(--bg-primary);
       color: var(--text-main);
-      line-height: 1.5;
+      line-height: 1.55;
       min-height: 100vh;
       padding-bottom: 5rem;
+      overflow-x: hidden;
     }
 
     header {
-      background: var(--bg-surface);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border-hairline);
-      padding: 1rem 1.5rem;
+      padding: 0.9rem 1.5rem;
       position: sticky;
       top: 0;
       z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
 
     .brand {
@@ -62,6 +67,7 @@
       gap: 0.75rem;
       font-weight: 800;
       font-size: 1.05rem;
+      color: var(--text-main);
       letter-spacing: -0.02em;
     }
 
@@ -69,17 +75,17 @@
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      padding: 0.2rem 0.55rem;
+      letter-spacing: 0.06em;
+      background: #FEF3C7;
+      color: var(--accent-gold);
+      padding: 0.22rem 0.6rem;
       border-radius: 9999px;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      border: 1px solid #FDE68A;
     }
 
     .container {
       max-width: 1240px;
-      margin: 2rem auto;
+      margin: 2.25rem auto;
       padding: 0 1.5rem;
     }
 
@@ -94,25 +100,25 @@
       padding: 0.55rem 1rem;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      border: none;
+      border: 1px solid transparent;
       transition: all 0.15s ease;
       text-decoration: none;
     }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-primary { background: var(--accent-primary); color: #fff; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary { background: var(--accent-primary); color: #FFFFFF; border-color: var(--accent-primary); }
     .btn-primary:hover:not(:disabled) { background: var(--accent-primary-hover); }
-    .btn-success { background: var(--accent-green); color: #042f1a; font-weight: 700; }
-    .btn-success:hover:not(:disabled) { filter: brightness(1.1); }
-    .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-hairline); }
-    .btn-secondary:hover:not(:disabled) { background: var(--bg-card-hover); }
-    .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-    .btn-danger:hover:not(:disabled) { background: rgba(239, 68, 68, 0.25); }
-    .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.78rem; }
+    .btn-success { background: var(--accent-primary); color: #FFFFFF; font-weight: 600; border-color: var(--accent-primary); }
+    .btn-success:hover:not(:disabled) { background: var(--accent-primary-hover); }
+    .btn-secondary { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-strong); }
+    .btn-secondary:hover:not(:disabled) { background: var(--bg-card); border-color: #A8A29E; }
+    .btn-danger { background: #FEF2F2; color: var(--accent-red); border: 1px solid #FECACA; }
+    .btn-danger:hover:not(:disabled) { background: #FEE2E2; }
+    .btn-sm { padding: 0.38rem 0.7rem; font-size: 0.78rem; }
 
     .form-control {
       width: 100%;
       background: var(--bg-input);
-      border: 1px solid var(--border-hairline);
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius-sm);
       color: var(--text-main);
       padding: 0.65rem 0.85rem;
@@ -120,24 +126,27 @@
       font-size: 0.9rem;
       outline: none;
     }
-    .form-control:focus { border-color: var(--accent-cyan); }
+    .form-control:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
 
     /* Login Card */
     #admin-login-view {
       max-width: 420px;
-      margin: 6rem auto;
+      margin: 5.5rem auto;
       background: var(--bg-surface);
       border: 1px solid var(--border-hairline);
       border-radius: var(--radius-lg);
-      padding: 2.5rem;
+      padding: 2.5rem 2rem;
       text-align: center;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 30px rgba(28, 25, 23, 0.06);
     }
 
     /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
       gap: 1rem;
       margin-bottom: 2rem;
     }
@@ -146,24 +155,26 @@
       border: 1px solid var(--border-hairline);
       border-radius: var(--radius-md);
       padding: 1.25rem;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
     }
     .stat-label {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-dim);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.3rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
     }
     .stat-value {
-      font-size: 1.8rem;
+      font-size: 1.75rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--text-main);
     }
     .stat-card.alert {
-      border-color: rgba(251, 191, 36, 0.4);
-      background: linear-gradient(180deg, rgba(251, 191, 36, 0.08), var(--bg-surface));
+      border-color: #FDE68A;
+      background: #FFFBEB;
     }
-    .stat-card.alert .stat-value { color: var(--accent-gold-soft); }
+    .stat-card.alert .stat-value { color: var(--accent-gold); }
 
     /* Controls Bar */
     .controls-bar {
@@ -181,6 +192,7 @@
       padding: 0.3rem;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
     }
     .tab-btn {
       background: transparent;
@@ -194,7 +206,7 @@
     }
     .tab-btn.active {
       background: var(--accent-primary);
-      color: #fff;
+      color: #FFFFFF;
     }
 
     /* Student Cards / Table */
@@ -203,6 +215,7 @@
       border: 1px solid var(--border-hairline);
       border-radius: var(--radius-md);
       overflow: hidden;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
     }
     table {
       width: 100%;
@@ -223,7 +236,7 @@
       vertical-align: middle;
     }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    tr:hover td { background: var(--bg-card); }
 
     .badge {
       display: inline-flex;
@@ -231,43 +244,43 @@
       gap: 0.3rem;
       font-size: 0.72rem;
       font-weight: 700;
-      padding: 0.2rem 0.55rem;
+      padding: 0.22rem 0.6rem;
       border-radius: 9999px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
     }
     .badge-in_review {
-      background: rgba(251, 191, 36, 0.15);
-      color: var(--accent-gold-soft);
-      border: 1px solid rgba(251, 191, 36, 0.35);
+      background: #FEF3C7;
+      color: var(--accent-gold);
+      border: 1px solid #FDE68A;
     }
     .badge-approved {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.35);
+      background: #F0FDFA;
+      color: var(--accent-primary);
+      border: 1px solid #99F6E4;
     }
     .badge-awaiting_payment {
-      background: rgba(148, 163, 184, 0.12);
+      background: #EFECE6;
       color: var(--text-muted);
       border: 1px solid var(--border-hairline);
     }
     .badge-rejected {
-      background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      background: #FEF2F2;
+      color: var(--accent-red);
+      border: 1px solid #FECACA;
     }
 
     /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(5px);
+      background: rgba(28, 25, 23, 0.55);
+      backdrop-filter: blur(4px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 200;
-      padding: 1.5rem;
+      padding: 1.25rem;
     }
     .modal-overlay.active { display: flex; }
     .modal-card {
@@ -278,7 +291,7 @@
       max-width: 600px;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      box-shadow: 0 20px 50px rgba(28, 25, 23, 0.18);
     }
     .modal-header {
       padding: 1.25rem 1.5rem;
@@ -297,8 +310,8 @@
     }
 
     .access-code-box {
-      background: #0a0d14;
-      border: 2px dashed var(--accent-green);
+      background: #F0FDFA;
+      border: 1.5px dashed var(--accent-primary);
       border-radius: var(--radius-sm);
       padding: 1.25rem;
       text-align: center;
@@ -308,19 +321,19 @@
       font-size: 1.8rem;
       font-weight: 800;
       letter-spacing: 0.15em;
-      color: #34d399;
+      color: var(--accent-primary);
       font-family: monospace;
     }
 
     .whatsapp-bubble {
-      background: #064e3b;
-      color: #d1fae5;
+      background: var(--bg-card);
+      color: var(--text-main);
       padding: 1rem;
       border-radius: 8px;
       font-size: 0.85rem;
       white-space: pre-wrap;
       line-height: 1.6;
-      border: 1px solid rgba(52, 211, 153, 0.3);
+      border: 1px solid var(--border-strong);
       margin-top: 1rem;
     }
 
@@ -331,9 +344,12 @@
       border: 1px solid var(--border-hairline);
       border-radius: var(--radius-md);
       padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
     }
 
     @media (max-width: 768px) {
+      .container { padding: 0 1rem; margin: 1.5rem auto; }
+      #admin-login-view { margin: 2.5rem 1rem; padding: 1.75rem 1.25rem; }
       .table-responsive { overflow-x: auto; }
       table { min-width: 700px; }
       .controls-bar { flex-direction: column; align-items: stretch; }
@@ -357,7 +373,7 @@
 
   <!-- Login View -->
   <div id="admin-login-view">
-    <img src="/images/logo-crop.png" alt="IA en 7 Días" style="height: 68px; width: auto; background: #ffffff; border-radius: 10px; padding: 4px 10px; margin-bottom: 1rem; object-fit: contain; box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
+    <img src="/images/logo-crop.png" alt="IA en 7 Días" style="height: 64px; width: auto; background: #ffffff; border-radius: 8px; padding: 4px 10px; margin: 0 auto 1rem; object-fit: contain; border: 1px solid var(--border-hairline); display: block;">
     <h2 style="font-size: 1.35rem; margin-bottom: 0.35rem;">Acceso Administrativo</h2>
     <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
       Ingresa la contraseña de administración privada.
@@ -369,7 +385,7 @@
       <button type="submit" id="btn-login" class="btn btn-primary" style="width: 100%;">
         Ingresar al Panel ➔
       </button>
-      <p id="login-error" style="color: #f87171; font-size: 0.82rem; margin-top: 0.75rem; display: none;"></p>
+      <p id="login-error" style="color: var(--accent-red); font-size: 0.82rem; margin-top: 0.75rem; display: none;"></p>
     </form>
   </div>
 
@@ -387,7 +403,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-label">Pagos Aprobados</div>
-        <div class="stat-value" style="color: #34d399;" id="stat-approved">0</div>
+        <div class="stat-value" style="color: var(--accent-primary);" id="stat-approved">0</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Esperando Pago</div>
@@ -399,7 +415,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-label">Certificados Emitidos</div>
-        <div class="stat-value" style="color: var(--accent-gold-soft);" id="stat-certs">0</div>
+        <div class="stat-value" style="color: var(--accent-gold);" id="stat-certs">0</div>
       </div>
     </div>
 
@@ -445,7 +461,7 @@
     <div class="video-section">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <div>
-          <h3 style="font-size: 1.15rem; color: #fff;">🎥 Videos por Lección (Opcional y Limpio)</h3>
+          <h3 style="font-size: 1.15rem; color: var(--text-main);">🎥 Videos por Lección (Opcional y Limpio)</h3>
           <p style="font-size: 0.85rem; color: var(--text-muted);">
             Configura enlaces de YouTube o Vimeo propios o con licencia libre. Si dejas vacío, la lección muestra la guía de lectura interactiva sin botones rotos.
           </p>
@@ -465,10 +481,10 @@
         <button class="modal-close" onclick="AdminApp.closeModal('modal-receipt')">&times;</button>
       </div>
       <div class="modal-body" style="text-align: center;">
-        <div id="receipt-meta" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; text-align: left; background: var(--bg-card); padding: 0.75rem 1rem; border-radius: 6px;">
+        <div id="receipt-meta" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; text-align: left; background: var(--bg-card); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-hairline);">
           <!-- Meta data -->
         </div>
-        <div style="background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; padding: 0.5rem;">
           <img id="receipt-img" src="" alt="Comprobante Nequi" style="max-height: 450px; width: auto; margin: 0 auto; display: block; border-radius: 6px;">
         </div>
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
@@ -483,7 +499,7 @@
   <div id="modal-approved-success" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 style="font-size: 1.15rem; color: #34d399;">✓ ¡Acceso Aprobado con Éxito!</h3>
+        <h3 style="font-size: 1.15rem; color: var(--accent-primary);">✓ ¡Acceso Aprobado con Éxito!</h3>
         <button class="modal-close" onclick="AdminApp.closeModal('modal-approved-success')">&times;</button>
       </div>
       <div class="modal-body">

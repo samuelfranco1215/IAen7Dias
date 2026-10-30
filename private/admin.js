@@ -201,7 +201,7 @@ const AdminApp = {
       if (isApproved) {
         accessColumn = `
           <div>
-            <div style="font-family: monospace; font-weight: 800; color: #34d399; font-size: 0.95rem;">${s.accessCode || 'ACTIVO'}</div>
+            <div style="font-family: monospace; font-weight: 800; color: var(--accent-primary); font-size: 0.95rem;">${s.accessCode || 'ACTIVO'}</div>
             <button class="btn btn-secondary btn-sm" style="margin-top: 0.25rem; font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="AdminApp.showApprovedModal('${s.id}')">
               💬 Enviar por WhatsApp
             </button>
@@ -228,8 +228,8 @@ const AdminApp = {
       return `
         <tr>
           <td>
-            <strong style="color: #fff; font-size: 0.92rem;">${s.name}</strong>
-            <div style="color: var(--text-dim); font-size: 0.78rem;">${s.email}</div>
+            <strong style="color: var(--text-main); font-size: 0.92rem;">${s.name}</strong>
+            <div style="color: var(--text-muted); font-size: 0.78rem;">${s.email}</div>
             <div style="color: var(--text-dim); font-size: 0.72rem;">Registrado: ${new Date(s.createdAt).toLocaleDateString('es-CO')}</div>
           </td>
           <td>
@@ -238,13 +238,13 @@ const AdminApp = {
             </span>
           </td>
           <td>
-            <a href="https://wa.me/${cleanPhone}" target="_blank" style="color: #25d366; font-weight: 600; text-decoration: none; font-size: 0.82rem;" title="Abrir chat en WhatsApp">
+            <a href="https://wa.me/${cleanPhone}" target="_blank" style="color: var(--accent-primary); font-weight: 600; text-decoration: none; font-size: 0.82rem;" title="Abrir chat en WhatsApp">
               💬 ${s.whatsapp}
             </a>
           </td>
           <td>${statusBadge}</td>
           <td>
-            <div style="font-weight: 700; color: #fff;">${progress}%</div>
+            <div style="font-weight: 700; color: var(--text-main);">${progress}%</div>
             <div style="font-size: 0.75rem; color: var(--text-dim);">${completedCount}/7 lecciones</div>
             <div style="margin-top: 0.25rem;">${evidenceBtn}</div>
           </td>
@@ -258,11 +258,11 @@ const AdminApp = {
                 </button>
               ` : ''}
               ${isApproved ? `
-                <button class="btn btn-secondary btn-sm" style="color: #f87171;" onclick="AdminApp.revokeStudent('${s.id}')" title="Revocar acceso">
+                <button class="btn btn-secondary btn-sm" style="color: var(--accent-red);" onclick="AdminApp.revokeStudent('${s.id}')" title="Revocar acceso">
                   Bloquear
                 </button>
               ` : ''}
-              <button class="btn btn-secondary btn-sm" style="color: #64748b;" onclick="AdminApp.deleteStudent('${s.id}')" title="Eliminar inscripción">
+              <button class="btn btn-secondary btn-sm" style="color: var(--text-dim);" onclick="AdminApp.deleteStudent('${s.id}')" title="Eliminar inscripción">
                 🗑
               </button>
             </div>
@@ -423,9 +423,9 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     } else {
       container.innerHTML = lessons.map(num => `
         <div style="background: var(--bg-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-hairline);">
-          <strong style="color: #fff; font-size: 0.9rem;">Día ${num}</strong>
-          <div style="margin-top: 0.5rem; background: #000; border-radius: 4px; overflow: hidden;">
-            <img src="/api/admin/students/${student.id}/evidence/${num}?token=${encodeURIComponent(AdminApp.token)}&t=${Date.now()}" alt="Evidencia Día ${num}" style="width: 100%; max-height: 220px; object-fit: contain; display: block;" onerror="this.parentElement.innerHTML='<p style=\'padding:1rem;color:#f87171;font-size:0.8rem;text-align:center;\'>No se pudo cargar la imagen de evidencia</p>'">
+          <strong style="color: var(--text-main); font-size: 0.9rem;">Día ${num}</strong>
+          <div style="margin-top: 0.5rem; background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: 4px; overflow: hidden;">
+            <img src="/api/admin/students/${student.id}/evidence/${num}?token=${encodeURIComponent(AdminApp.token)}&t=${Date.now()}" alt="Evidencia Día ${num}" style="width: 100%; max-height: 220px; object-fit: contain; display: block;" onerror="this.parentElement.innerHTML='<p style=\'padding:1rem;color:var(--accent-red);font-size:0.8rem;text-align:center;\'>No se pudo cargar la imagen de evidencia</p>'">
           </div>
         </div>
       `).join('');
@@ -446,7 +446,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
         return `
           <div style="background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: 6px; border: 1px solid var(--border-hairline); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
             <div>
-              <strong style="color: #fff;">Día ${l.day}: ${l.title}</strong>
+              <strong style="color: var(--text-main);">Día ${l.day}: ${l.title}</strong>
               <div style="font-size: 0.78rem; color: var(--text-dim);">${l.video ? `✓ Video configurado (${l.video.provider})` : 'Sin video (muestra guía de lectura y práctica)'}</div>
             </div>
             <div style="display: flex; gap: 0.5rem; flex: 1; max-width: 480px;">
