@@ -4,15 +4,42 @@
  */
 
 window.CertificateGenerator = {
+  _logoDataUrl: null,
+
+  _preloadLogo: function() {
+    if (this._logoDataUrl) return Promise.resolve(this._logoDataUrl);
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth || 586;
+          canvas.height = img.naturalHeight || 520;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          this._logoDataUrl = canvas.toDataURL('image/png');
+          resolve(this._logoDataUrl);
+        } catch (e) {
+          resolve(null);
+        }
+      };
+      img.onerror = () => resolve(null);
+      img.src = 'images/logo-crop.png';
+    });
+  },
+
   /**
    * Genera y descarga el certificado en formato PDF
    * @param {Object} student - Objeto alumno con name, certificateCode, certificateIssuedAt
    */
-  downloadPDF: function(student) {
+  downloadPDF: async function(student) {
     if (!window.jspdf || !window.jspdf.jsPDF) {
       alert("Cargando la librería de generación de PDF. Por favor intenta de nuevo en unos segundos.");
       return;
     }
+
+    const logoData = await this._preloadLogo();
 
     const { jsPDF } = window.jspdf;
     // Formato horizontal A4 (297mm ancho x 210mm alto)
@@ -67,7 +94,16 @@ window.CertificateGenerator = {
     doc.line(width - 16 - cornerSize, height - 16, width - 16, height - 16);
     doc.line(width - 16, height - 16 - cornerSize, width - 16, height - 16);
 
-    // 5. Encabezado de la Academia
+    // 5. Logo Oficial y Encabezado de la Academia
+    if (logoData) {
+      try {
+        // Proporción original del logo recortado: 586 x 520 (~1.127:1)
+        doc.addImage(logoData, 'PNG', 26, 20, 27, 24);
+      } catch (e) {
+        console.warn("No se pudo incrustar logo en PDF:", e);
+      }
+    }
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
     doc.setTextColor(100, 116, 139);

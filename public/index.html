@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IA en 7 Días • Microcurso Práctico de Inteligencia Artificial</title>
   <meta name="description" content="Aprende a integrar ChatGPT, Claude y herramientas de IA en tu trabajo diario en 7 lecciones de 15 minutos. $24.900 COP con certificado de finalización.">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/favicon.png">
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +26,7 @@
   <header class="navbar">
     <div class="container nav-container">
       <a href="#" class="brand-logo" onclick="App.showView('landing')">
-        <span class="logo-dot"></span>
+        <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img">
         <span>IA en 7 Días</span>
       </a>
 
@@ -502,12 +504,7 @@
       <div class="container">
         <div class="certificate-preview-grid">
           <div class="cert-shield-badge-card">
-            <div class="cert-shield-icon">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <path d="m9 12 2 2 4-4"/>
-              </svg>
-            </div>
+            <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-lg" style="margin: 0 auto 0.85rem;">
             <span class="cert-shield-tag">Documento Oficial Vectorial (300 DPI)</span>
             <h3 style="font-size: 1.3rem; color: #fff; margin: 0.85rem 0 0.35rem;">Certificado de Finalización</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 320px; margin: 0 auto;">
@@ -673,7 +670,10 @@
     <footer class="site-footer" style="background: var(--bg-surface); border-top: 1px solid var(--border-hairline); padding: 3rem 0; margin-top: 4rem;">
       <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
         <div>
-          <div style="font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">IA en 7 Días</div>
+          <div style="display: flex; align-items: center; gap: 0.65rem; font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 0.45rem;">
+            <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img">
+            <span>IA en 7 Días</span>
+          </div>
           <p style="font-size: 0.85rem; color: var(--text-dim); max-width: 480px; margin: 0; line-height: 1.5;">
             Microcurso práctico de Inteligencia Artificial para el trabajo diario en Colombia. Acceso protegido con pago único por Nequi ($24.900 COP) y verificación manual.
           </p>
@@ -714,9 +714,12 @@
     <div class="dashboard-topbar">
       <div class="container">
         <div class="dashboard-user-row">
-          <div class="student-meta">
-            <h2>Bienvenido, <span id="dash-student-name">Estudiante</span></h2>
-            <p>Aula Virtual • <span id="dash-student-email">alumno@correo.com</span></p>
+          <div class="student-meta" style="display: flex; align-items: center; gap: 0.85rem;">
+            <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img">
+            <div>
+              <h2>Bienvenido, <span id="dash-student-name">Estudiante</span></h2>
+              <p>Aula Virtual • <span id="dash-student-email">alumno@correo.com</span></p>
+            </div>
           </div>
           <div>
             <button class="btn btn-secondary btn-sm" onclick="localStorage.setItem('ia7d_last_view','landing'); App.showView('landing')">
@@ -791,9 +794,12 @@
   <div id="modal-checkout" class="modal-overlay">
     <div class="modal-card" style="max-width: 520px;">
       <div class="modal-card-header">
-        <div>
-          <h3 style="font-size: 1.15rem;" id="checkout-modal-title">Inscripción y Pago Nequi</h3>
-          <p style="font-size: 0.8rem; color: var(--text-dim);" id="checkout-modal-sub">Paso 1 de 2: Datos de registro y certificado</p>
+        <div style="display: flex; align-items: center; gap: 0.7rem;">
+          <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-sm">
+          <div>
+            <h3 style="font-size: 1.15rem;" id="checkout-modal-title">Inscripción y Pago Nequi</h3>
+            <p style="font-size: 0.8rem; color: var(--text-dim);" id="checkout-modal-sub">Paso 1 de 2: Datos de registro y certificado</p>
+          </div>
         </div>
         <button class="modal-close-icon" onclick="App.closeAllModals()">&times;</button>
       </div>
@@ -995,7 +1001,10 @@
   <div id="modal-student-access" class="modal-overlay">
     <div class="modal-card" style="max-width: 440px;">
       <div class="modal-card-header">
-        <h3 style="font-size: 1.15rem;">Ingreso al Aula Virtual</h3>
+        <div style="display: flex; align-items: center; gap: 0.7rem;">
+          <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-sm">
+          <h3 style="font-size: 1.15rem;">Ingreso al Aula Virtual</h3>
+        </div>
         <button class="modal-close-icon" onclick="App.closeAllModals()">&times;</button>
       </div>
 

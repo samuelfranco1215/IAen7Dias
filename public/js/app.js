@@ -979,10 +979,7 @@ const App = {
         certBanner.className = 'cert-card-banner unlocked';
         certBanner.innerHTML = `
           <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
-            <div class="cert-thumb-mockup cert-thumb-unlocked">
-              <span style="font-size: 1.6rem;">🎓</span>
-              <span class="cert-thumb-badge">100% OK</span>
-            </div>
+            <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-lg">
             <div>
               <span class="pill pill-gold" style="margin-bottom: 0.35rem;">Certificado Oficial Desbloqueado</span>
               <h3 style="font-size: 1.25rem; color: #fff;">¡Felicitaciones! Tu Certificado en PDF está Listo</h3>
@@ -1002,10 +999,7 @@ const App = {
         certBanner.className = 'cert-card-banner locked';
         certBanner.innerHTML = `
           <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
-            <div class="cert-thumb-mockup cert-thumb-locked">
-              <span style="font-size: 1.4rem; opacity: 0.6;">🔒</span>
-              <span class="cert-thumb-badge" style="color: var(--text-dim);">${progressPct}% / 100%</span>
-            </div>
+            <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-lg" style="opacity: 0.85;">
             <div>
               <span class="pill pill-subtle" style="margin-bottom: 0.35rem;">Certificado Protegido</span>
               <h3 style="font-size: 1.15rem; color: #fff;">Desbloqueo exclusivo al completar el 100% (7 lecciones)</h3>
