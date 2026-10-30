@@ -28,7 +28,7 @@ const App = {
     }
   },
 
-  init: async function() {
+  init: async function () {
     this.bindEvents();
     await this.fetchConfig();
     await this.fetchLessons();
@@ -40,7 +40,7 @@ const App = {
   // ==========================================
   // CONFIGURACIÓN Y SERVICIOS
   // ==========================================
-  fetchConfig: async function() {
+  fetchConfig: async function () {
     try {
       const res = await fetch('/api/config');
       if (res.ok) {
@@ -54,7 +54,7 @@ const App = {
     }
   },
 
-  fetchLessons: async function() {
+  fetchLessons: async function () {
     try {
       const res = await fetch('/api/lessons');
       if (res.ok) {
@@ -67,7 +67,7 @@ const App = {
   },
 
   /** Si el alumno llega desde el enlace de WhatsApp: /?code=ABCD-1234&email=juan@test.com */
-  checkUrlParamsForAccess: async function() {
+  checkUrlParamsForAccess: async function () {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     const email = params.get('email');
@@ -97,7 +97,7 @@ const App = {
     }
   },
 
-  restoreSession: async function() {
+  restoreSession: async function () {
     const savedToken = localStorage.getItem('ia7d_token');
     if (!savedToken) {
       this.updateNavForStudent();
@@ -127,7 +127,7 @@ const App = {
     }
   },
 
-  handleInitialRouting: function() {
+  handleInitialRouting: function () {
     const student = this.state.activeStudent;
     const hash = window.location.hash.replace('#', '');
 
@@ -165,7 +165,7 @@ const App = {
   // ==========================================
   // NAVEGACIÓN Y VISTAS
   // ==========================================
-  showView: function(viewName) {
+  showView: function (viewName) {
     // Si intenta ingresar al aula o a una lección sin pago aprobado, bloquear
     if ((viewName === 'dashboard' || viewName === 'lesson') && (!this.state.activeStudent || this.state.activeStudent.paymentStatus !== 'approved')) {
       if (this.state.activeStudent && this.state.activeStudent.paymentStatus === 'in_review') {
@@ -198,7 +198,7 @@ const App = {
     }
   },
 
-  updateNavForStudent: function() {
+  updateNavForStudent: function () {
     const student = this.state.activeStudent;
     const navActions = document.getElementById('nav-actions-container');
     const ctas = document.querySelectorAll('.btn-trigger-cta');
@@ -275,7 +275,7 @@ const App = {
         <button class="btn btn-secondary btn-sm btn-access-link" onclick="App.showStudentAccessModal()">
           🔑 Ingresar con código
         </button>
-        <button class="btn btn-primary btn-sm btn-trigger-cta" onclick="App.openSurveyModal()">
+        <button class="btn btn-primary btn-sm btn-trigger-cta nav-cta-desktop" onclick="App.openSurveyModal()">
           Quiero mi certificado ➔
         </button>
       `;
@@ -292,12 +292,12 @@ const App = {
     if (stickyCta) stickyCta.style.display = '';
   },
 
-  logoutStudent: function() {
+  logoutStudent: function () {
     if (this.state.token) {
       fetch('/api/me/logout', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${this.state.token}` }
-      }).catch(() => {});
+      }).catch(() => { });
     }
     localStorage.removeItem('ia7d_token');
     localStorage.removeItem('ia7d_last_view');
@@ -309,7 +309,7 @@ const App = {
     this.showToast("Sesión cerrada.");
   },
 
-  bindEvents: function() {
+  bindEvents: function () {
     document.querySelectorAll('.btn-trigger-cta').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -339,7 +339,7 @@ const App = {
     7: { icon: '🏆', chips: ['Instrucciones personalizadas', 'Rutina de 3 tareas', '🎓 Certificado Oficial PDF'] }
   },
 
-  renderCurriculumOnLanding: function() {
+  renderCurriculumOnLanding: function () {
     const container = document.getElementById('landing-curriculum-list');
     if (!container || !this.state.lessons.length) return;
 
@@ -374,7 +374,7 @@ const App = {
   // ==========================================
   // CUESTIONARIO DIAGNÓSTICO (PRE-CHECKOUT)
   // ==========================================
-  openSurveyModal: function() {
+  openSurveyModal: function () {
     if (this.state.activeStudent) {
       if (this.state.activeStudent.paymentStatus === 'approved') {
         this.showToast("✓ Ya tienes acceso activo a tu aula. No necesitas volver a pagar.");
@@ -446,7 +446,7 @@ const App = {
     }
   ],
 
-  renderSurveyStep: function() {
+  renderSurveyStep: function () {
     const current = this.surveyQuestions[this.state.surveyStep - 1];
     const body = document.getElementById('survey-body');
     if (!current || !body) return;
@@ -473,7 +473,7 @@ const App = {
     `;
   },
 
-  selectSurveyAnswer: function(questionId, answer) {
+  selectSurveyAnswer: function (questionId, answer) {
     this.state.surveyAnswers[questionId] = answer;
     this.state.surveyStep++;
     if (this.state.surveyStep <= this.surveyQuestions.length) {
@@ -483,7 +483,7 @@ const App = {
     }
   },
 
-  showSurveyResult: function() {
+  showSurveyResult: function () {
     const body = document.getElementById('survey-body');
     const role = this.state.surveyAnswers.role || 'Profesional';
     const goal = this.state.surveyAnswers.goal || 'Productividad con IA';
@@ -515,7 +515,7 @@ const App = {
     `;
   },
 
-  proceedToCheckoutFromSurvey: function() {
+  proceedToCheckoutFromSurvey: function () {
     this.closeAllModals();
     this.openCheckoutModal();
   },
@@ -523,7 +523,7 @@ const App = {
   // ==========================================
   // CHECKOUT Y PAGO SOLO NEQUI (REQUISITOS 1 Y 6)
   // ==========================================
-  openCheckoutModal: function() {
+  openCheckoutModal: function () {
     if (this.state.activeStudent) {
       if (this.state.activeStudent.paymentStatus === 'approved') {
         this.showToast("✓ Ya tienes acceso activo a tu aula. No necesitas volver a pagar.");
@@ -555,7 +555,7 @@ const App = {
     document.getElementById('modal-checkout').classList.add('active');
   },
 
-  handleRegistrationSubmit: async function(e) {
+  handleRegistrationSubmit: async function (e) {
     e.preventDefault();
 
     const name = document.getElementById('checkout-name').value.trim();
@@ -648,7 +648,7 @@ const App = {
     }
   },
 
-  showNequiPaymentStep: function(student) {
+  showNequiPaymentStep: function (student) {
     this.closeAllModals();
     document.getElementById('modal-checkout').classList.add('active');
     document.getElementById('checkout-step-form').style.display = 'none';
@@ -672,7 +672,7 @@ const App = {
     this.copyNequiNumber(true);
   },
 
-  copyToClipboard: function(text) {
+  copyToClipboard: function (text) {
     if (!text) return Promise.reject(new Error("Texto vacío"));
     if (navigator.clipboard && navigator.clipboard.writeText) {
       return navigator.clipboard.writeText(text);
@@ -695,7 +695,7 @@ const App = {
     }
   },
 
-  handleNequiSingleClick: async function() {
+  handleNequiSingleClick: async function () {
     const num = this.state.config.nequiNumber || '3158422894';
     try {
       await this.copyToClipboard(num);
@@ -715,18 +715,18 @@ const App = {
     }
   },
 
-  copyNequiNumber: function(isAuto = false) {
+  copyNequiNumber: function (isAuto = false) {
     const num = this.state.config.nequiNumber || '3158422894';
     this.copyToClipboard(num).then(() => {
       this.showToast(isAuto ? `📱 Número Nequi ${num} copiado automáticamente` : `✓ Número Nequi ${num} copiado al portapapeles`);
-    }).catch(() => {});
+    }).catch(() => { });
   },
 
-  openNequiApp: function() {
+  openNequiApp: function () {
     this.handleNequiSingleClick();
   },
 
-  attemptAutoOpenNequi: function() {
+  attemptAutoOpenNequi: function () {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
       setTimeout(() => {
@@ -735,7 +735,7 @@ const App = {
     }
   },
 
-  handleReceiptFileSelected: function(e) {
+  handleReceiptFileSelected: function (e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -766,7 +766,7 @@ const App = {
     reader.readAsDataURL(file);
   },
 
-  handleReceiptSubmit: async function(e) {
+  handleReceiptSubmit: async function (e) {
     e.preventDefault();
 
     if (!this.state.currentReceiptImage) {
@@ -819,7 +819,7 @@ const App = {
     }
   },
 
-  showReviewConfirmation: function(student) {
+  showReviewConfirmation: function (student) {
     this.closeAllModals();
     document.getElementById('modal-checkout').classList.add('active');
     document.getElementById('checkout-step-form').style.display = 'none';
@@ -836,7 +836,7 @@ const App = {
     document.getElementById('review-wa-support-btn').href = `https://wa.me/573158422894?text=${waText}`;
   },
 
-  checkApprovalStatus: async function() {
+  checkApprovalStatus: async function () {
     if (!this.state.token) return;
     try {
       const res = await fetch('/api/me', {
@@ -864,7 +864,7 @@ const App = {
   // ==========================================
   // INGRESO SEGURO DE ALUMNOS (REQUISITO 3)
   // ==========================================
-  showStudentAccessModal: function() {
+  showStudentAccessModal: function () {
     if (this.state.activeStudent && this.state.activeStudent.paymentStatus === 'approved') {
       this.closeAllModals();
       this.showView('dashboard');
@@ -879,7 +879,7 @@ const App = {
     document.getElementById('modal-student-access').classList.add('active');
   },
 
-  handleStudentAccessWithCode: async function(e) {
+  handleStudentAccessWithCode: async function (e) {
     e.preventDefault();
     const email = document.getElementById('access-email').value.trim();
     const code = document.getElementById('access-code').value.trim();
@@ -929,7 +929,7 @@ const App = {
   // ==========================================
   // AULA VIRTUAL (ORDEN OBLIGATORIO Y REGLAS)
   // ==========================================
-  renderDashboard: async function() {
+  renderDashboard: async function () {
     const student = this.state.activeStudent;
     if (!student || student.paymentStatus !== 'approved') {
       this.showStudentAccessModal();
@@ -1070,7 +1070,7 @@ const App = {
     }
   },
 
-  continueNextLesson: function() {
+  continueNextLesson: function () {
     const student = this.state.activeStudent;
     if (!student) return;
     const completed = student.completedLessons || [];
@@ -1085,7 +1085,7 @@ const App = {
   // ==========================================
   // PANTALLA DE LECCIÓN (REQUISITOS 4 Y 5)
   // ==========================================
-  openLesson: async function(lessonId) {
+  openLesson: async function (lessonId) {
     const student = this.state.activeStudent;
     if (!student || student.paymentStatus !== 'approved') {
       this.showStudentAccessModal();
@@ -1130,7 +1130,7 @@ const App = {
     }
   },
 
-  renderLessonView: function(lesson) {
+  renderLessonView: function (lesson) {
     this.state.currentLesson = lesson;
     const container = document.getElementById('lesson-content-area');
     const student = this.state.activeStudent;
@@ -1207,8 +1207,8 @@ const App = {
         </div>
 
         <div style="margin-bottom: 2rem;">
-          <h1 style="font-size: 2.1rem; margin-bottom: 0.4rem;">${lesson.title}</h1>
-          <p style="font-size: 1.05rem; color: var(--text-muted);">${lesson.subtitle}</p>
+          <h1 style="font-size: clamp(1.45rem, 5vw, 2.1rem); margin-bottom: 0.4rem;">${lesson.title}</h1>
+          <p style="font-size: 1rem; color: var(--text-muted);">${lesson.subtitle}</p>
         </div>
 
         ${videoMarkup}
@@ -1363,7 +1363,7 @@ const App = {
     `;
   },
 
-  escapeHtml: function(str) {
+  escapeHtml: function (str) {
     if (!str) return '';
     return String(str)
       .replace(/&/g, '&amp;')
@@ -1373,7 +1373,7 @@ const App = {
       .replace(/'/g, '&#039;');
   },
 
-  handleEvidenceFileSelected: function(e) {
+  handleEvidenceFileSelected: function (e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -1396,7 +1396,7 @@ const App = {
     reader.readAsDataURL(file);
   },
 
-  copyPrompt: async function(source, btn) {
+  copyPrompt: async function (source, btn) {
     let text = '';
     if (source === 'practice') {
       text = (this.state.currentLesson && this.state.currentLesson.practice && this.state.currentLesson.practice.promptTemplate) || '';
@@ -1437,7 +1437,7 @@ const App = {
     }
   },
 
-  handleQuizAnswer: function(qIdx, selectedIdx) {
+  handleQuizAnswer: function (qIdx, selectedIdx) {
     const q = this.state.currentLesson && this.state.currentLesson.quiz && this.state.currentLesson.quiz[qIdx];
     if (!q) return;
 
@@ -1473,7 +1473,7 @@ const App = {
     }
   },
 
-  markLessonCompleted: async function(lessonId) {
+  markLessonCompleted: async function (lessonId) {
     const student = this.state.activeStudent;
     if (!student || student.paymentStatus !== 'approved') {
       this.showStudentAccessModal();
@@ -1545,7 +1545,7 @@ const App = {
   // ==========================================
   // CERTIFICADO VECTORIAL PDF (REQUISITO 2)
   // ==========================================
-  downloadCertificate: async function() {
+  downloadCertificate: async function () {
     if (!this.state.token) {
       alert("Sesión no válida.");
       return;
@@ -1577,11 +1577,11 @@ const App = {
   // ==========================================
   // UTILIDADES
   // ==========================================
-  closeAllModals: function() {
+  closeAllModals: function () {
     document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('active'));
   },
 
-  showToast: function(msg) {
+  showToast: function (msg) {
     let toast = document.getElementById('global-toast');
     if (!toast) {
       toast = document.createElement('div');
