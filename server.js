@@ -303,15 +303,19 @@ function requireApproved(req, res, next) {
   next();
 }
 
-// Ingreso de alumno aprobado: correo + código de acceso (NO solo el correo)
-app.post('/api/student/login', rateLimit('student-login', 8, 15 * 60 * 1000), (req, res) => {
+// Ingreso de alumno aprobado con código de acceso (y correo opcional)
+app.post('/api/student/login', rateLimit('student-login', 25, 10 * 60 * 1000), (req, res) => {
   const { email, code } = req.body || {};
-  const student = db.loginWithAccessCode(email, code);
-  if (!student) {
-    return res.status(401).json({ error: 'Correo o código de acceso incorrectos. Si aún no te llega el código, tu pago sigue en revisión.' });
+  const result = db.authenticateStudentWithCode(email, code);
+  if (result.error || !result.student) {
+    return res.status(result.status || 401).json({
+      error: result.error || 'Código de acceso inválido o aún no aprobado.',
+      paymentStatus: result.paymentStatus || null
+    });
   }
-  const token = db.issueToken(student.id);
-  res.json({ success: true, token, student: studentPublicView(student) });
+  attempts.delete(`student-login:${req.ip}`);
+  const token = db.issueToken(result.student.id);
+  res.json({ success: true, token, student: studentPublicView(result.student) });
 });
 
 app.get('/api/me', requireStudent, (req, res) => {
@@ -430,11 +434,12 @@ function ensureAdminPassword() {
 }
 
 function checkAdminPassword(password) {
-  if (!password) return false;
-  if (process.env.ADMIN_PASSWORD) return db.safeEqual(password, process.env.ADMIN_PASSWORD);
+  const clean = String(password || '').trim();
+  if (!clean) return false;
+  if (process.env.ADMIN_PASSWORD) return db.safeEqual(clean, String(process.env.ADMIN_PASSWORD).trim());
   const s = db.getSettings();
   if (!s.adminPasswordHash || !s.adminPasswordSalt) return false;
-  return db.safeEqual(hashPassword(password, s.adminPasswordSalt), s.adminPasswordHash);
+  return db.safeEqual(hashPassword(clean, s.adminPasswordSalt), s.adminPasswordHash);
 }
 
 function requireAdmin(req, res, next) {
@@ -454,10 +459,11 @@ app.get(`${ADMIN_PATH}/admin.js`, (req, res) => {
   res.sendFile(path.join(PRIVATE_DIR, 'admin.js'));
 });
 
-app.post('/api/admin/login', rateLimit('admin-login', 6, 15 * 60 * 1000), (req, res) => {
+app.post('/api/admin/login', rateLimit('admin-login', 25, 10 * 60 * 1000), (req, res) => {
   if (!checkAdminPassword((req.body || {}).password)) {
-    return res.status(401).json({ error: 'Contraseña incorrecta.' });
+    return res.status(401).json({ error: 'Contraseña incorrecta. Verifica mayúsculas y minúsculas.' });
   }
+  attempts.delete(`admin-login:${req.ip}`);
   const token = createAdminToken();
   res.json({ success: true, token });
 });

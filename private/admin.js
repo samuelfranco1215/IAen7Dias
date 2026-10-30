@@ -7,25 +7,61 @@ const AdminApp = {
   currentFilter: 'all',
   searchQuery: '',
   activeStudentForApproval: null,
+  _initialized: false,
 
-  init: function() {
-    this.token = localStorage.getItem('ia7d_admin_token') || sessionStorage.getItem('ia7d_admin_token');
+  init: async function() {
+    if (this._initialized) return;
+    this._initialized = true;
+
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-      loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleLogin(e);
+        return false;
+      });
     }
 
-    if (this.token) {
-      this.showDashboard();
-    } else {
-      this.showLogin();
+    const savedToken = localStorage.getItem('ia7d_admin_token') || sessionStorage.getItem('ia7d_admin_token');
+    if (savedToken) {
+      try {
+        const res = await fetch('/api/admin/stats', {
+          headers: { 'Authorization': `Bearer ${savedToken}` }
+        });
+        if (res.ok) {
+          this.token = savedToken;
+          this.showDashboard();
+          return;
+        }
+      } catch (e) {}
+      localStorage.removeItem('ia7d_admin_token');
+      sessionStorage.removeItem('ia7d_admin_token');
     }
+    this.showLogin();
+  },
+
+  togglePasswordVisibility: function() {
+    const input = document.getElementById('admin-password-input');
+    const toggleBtn = document.getElementById('btn-toggle-pwd');
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      if (toggleBtn) toggleBtn.textContent = 'Ocultar';
+    } else {
+      input.type = 'password';
+      if (toggleBtn) toggleBtn.textContent = 'Mostrar';
+    }
+    input.focus();
   },
 
   showLogin: function() {
     document.getElementById('admin-login-view').style.display = 'block';
     document.getElementById('admin-dashboard-view').style.display = 'none';
     document.getElementById('header-actions').style.display = 'none';
+    const input = document.getElementById('admin-password-input');
+    if (input && document.activeElement !== input) {
+      setTimeout(() => input.focus(), 50);
+    }
   },
 
   showDashboard: function() {
@@ -36,14 +72,28 @@ const AdminApp = {
   },
 
   handleLogin: async function(e) {
-    e.preventDefault();
-    const password = document.getElementById('admin-password-input').value;
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+    const inputEl = document.getElementById('admin-password-input');
+    const password = inputEl ? inputEl.value.trim() : '';
     const btn = document.getElementById('btn-login');
     const errEl = document.getElementById('login-error');
 
-    btn.disabled = true;
-    btn.textContent = 'Verificando...';
-    errEl.style.display = 'none';
+    if (!password) {
+      if (errEl) {
+        errEl.textContent = 'Por favor escribe la contraseña de administrador.';
+        errEl.style.display = 'block';
+      }
+      if (inputEl) inputEl.focus();
+      return false;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Verificando contraseña...';
+    }
+    if (errEl) errEl.style.display = 'none';
 
     try {
       const res = await fetch('/api/admin/login', {
@@ -53,23 +103,30 @@ const AdminApp = {
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        errEl.textContent = data.error || 'Contraseña incorrecta';
-        errEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Ingresar al Panel ➔';
-        return;
+        if (errEl) {
+          errEl.textContent = data.error || 'Contraseña incorrecta.';
+          errEl.style.display = 'block';
+        }
+        if (inputEl) inputEl.focus();
+        return false;
       }
 
       this.token = data.token;
       localStorage.setItem('ia7d_admin_token', this.token);
       sessionStorage.setItem('ia7d_admin_token', this.token);
       this.showDashboard();
+      return false;
     } catch (err) {
-      errEl.textContent = 'Error de conexión con el servidor.';
-      errEl.style.display = 'block';
+      if (errEl) {
+        errEl.textContent = 'Error de conexión con el servidor. Inténtalo de nuevo.';
+        errEl.style.display = 'block';
+      }
+      return false;
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Ingresar al Panel ➔';
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Ingresar al Panel ➔';
+      }
     }
   },
 
@@ -489,6 +546,8 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => AdminApp.init());
+} else {
   AdminApp.init();
-});
+}

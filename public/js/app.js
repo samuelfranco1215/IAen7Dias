@@ -70,9 +70,9 @@ const App = {
   checkUrlParamsForAccess: async function () {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    const email = params.get('email');
+    const email = params.get('email') || '';
 
-    if (code && email) {
+    if (code) {
       try {
         const res = await fetch('/api/student/login', {
           method: 'POST',
@@ -90,11 +90,23 @@ const App = {
           // Limpiar URL sin recargar
           window.history.replaceState({}, document.title, window.location.pathname + '#dashboard');
           this.showView('dashboard');
+          return true;
+        } else {
+          window.history.replaceState({}, document.title, window.location.pathname);
+          this.showStudentAccessModal(true);
+          const codeInput = document.getElementById('access-code');
+          if (codeInput) codeInput.value = code.trim();
+          const errEl = document.getElementById('access-error');
+          if (errEl) {
+            errEl.textContent = data.error || 'Código de acceso inválido o aún no aprobado.';
+            errEl.style.display = 'block';
+          }
         }
       } catch (err) {
         console.warn("No se pudo iniciar sesión con parámetros de URL:", err);
       }
     }
+    return false;
   },
 
   restoreSession: async function () {
@@ -232,6 +244,9 @@ const App = {
     if (student && student.paymentStatus === 'in_review') {
       if (navActions) {
         navActions.innerHTML = `
+          <button class="btn btn-secondary btn-sm" onclick="App.showStudentAccessModal(true)">
+            🔑 Ingresar con código
+          </button>
           <button class="btn btn-secondary btn-sm" onclick="App.showReviewConfirmation(App.state.activeStudent)">
             ⏳ Esperando aprobación
           </button>
@@ -243,7 +258,10 @@ const App = {
       ctas.forEach(btn => {
         btn.textContent = '⏳ Tu suscripción está esperando ser aprobada';
       });
-      accessLinks.forEach(el => { el.style.display = 'none'; });
+      accessLinks.forEach(el => {
+        el.style.display = 'inline-flex';
+        el.textContent = '🔑 ¿Ya tienes código de acceso aprobado? Ingresa aquí';
+      });
       priceTags.forEach(el => { el.style.display = 'none'; });
       if (stickyCta) stickyCta.style.display = 'none';
       return;
@@ -252,6 +270,9 @@ const App = {
     if (student && (student.paymentStatus === 'awaiting_payment' || student.paymentStatus === 'rejected')) {
       if (navActions) {
         navActions.innerHTML = `
+          <button class="btn btn-secondary btn-sm" onclick="App.showStudentAccessModal(true)">
+            🔑 Ingresar con código
+          </button>
           <button class="btn btn-primary btn-sm" onclick="App.showNequiPaymentStep(App.state.activeStudent)">
             📤 Subir comprobante Nequi ➔
           </button>
@@ -263,7 +284,10 @@ const App = {
       ctas.forEach(btn => {
         btn.textContent = '📤 Subir comprobante Nequi ($24.900 COP) ➔';
       });
-      accessLinks.forEach(el => { el.style.display = 'none'; });
+      accessLinks.forEach(el => {
+        el.style.display = 'inline-flex';
+        el.textContent = '🔑 ¿Ya tienes código de acceso aprobado? Ingresa aquí';
+      });
       priceTags.forEach(el => { el.style.display = ''; });
       if (stickyCta) stickyCta.style.display = '';
       return;
@@ -864,31 +888,55 @@ const App = {
   // ==========================================
   // INGRESO SEGURO DE ALUMNOS (REQUISITO 3)
   // ==========================================
-  showStudentAccessModal: function () {
-    if (this.state.activeStudent && this.state.activeStudent.paymentStatus === 'approved') {
+  showStudentAccessModal: function (forceOpen) {
+    if (!forceOpen && this.state.activeStudent && this.state.activeStudent.paymentStatus === 'approved') {
       this.closeAllModals();
       this.showView('dashboard');
       return;
     }
     this.closeAllModals();
-    document.getElementById('access-error').style.display = 'none';
+    const errEl = document.getElementById('access-error');
+    if (errEl) {
+      errEl.style.display = 'none';
+      errEl.textContent = '';
+    }
     const emailInput = document.getElementById('access-email');
     if (emailInput && this.state.activeStudent && this.state.activeStudent.email) {
       emailInput.value = this.state.activeStudent.email;
     }
+    const codeInput = document.getElementById('access-code');
     document.getElementById('modal-student-access').classList.add('active');
+    if (codeInput) {
+      setTimeout(() => codeInput.focus(), 50);
+    }
   },
 
   handleStudentAccessWithCode: async function (e) {
-    e.preventDefault();
-    const email = document.getElementById('access-email').value.trim();
-    const code = document.getElementById('access-code').value.trim();
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+    const emailEl = document.getElementById('access-email');
+    const codeEl = document.getElementById('access-code');
+    const email = emailEl ? emailEl.value.trim() : '';
+    const code = codeEl ? codeEl.value.trim() : '';
     const errEl = document.getElementById('access-error');
     const btn = document.getElementById('btn-submit-access');
 
-    errEl.style.display = 'none';
-    btn.disabled = true;
-    btn.textContent = 'Verificando acceso...';
+    if (errEl) errEl.style.display = 'none';
+
+    if (!code) {
+      if (errEl) {
+        errEl.textContent = 'Por favor ingresa tu código único de acceso (ej. ABCD-1234).';
+        errEl.style.display = 'block';
+      }
+      if (codeEl) codeEl.focus();
+      return false;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Verificando acceso...';
+    }
 
     try {
       const res = await fetch('/api/student/login', {
@@ -899,11 +947,11 @@ const App = {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        errEl.textContent = data.error || 'Correo o código de acceso no válidos.';
-        errEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Ingresar a mi Aula ➔';
-        return;
+        if (errEl) {
+          errEl.textContent = data.error || 'Código de acceso inválido o aún no aprobado.';
+          errEl.style.display = 'block';
+        }
+        return false;
       }
 
       this.state.token = data.token;
@@ -913,16 +961,22 @@ const App = {
 
       this.updateNavForStudent();
       this.closeAllModals();
-      this.showToast(`✓ ¡Bienvenido de nuevo, ${data.student.name}!`);
+      this.showToast(`✓ ¡Bienvenido a tu aula, ${data.student.name}!`);
       this.showView('dashboard');
+      return false;
 
     } catch (err) {
       console.error("Login error:", err);
-      errEl.textContent = 'Error de conexión. Inténtalo de nuevo.';
-      errEl.style.display = 'block';
+      if (errEl) {
+        errEl.textContent = 'Error de conexión con el servidor. Inténtalo de nuevo.';
+        errEl.style.display = 'block';
+      }
+      return false;
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Ingresar a mi Aula ➔';
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Ingresar a mi Aula ➔';
+      }
     }
   },
 

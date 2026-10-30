@@ -534,14 +534,85 @@ function revokeStudent(studentId, reason) {
   return { student: s };
 }
 
+/**
+ * Ingreso de alumno aprobado con código de acceso (y correo opcional).
+ * Devuelve { student } si es válido, o { error, status, paymentStatus } si no lo es.
+ */
+function authenticateStudentWithCode(email, code) {
+  const cleanCode = String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const cleanEmail = String(email || '').trim().toLowerCase();
+
+  if (!cleanCode) {
+    if (cleanEmail) {
+      const byEmailOnly = getStudentByEmail(cleanEmail);
+      if (byEmailOnly && byEmailOnly.paymentStatus === 'in_review') {
+        return {
+          error: 'Tu suscripción está esperando ser aprobada por el administrador. Cuando se valide tu pago recibirás tu código de acceso.',
+          status: 403,
+          paymentStatus: 'in_review'
+        };
+      }
+    }
+    return { error: 'Por favor escribe tu código de acceso de 8 caracteres (ej. ABCD-1234).', status: 400 };
+  }
+
+  const students = getStudents();
+
+  // 1) Buscar alumno con pago aprobado cuyo código único coincida
+  const matchedByCode = students.find(s => {
+    if (s.paymentStatus !== 'approved' || !s.accessCode) return false;
+    const expected = String(s.accessCode).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    return expected.length > 0 && safeEqual(cleanCode, expected);
+  });
+
+  if (matchedByCode) {
+    return { student: matchedByCode };
+  }
+
+  // 2) Si el código no coincide con ningún alumno aprobado, revisar si el correo está en revisión o pendiente
+  if (cleanEmail) {
+    const byEmail = getStudentByEmail(cleanEmail);
+    if (byEmail) {
+      if (byEmail.paymentStatus === 'in_review') {
+        return {
+          error: 'Tu suscripción aún está en revisión por el administrador. Apenas sea aprobada recibirás un código de acceso válido.',
+          status: 403,
+          paymentStatus: 'in_review'
+        };
+      }
+      if (byEmail.paymentStatus === 'awaiting_payment') {
+        return {
+          error: 'Tu inscripción está registrada, pero aún falta subir el comprobante de pago Nequi para que el administrador la apruebe.',
+          status: 403,
+          paymentStatus: 'awaiting_payment'
+        };
+      }
+      if (byEmail.paymentStatus === 'rejected') {
+        return {
+          error: 'Tu comprobante anterior fue rechazado. Por favor sube un comprobante válido para recibir tu código de acceso.',
+          status: 403,
+          paymentStatus: 'rejected'
+        };
+      }
+      if (byEmail.paymentStatus === 'approved') {
+        return {
+          error: 'El código ingresado es incorrecto. Verifica los 8 caracteres exactos del código que recibiste por WhatsApp.',
+          status: 401
+        };
+      }
+    }
+  }
+
+  return {
+    error: 'Código de acceso inválido o aún no aprobado. Verifica los caracteres (ej. ABCD-1234) o espera la aprobación del administrador.',
+    status: 401
+  };
+}
+
 /** Ingreso de alumno aprobado con correo + código de acceso. */
 function loginWithAccessCode(email, code) {
-  const s = getStudentByEmail(email);
-  if (!s || s.paymentStatus !== 'approved' || !s.accessCode) return null;
-  const clean = String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-  const expected = s.accessCode.replace(/-/g, '');
-  if (!safeEqual(clean, expected)) return null;
-  return s;
+  const res = authenticateStudentWithCode(email, code);
+  return res.student || null;
 }
 
 function completeLesson(studentId, lessonId, { image, quizScore }) {
@@ -642,6 +713,7 @@ module.exports = {
   rejectStudent,
   revokeStudent,
   loginWithAccessCode,
+  authenticateStudentWithCode,
   completeLesson,
   isCertificateEligible,
   getStudentByCertificateCode,
