@@ -348,6 +348,122 @@ const App = {
         item.classList.toggle('open');
       });
     });
+
+    // Cerrar menú móvil con tecla Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const panel = document.getElementById('mobile-menu-panel');
+        if (panel && panel.classList.contains('is-open')) {
+          e.preventDefault();
+          this.closeMobileMenu(true);
+        }
+      }
+    });
+
+    // Cerrar menú móvil automáticamente si la pantalla pasa a escritorio (> 768px)
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        this.closeMobileMenu(false);
+      }
+    });
+  },
+
+  // ==========================================
+  // MENÚ HAMBURGUESA MÓVIL (<= 768px)
+  // ==========================================
+  toggleMobileMenu: function () {
+    const panel = document.getElementById('mobile-menu-panel');
+    if (!panel) return;
+    if (panel.classList.contains('is-open')) {
+      this.closeMobileMenu(true);
+    } else {
+      this.openMobileMenu();
+    }
+  },
+
+  openMobileMenu: function () {
+    const btn = document.getElementById('mobile-menu-btn');
+    const panel = document.getElementById('mobile-menu-panel');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    const navbar = document.getElementById('site-navbar') || document.querySelector('.navbar');
+    if (!btn || !panel) return;
+
+    btn.classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.setAttribute('aria-label', 'Cerrar menú');
+
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+
+    if (backdrop) {
+      backdrop.classList.add('is-open');
+    }
+    if (navbar) {
+      navbar.classList.add('menu-open');
+    }
+    document.body.classList.add('mobile-menu-open');
+  },
+
+  closeMobileMenu: function (restoreFocus = false) {
+    const btn = document.getElementById('mobile-menu-btn');
+    const panel = document.getElementById('mobile-menu-panel');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    const navbar = document.getElementById('site-navbar') || document.querySelector('.navbar');
+    if (!btn || !panel) return;
+
+    const wasOpen = panel.classList.contains('is-open');
+
+    btn.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', 'Abrir menú');
+
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+
+    if (backdrop) {
+      backdrop.classList.remove('is-open');
+    }
+    if (navbar) {
+      navbar.classList.remove('menu-open');
+    }
+    document.body.classList.remove('mobile-menu-open');
+
+    if (restoreFocus && wasOpen) {
+      btn.focus();
+    }
+  },
+
+  handleMobileNavLink: function (event, sectionId) {
+    if (event) event.preventDefault();
+    this.closeMobileMenu(false);
+
+    if (this.state.currentView !== 'landing') {
+      this.showView('landing');
+    }
+
+    const targetEl = document.getElementById(sectionId);
+    if (!targetEl) return;
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    requestAnimationFrame(() => {
+      targetEl.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start'
+      });
+      if (history.replaceState) {
+        history.replaceState(null, '', `#${sectionId}`);
+      }
+    });
+  },
+
+  handleMobileMenuCodeClick: function () {
+    this.closeMobileMenu(false);
+    this.showStudentAccessModal(true);
+  },
+
+  handleMobileMenuCtaClick: function () {
+    this.closeMobileMenu(false);
+    this.openSurveyModal();
   },
 
   // ==========================================
