@@ -9,7 +9,7 @@ const AdminApp = {
   activeStudentForApproval: null,
   _initialized: false,
 
-  init: async function() {
+  init: async function () {
     if (this._initialized) return;
     this._initialized = true;
 
@@ -33,14 +33,14 @@ const AdminApp = {
           this.showDashboard();
           return;
         }
-      } catch (e) {}
+      } catch (e) { }
       localStorage.removeItem('ia7d_admin_token');
       sessionStorage.removeItem('ia7d_admin_token');
     }
     this.showLogin();
   },
 
-  togglePasswordVisibility: function() {
+  togglePasswordVisibility: function () {
     const input = document.getElementById('admin-password-input');
     const toggleBtn = document.getElementById('btn-toggle-pwd');
     if (!input) return;
@@ -54,7 +54,7 @@ const AdminApp = {
     input.focus();
   },
 
-  showLogin: function() {
+  showLogin: function () {
     document.getElementById('admin-login-view').style.display = 'block';
     document.getElementById('admin-dashboard-view').style.display = 'none';
     document.getElementById('header-actions').style.display = 'none';
@@ -64,14 +64,14 @@ const AdminApp = {
     }
   },
 
-  showDashboard: function() {
+  showDashboard: function () {
     document.getElementById('admin-login-view').style.display = 'none';
     document.getElementById('admin-dashboard-view').style.display = 'block';
     document.getElementById('header-actions').style.display = 'flex';
     this.refresh();
   },
 
-  handleLogin: async function(e) {
+  handleLogin: async function (e) {
     if (e && typeof e.preventDefault === 'function') {
       e.preventDefault();
     }
@@ -130,46 +130,57 @@ const AdminApp = {
     }
   },
 
-  logout: async function() {
+  logout: async function () {
     try {
       await fetch('/api/admin/logout', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${this.token}` }
       });
-    } catch (e) {}
+    } catch (e) { }
     this.token = null;
     localStorage.removeItem('ia7d_admin_token');
     sessionStorage.removeItem('ia7d_admin_token');
     this.showLogin();
   },
 
-  api: async function(endpoint, options = {}) {
+  api: async function (endpoint, options = {}) {
+    if (!this.token) {
+      this.token = localStorage.getItem('ia7d_admin_token') || sessionStorage.getItem('ia7d_admin_token');
+    }
     options.headers = options.headers || {};
     options.headers['Authorization'] = `Bearer ${this.token}`;
     const res = await fetch(endpoint, options);
     if (res.status === 401) {
-      alert('Tu sesión administrativa expiró.');
-      this.logout();
-      throw new Error('Unauthorized');
+      const checkRes = await fetch('/api/admin/stats', {
+        headers: { 'Authorization': `Bearer ${this.token}` }
+      }).catch(() => null);
+      if (!checkRes || checkRes.status === 401) {
+        alert('Tu sesión administrativa expiró. Vuelve a ingresar tu contraseña.');
+        this.logout();
+        throw new Error('Unauthorized');
+      }
     }
     return res;
   },
 
-  refresh: async function() {
-    await Promise.all([
-      this.loadStats(),
-      this.loadStudents(),
-      this.loadLessons()
-    ]);
+  refresh: async function () {
+    await this.loadStats();
+    await this.loadStudents();
+    await this.loadLessons();
   },
 
-  loadStats: async function() {
+  loadStats: async function () {
     try {
       const res = await this.api('/api/admin/stats');
       const data = await res.json();
+      const pendingTotal = (data.inReviewCount || 0) + (data.awaitingCount || 0);
       document.getElementById('stat-total').textContent = data.totalStudents || 0;
       document.getElementById('stat-in-review').textContent = data.inReviewCount || 0;
-      document.getElementById('tab-count-review').textContent = data.inReviewCount || 0;
+      document.getElementById('tab-count-review').textContent = pendingTotal;
+      const tabApproved = document.getElementById('tab-count-approved');
+      if (tabApproved) tabApproved.textContent = data.approvedCount || 0;
+      const tabRejected = document.getElementById('tab-count-rejected');
+      if (tabRejected) tabRejected.textContent = data.rejectedCount || 0;
       document.getElementById('stat-approved').textContent = data.approvedCount || 0;
       document.getElementById('stat-awaiting').textContent = data.awaitingCount || 0;
       document.getElementById('stat-revenue').textContent = `$${(data.totalRevenueCOP || 0).toLocaleString('es-CO')} COP`;
@@ -186,7 +197,7 @@ const AdminApp = {
     }
   },
 
-  loadStudents: async function() {
+  loadStudents: async function () {
     try {
       const res = await this.api('/api/admin/students');
       this.students = await res.json();
@@ -196,34 +207,40 @@ const AdminApp = {
     }
   },
 
-  setFilter: function(status, btn) {
+  setFilter: function (status, btn) {
     this.currentFilter = status;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     this.renderStudents();
   },
 
-  search: function(query) {
+  search: function (query) {
     this.searchQuery = (query || '').toLowerCase().trim();
     this.renderStudents();
   },
 
-  renderStudents: function() {
+  renderStudents: function () {
     const tbody = document.getElementById('students-tbody');
-    let list = this.students;
+    let list = [...this.students];
 
-    if (this.currentFilter !== 'all') {
+    if (this.currentFilter === 'pending') {
+      list = list.filter(s => s.paymentStatus === 'in_review' || s.paymentStatus === 'awaiting_payment');
+      list.sort((a, b) => (a.paymentStatus === 'in_review' ? -1 : 1) - (b.paymentStatus === 'in_review' ? -1 : 1));
+    } else if (this.currentFilter !== 'all') {
       list = list.filter(s => s.paymentStatus === this.currentFilter);
     }
 
     if (this.searchQuery) {
-      list = list.filter(s =>
-        (s.name && s.name.toLowerCase().includes(this.searchQuery)) ||
-        (s.email && s.email.toLowerCase().includes(this.searchQuery)) ||
-        (s.whatsapp && s.whatsapp.includes(this.searchQuery)) ||
-        (s.docNumber && s.docNumber.includes(this.searchQuery)) ||
-        (s.accessCode && s.accessCode.toLowerCase().includes(this.searchQuery))
-      );
+      const qDigits = this.searchQuery.replace(/\D/g, '');
+      list = list.filter(s => {
+        const nameMatch = s.name && s.name.toLowerCase().includes(this.searchQuery);
+        const emailMatch = s.email && s.email.toLowerCase().includes(this.searchQuery);
+        const docMatch = s.docNumber && (s.docNumber.toLowerCase().includes(this.searchQuery) || (qDigits && s.docNumber.replace(/\D/g, '').includes(qDigits)));
+        const phoneDigits = (s.whatsapp || '').replace(/\D/g, '');
+        const phoneMatch = (s.whatsapp && s.whatsapp.toLowerCase().includes(this.searchQuery)) || (qDigits && phoneDigits.includes(qDigits));
+        const codeMatch = s.accessCode && s.accessCode.toLowerCase().includes(this.searchQuery);
+        return nameMatch || emailMatch || docMatch || phoneMatch || codeMatch;
+      });
     }
 
     if (!list.length) {
@@ -337,7 +354,7 @@ const AdminApp = {
 
   receiptZoomed: false,
 
-  toggleReceiptZoom: function() {
+  toggleReceiptZoom: function () {
     const imgEl = document.getElementById('receipt-img');
     const zoomBtn = document.getElementById('btn-zoom-receipt');
     if (!imgEl) return;
@@ -355,7 +372,7 @@ const AdminApp = {
     }
   },
 
-  viewReceipt: function(studentId) {
+  viewReceipt: function (studentId) {
     const student = this.students.find(s => s.id === studentId);
     if (!student || !student.receipt) return;
 
@@ -402,7 +419,7 @@ const AdminApp = {
     document.getElementById('modal-receipt').classList.add('active');
   },
 
-  approveStudent: async function(studentId) {
+  approveStudent: async function (studentId) {
     const student = this.students.find(s => s.id === studentId);
     const confirmName = student ? student.name : 'este alumno';
     if (!confirm(`¿Confirmas que verificaste el pago de $24.900 COP en Nequi para ${confirmName}? Se habilitará su acceso a las 7 lecciones.`)) {
@@ -426,7 +443,7 @@ const AdminApp = {
     }
   },
 
-  showApprovedModal: function(studentId) {
+  showApprovedModal: function (studentId) {
     const student = this.students.find(s => s.id === studentId);
     if (!student || !student.accessCode) return;
 
@@ -435,7 +452,7 @@ const AdminApp = {
 
     const origin = window.location.origin;
     const accessLink = `${origin}/?code=${encodeURIComponent(student.accessCode)}&email=${encodeURIComponent(student.email)}`;
-    
+
     const waText = `¡Hola ${student.name}! 🎉 Confirmamos tu pago de $24.900 COP en Nequi para el curso *IA en 7 Días*.
 
 Tu acceso ya está 100% activo:
@@ -454,7 +471,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     document.getElementById('modal-approved-success').classList.add('active');
   },
 
-  copySuccessMessage: function() {
+  copySuccessMessage: function () {
     const text = document.getElementById('success-whatsapp-message').textContent;
     navigator.clipboard.writeText(text).then(() => {
       alert('✓ Mensaje copiado al portapapeles. Listo para pegar en WhatsApp.');
@@ -463,7 +480,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     });
   },
 
-  rejectStudent: async function(studentId) {
+  rejectStudent: async function (studentId) {
     const reason = prompt('Motivo del rechazo del comprobante (el alumno podrá ver este motivo para subir uno nuevo):', 'No se encontró la transferencia en Nequi por $24.900 COP o el comprobante está ilegible.');
     if (reason === null) return;
 
@@ -484,7 +501,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     }
   },
 
-  revokeStudent: async function(studentId) {
+  revokeStudent: async function (studentId) {
     if (!confirm('¿Seguro que deseas revocar el acceso a este alumno? Sus lecciones quedarán bloqueadas inmediatamente.')) return;
     try {
       await this.api(`/api/admin/students/${studentId}/revoke`, {
@@ -498,7 +515,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     }
   },
 
-  deleteStudent: async function(studentId) {
+  deleteStudent: async function (studentId) {
     if (!confirm('¿Seguro que deseas eliminar definitivamente este registro?')) return;
     try {
       await this.api(`/api/admin/students/${studentId}`, { method: 'DELETE' });
@@ -508,7 +525,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     }
   },
 
-  viewEvidences: function(studentId) {
+  viewEvidences: function (studentId) {
     const student = this.students.find(s => s.id === studentId);
     if (!student) return;
 
@@ -532,7 +549,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     document.getElementById('modal-evidences').classList.add('active');
   },
 
-  loadLessons: async function() {
+  loadLessons: async function () {
     try {
       const res = await this.api('/api/admin/lessons');
       const lessons = await res.json();
@@ -559,7 +576,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     }
   },
 
-  saveLessonVideo: async function(lessonId) {
+  saveLessonVideo: async function (lessonId) {
     const input = document.getElementById(`video-input-${lessonId}`);
     const url = input.value.trim();
 
@@ -581,7 +598,7 @@ Recuerda: Son 7 lecciones prácticas de 15 minutos. Al completar cada día subes
     }
   },
 
-  closeModal: function(id) {
+  closeModal: function (id) {
     const el = document.getElementById(id);
     if (el) el.classList.remove('active');
   }

@@ -155,6 +155,9 @@
        VISTA 1: LANDING PAGE
        ========================================== -->
   <main id="view-landing" class="app-view">
+    <!-- Banner de estado claro del alumno (se muestra cuando está en revisión o aprobado) -->
+    <div id="student-status-banner" class="student-status-banner" style="display: none;"></div>
+
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="container">
@@ -566,18 +569,38 @@
     </div>
 
     <div class="container" style="padding-bottom: 5rem;">
-      <!-- Progreso General -->
+      <!-- Progreso General + Siguiente Lección + Botón Continuar donde quedé -->
       <div class="progress-banner">
-        <div class="progress-banner-header">
-          <h3 style="font-size: 1.15rem;">Tu Avance en el Curso</h3>
-          <span class="progress-pct" id="dash-progress-pct">0%</span>
+        <div class="progress-banner-grid">
+          <div class="progress-banner-left">
+            <div class="progress-banner-header">
+              <div>
+                <span class="pill pill-subtle" style="font-size: 0.72rem; margin-bottom: 0.35rem;">Progreso del Programa</span>
+                <h3 style="font-size: 1.25rem; margin: 0;">Tu Avance en el Curso</h3>
+              </div>
+              <div class="progress-pct-badge">
+                <span class="progress-pct" id="dash-progress-pct">0%</span>
+                <span class="progress-pct-label">completado</span>
+              </div>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="dash-progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-steps-mini" id="dash-progress-steps-mini"></div>
+            <p style="font-size: 0.88rem; color: var(--text-muted); font-weight: 500; margin-top: 0.55rem;" id="dash-progress-count">
+              0 de 7 lecciones completadas en orden
+            </p>
+          </div>
+
+          <div class="next-lesson-highlight" id="dash-next-lesson-box">
+            <div class="next-lesson-tag" id="dash-next-lesson-tag">SIGUIENTE LECCIÓN</div>
+            <h4 class="next-lesson-title" id="dash-next-lesson-title">Día 1: Tus primeros resultados profesionales con IA</h4>
+            <p class="next-lesson-sub" id="dash-next-lesson-sub">Duración estimada: 15 min • Práctica guiada paso a paso</p>
+            <button type="button" id="btn-continue-lesson" class="btn btn-primary btn-lg btn-block" onclick="App.continueNextLesson()">
+              ▶ Continuar donde quedé ➔
+            </button>
+          </div>
         </div>
-        <div class="progress-bar-track">
-          <div class="progress-bar-fill" id="dash-progress-fill" style="width: 0%;"></div>
-        </div>
-        <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.6rem;" id="dash-progress-count">
-          0 de 7 lecciones completadas en orden
-        </p>
       </div>
 
       <!-- Banner del Certificado -->
@@ -828,42 +851,59 @@
         </div>
 
         <!-- PASO 3: Pantalla de Confirmación de Revisión -->
-        <div id="checkout-step-review" style="display: none; text-align: center; padding: 1.5rem 0.5rem;">
+        <div id="checkout-step-review" style="display: none; text-align: center; padding: 1rem 0.25rem;">
           <div
-            style="width: 68px; height: 68px; background: #FEF3C7; border: 1.5px solid #FDE68A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.85rem; margin: 0 auto 1.25rem;">
+            style="width: 68px; height: 68px; background: #FEF3C7; border: 1.5px solid #FDE68A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.85rem; margin: 0 auto 1rem;">
             ⏳
           </div>
-          <h3 style="font-size: 1.35rem; color: var(--text-main); margin-bottom: 0.35rem;">Tu suscripción está esperando
-            ser
-            aprobada</h3>
           <span class="badge"
-            style="background: #FEF3C7; color: var(--accent-gold); border: 1px solid #FDE68A; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">
-            Estado: En Revisión de Pago
+            style="display: inline-block; background: #FEF3C7; color: var(--accent-gold); border: 1px solid #FDE68A; padding: 0.3rem 0.85rem; border-radius: 9999px; font-weight: 700; font-size: 0.76rem; margin-bottom: 0.65rem;">
+            ESTADO: TU ACCESO ESTÁ EN REVISIÓN
           </span>
+          <h3 style="font-size: 1.28rem; color: var(--text-main); margin-bottom: 0.65rem; line-height: 1.35;">
+            Recibimos tu comprobante. Tu acceso está en revisión y te avisaremos cuando sea aprobado.
+          </h3>
           <p
-            style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; max-width: 440px; margin: 1.25rem auto 1.5rem;">
-            Recibimos tu comprobante de <strong>$24.900 COP</strong> por Nequi. Cuando el administrador lo apruebe,
-            podrás entrar al aula virtual (también recibirás tu código por WhatsApp).
+            style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.55; max-width: 440px; margin: 0 auto 1.15rem;">
+            Debes esperar la aprobación manual de tu transferencia de <strong>$24.900 COP</strong>. Apenas se valide, te enviaremos tu código único de acceso para entrar al Aula Virtual.
           </p>
+
+          <!-- Indicador visual claro de que debe esperar aprobación -->
+          <div class="review-steps-tracker">
+            <div class="review-step-item done">
+              <span class="review-step-dot">✓</span>
+              <span>1. Datos registrados</span>
+            </div>
+            <div class="review-step-item done">
+              <span class="review-step-dot">✓</span>
+              <span>2. Comprobante recibido</span>
+            </div>
+            <div class="review-step-item current">
+              <span class="review-step-dot">⏳</span>
+              <span>3. Esperando aprobación</span>
+            </div>
+          </div>
+
           <div
-            style="background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; text-align: left; font-size: 0.85rem;">
+            style="background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 8px; padding: 0.95rem 1rem; margin-bottom: 1.15rem; text-align: left; font-size: 0.85rem; display: grid; gap: 0.35rem;">
             <div><strong>Alumno:</strong> <span id="review-student-name">-</span></div>
             <div><strong>WhatsApp registrado:</strong> <span id="review-student-whatsapp">-</span></div>
-            <div><strong>Tiempo de verificación:</strong> Usualmente menos de 15 minutos en horario diurno.</div>
+            <div><strong>WhatsApp oficial de soporte:</strong> <a href="https://wa.me/573158422894" target="_blank" rel="noopener" style="color: var(--accent-primary); font-weight: 700; text-decoration: underline;">+57 315 842 2894</a></div>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <button type="button" class="btn btn-primary btn-block" onclick="App.checkApprovalStatus()">
-              🔄 Verificar si ya fue aprobada
+
+          <div style="display: flex; flex-direction: column; gap: 0.7rem;">
+            <button type="button" class="btn btn-primary btn-lg btn-block" onclick="App.checkApprovalStatus()">
+              🔄 Verificar si ya fue aprobado
             </button>
-            <button type="button" class="btn btn-secondary btn-block" onclick="App.showStudentAccessModal(true)">
-              🔑 Ya tengo mi código de acceso aprobado
-            </button>
-            <a id="review-wa-support-btn" href="https://wa.me/573158422894" target="_blank"
-              class="btn btn-secondary btn-block">
-              💬 Contactar a Soporte por WhatsApp (+57 315 842 2894)
+            <a id="review-wa-support-btn" href="https://wa.me/573158422894" target="_blank" rel="noopener"
+              class="btn btn-secondary btn-lg btn-block" style="border-color: var(--accent-primary); color: var(--accent-primary);">
+              💬 Soporte WhatsApp: +57 315 842 2894
             </a>
+            <button type="button" class="btn btn-secondary btn-block" onclick="App.showStudentAccessModal(true)">
+              🔑 Ingresar con código
+            </button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="App.closeAllModals()">
-              Entendido, cerrar por ahora
+              Cerrar ventana
             </button>
           </div>
         </div>

@@ -453,13 +453,13 @@
     <div class="controls-bar">
       <div class="tabs-group">
         <button class="tab-btn active" onclick="AdminApp.setFilter('all', this)">Todos</button>
-        <button class="tab-btn" onclick="AdminApp.setFilter('in_review', this)">⏳ En Revisión (<span id="tab-count-review">0</span>)</button>
-        <button class="tab-btn" onclick="AdminApp.setFilter('approved', this)">✓ Aprobados</button>
-        <button class="tab-btn" onclick="AdminApp.setFilter('awaiting_payment', this)">Pendientes Nequi</button>
+        <button class="tab-btn" onclick="AdminApp.setFilter('pending', this)">⏳ Pendientes (<span id="tab-count-review">0</span>)</button>
+        <button class="tab-btn" onclick="AdminApp.setFilter('approved', this)">✓ Aprobados (<span id="tab-count-approved">0</span>)</button>
+        <button class="tab-btn" onclick="AdminApp.setFilter('rejected', this)">✕ Rechazados (<span id="tab-count-rejected">0</span>)</button>
       </div>
 
-      <div style="display: flex; gap: 0.5rem; flex: 1; max-width: 400px;">
-        <input type="text" id="search-input" class="form-control" placeholder="Buscar por nombre, correo, WhatsApp..." oninput="AdminApp.search(this.value)">
+      <div style="display: flex; gap: 0.5rem; flex: 1; max-width: 430px;">
+        <input type="text" id="search-input" class="form-control" placeholder="Buscar por nombre, cédula o teléfono..." oninput="AdminApp.search(this.value)">
         <button class="btn btn-secondary btn-sm" onclick="AdminApp.refresh()" title="Refrescar datos">🔄</button>
       </div>
     </div>
@@ -536,8 +536,9 @@
             <button type="button" id="btn-zoom-receipt" class="btn btn-secondary btn-sm" onclick="AdminApp.toggleReceiptZoom()">🔍 Ampliar / Zoom</button>
             <a id="btn-open-receipt-tab" href="#" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">↗ Abrir en pestaña</a>
           </div>
-          <div style="display: flex; gap: 0.6rem;">
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
             <button type="button" class="btn btn-secondary btn-sm" onclick="AdminApp.closeModal('modal-receipt')">Cerrar</button>
+            <button type="button" id="btn-reject-from-receipt" class="btn btn-danger btn-sm">✕ Rechazar</button>
             <button type="button" id="btn-approve-from-receipt" class="btn btn-success">✓ Aprobar este Pago</button>
           </div>
         </div>
@@ -736,32 +737,44 @@ const AdminApp = {
   },
 
   api: async function(endpoint, options = {}) {
+    if (!this.token) {
+      this.token = localStorage.getItem('ia7d_admin_token') || sessionStorage.getItem('ia7d_admin_token');
+    }
     options.headers = options.headers || {};
     options.headers['Authorization'] = `Bearer ${this.token}`;
     const res = await fetch(endpoint, options);
     if (res.status === 401) {
-      alert('Tu sesión administrativa expiró.');
-      this.logout();
-      throw new Error('Unauthorized');
+      // Verificar una segunda vez antes de cerrar sesión para evitar falsos positivos
+      const checkRes = await fetch('/api/admin/stats', {
+        headers: { 'Authorization': `Bearer ${this.token}` }
+      }).catch(() => null);
+      if (!checkRes || checkRes.status === 401) {
+        alert('Tu sesión administrativa expiró. Vuelve a ingresar tu contraseña.');
+        this.logout();
+        throw new Error('Unauthorized');
+      }
     }
     return res;
   },
 
   refresh: async function() {
-    await Promise.all([
-      this.loadStats(),
-      this.loadStudents(),
-      this.loadLessons()
-    ]);
+    await this.loadStats();
+    await this.loadStudents();
+    await this.loadLessons();
   },
 
   loadStats: async function() {
     try {
       const res = await this.api('/api/admin/stats');
       const data = await res.json();
+      const pendingTotal = (data.inReviewCount || 0) + (data.awaitingCount || 0);
       document.getElementById('stat-total').textContent = data.totalStudents || 0;
       document.getElementById('stat-in-review').textContent = data.inReviewCount || 0;
-      document.getElementById('tab-count-review').textContent = data.inReviewCount || 0;
+      document.getElementById('tab-count-review').textContent = pendingTotal;
+      const tabApproved = document.getElementById('tab-count-approved');
+      if (tabApproved) tabApproved.textContent = data.approvedCount || 0;
+      const tabRejected = document.getElementById('tab-count-rejected');
+      if (tabRejected) tabRejected.textContent = data.rejectedCount || 0;
       document.getElementById('stat-approved').textContent = data.approvedCount || 0;
       document.getElementById('stat-awaiting').textContent = data.awaitingCount || 0;
       document.getElementById('stat-revenue').textContent = `$${(data.totalRevenueCOP || 0).toLocaleString('es-CO')} COP`;
@@ -802,20 +815,26 @@ const AdminApp = {
 
   renderStudents: function() {
     const tbody = document.getElementById('students-tbody');
-    let list = this.students;
+    let list = [...this.students];
 
-    if (this.currentFilter !== 'all') {
+    if (this.currentFilter === 'pending') {
+      list = list.filter(s => s.paymentStatus === 'in_review' || s.paymentStatus === 'awaiting_payment');
+      list.sort((a, b) => (a.paymentStatus === 'in_review' ? -1 : 1) - (b.paymentStatus === 'in_review' ? -1 : 1));
+    } else if (this.currentFilter !== 'all') {
       list = list.filter(s => s.paymentStatus === this.currentFilter);
     }
 
     if (this.searchQuery) {
-      list = list.filter(s =>
-        (s.name && s.name.toLowerCase().includes(this.searchQuery)) ||
-        (s.email && s.email.toLowerCase().includes(this.searchQuery)) ||
-        (s.whatsapp && s.whatsapp.includes(this.searchQuery)) ||
-        (s.docNumber && s.docNumber.includes(this.searchQuery)) ||
-        (s.accessCode && s.accessCode.toLowerCase().includes(this.searchQuery))
-      );
+      const qDigits = this.searchQuery.replace(/\D/g, '');
+      list = list.filter(s => {
+        const nameMatch = s.name && s.name.toLowerCase().includes(this.searchQuery);
+        const emailMatch = s.email && s.email.toLowerCase().includes(this.searchQuery);
+        const docMatch = s.docNumber && (s.docNumber.toLowerCase().includes(this.searchQuery) || (qDigits && s.docNumber.replace(/\D/g, '').includes(qDigits)));
+        const phoneDigits = (s.whatsapp || '').replace(/\D/g, '');
+        const phoneMatch = (s.whatsapp && s.whatsapp.toLowerCase().includes(this.searchQuery)) || (qDigits && phoneDigits.includes(qDigits));
+        const codeMatch = s.accessCode && s.accessCode.toLowerCase().includes(this.searchQuery);
+        return nameMatch || emailMatch || docMatch || phoneMatch || codeMatch;
+      });
     }
 
     if (!list.length) {
@@ -981,14 +1000,23 @@ const AdminApp = {
     `;
 
     const approveBtn = document.getElementById('btn-approve-from-receipt');
+    const rejectBtn = document.getElementById('btn-reject-from-receipt');
     if (student.paymentStatus === 'approved') {
       approveBtn.style.display = 'none';
+      if (rejectBtn) rejectBtn.style.display = 'none';
     } else {
       approveBtn.style.display = 'inline-flex';
       approveBtn.onclick = () => {
         this.closeModal('modal-receipt');
         this.approveStudent(student.id);
       };
+      if (rejectBtn) {
+        rejectBtn.style.display = 'inline-flex';
+        rejectBtn.onclick = () => {
+          this.closeModal('modal-receipt');
+          this.rejectStudent(student.id);
+        };
+      }
     }
 
     document.getElementById('modal-receipt').classList.add('active');

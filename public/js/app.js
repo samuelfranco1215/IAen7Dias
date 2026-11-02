@@ -217,12 +217,18 @@ const App = {
     const accessLinks = document.querySelectorAll('.btn-access-link');
     const stickyCta = document.querySelector('.sticky-mobile-cta');
     const priceTags = document.querySelectorAll('.hero-price-tag');
+    const statusBanner = document.getElementById('student-status-banner');
+    const mobileMenuCta = document.querySelector('.mobile-menu-cta-btn');
 
+    // ESTADO 3: APROBADO
     if (student && student.paymentStatus === 'approved') {
       if (navActions) {
         navActions.innerHTML = `
+          <button class="btn btn-secondary btn-sm" onclick="App.showStudentAccessModal(true)">
+            🔑 Ingresar con código
+          </button>
           <button class="btn btn-primary btn-sm" onclick="App.showView('dashboard')">
-            👤 Entrar a mi Aula (${student.progressPercentage || 0}%)
+            🎓 Ir a mi Aula (${student.progressPercentage || 0}%) ➔
           </button>
           <button class="btn btn-secondary btn-sm" onclick="App.logoutStudent()">
             Salir
@@ -230,25 +236,49 @@ const App = {
         `;
       }
       ctas.forEach(btn => {
-        btn.textContent = '🔑 ¿Ya tienes código de acceso aprobado? Ingresa aquí ➔';
+        btn.textContent = '🔑 Ingresar con código / Ir a mi Aula ➔';
       });
+      if (mobileMenuCta) {
+        mobileMenuCta.textContent = '🔑 Ingresar con código / Ir a mi Aula ➔';
+      }
       accessLinks.forEach(el => {
         el.style.display = 'inline-flex';
-        el.textContent = '🔑 ¿Ya tienes código de acceso aprobado? Ingresa aquí';
+        el.textContent = '🔑 Ingresar con código';
       });
+      if (statusBanner) {
+        statusBanner.style.display = 'block';
+        statusBanner.className = 'student-status-banner status-approved';
+        statusBanner.innerHTML = `
+          <div class="container student-status-inner">
+            <div class="student-status-text">
+              <span class="status-pill approved">✓ ACCESO APROBADO</span>
+              <span>Hola <strong>${this.escapeHtml(student.name)}</strong>, tu acceso está activo (${student.progressPercentage || 0}% completado).</span>
+            </div>
+            <div class="student-status-actions">
+              <button type="button" class="btn btn-primary btn-sm" onclick="App.showView('dashboard')">
+                ▶ Continuar donde quedé ➔
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.showStudentAccessModal(true)">
+                🔑 Ingresar con código
+              </button>
+            </div>
+          </div>
+        `;
+      }
       priceTags.forEach(el => { el.style.display = 'none'; });
       if (stickyCta) stickyCta.style.display = 'none';
       return;
     }
 
+    // ESTADO 2: PENDIENTE DE APROBACIÓN (EN REVISIÓN)
     if (student && student.paymentStatus === 'in_review') {
       if (navActions) {
         navActions.innerHTML = `
           <button class="btn btn-secondary btn-sm" onclick="App.showStudentAccessModal(true)">
             🔑 Ingresar con código
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="App.showReviewConfirmation(App.state.activeStudent)">
-            ⏳ Esperando aprobación
+          <button class="btn btn-secondary btn-sm" style="background: #FEF3C7; border-color: #FDE68A; color: #B45309;" onclick="App.showReviewConfirmation(App.state.activeStudent)">
+            ⏳ Tu acceso está en revisión
           </button>
           <button class="btn btn-secondary btn-sm" onclick="App.logoutStudent()" title="Cambiar de cuenta">
             Salir
@@ -256,17 +286,41 @@ const App = {
         `;
       }
       ctas.forEach(btn => {
-        btn.textContent = '⏳ Tu suscripción está esperando ser aprobada';
+        btn.textContent = '⏳ Tu acceso está en revisión';
       });
+      if (mobileMenuCta) {
+        mobileMenuCta.textContent = '⏳ Tu acceso está en revisión';
+      }
       accessLinks.forEach(el => {
         el.style.display = 'inline-flex';
-        el.textContent = '🔑 ¿Ya tienes código de acceso aprobado? Ingresa aquí';
+        el.textContent = '🔑 Ingresar con código';
       });
+      if (statusBanner) {
+        statusBanner.style.display = 'block';
+        statusBanner.className = 'student-status-banner status-review';
+        statusBanner.innerHTML = `
+          <div class="container student-status-inner">
+            <div class="student-status-text">
+              <span class="status-pill review">⏳ EN REVISIÓN</span>
+              <span><strong>Recibimos tu comprobante. Tu acceso está en revisión y te avisaremos cuando sea aprobado.</strong> Soporte WhatsApp: <a href="https://wa.me/573158422894" target="_blank" rel="noopener" style="text-decoration: underline; font-weight: 700;">+57 315 842 2894</a></span>
+            </div>
+            <div class="student-status-actions">
+              <button type="button" class="btn btn-primary btn-sm" onclick="App.showReviewConfirmation(App.state.activeStudent)">
+                Ver estado de revisión
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.showStudentAccessModal(true)">
+                🔑 Ingresar con código
+              </button>
+            </div>
+          </div>
+        `;
+      }
       priceTags.forEach(el => { el.style.display = 'none'; });
       if (stickyCta) stickyCta.style.display = 'none';
       return;
     }
 
+    // INSCRIPCIÓN INICIADA SIN COMPROBANTE O RECHAZADA
     if (student && (student.paymentStatus === 'awaiting_payment' || student.paymentStatus === 'rejected')) {
       if (navActions) {
         navActions.innerHTML = `
@@ -282,18 +336,41 @@ const App = {
         `;
       }
       ctas.forEach(btn => {
-        btn.textContent = '📤 Subir comprobante Nequi ($24.900 COP) ➔';
+        btn.textContent = 'Quiero mi certificado ➔';
       });
+      if (mobileMenuCta) {
+        mobileMenuCta.textContent = 'Quiero mi certificado ➔';
+      }
       accessLinks.forEach(el => {
         el.style.display = 'inline-flex';
-        el.textContent = '🔑 ¿Ya tienes código de acceso aprobado? Ingresa aquí';
+        el.textContent = '🔑 Ingresar con código';
       });
+      if (statusBanner) {
+        statusBanner.style.display = 'block';
+        statusBanner.className = 'student-status-banner status-awaiting';
+        statusBanner.innerHTML = `
+          <div class="container student-status-inner">
+            <div class="student-status-text">
+              <span class="status-pill awaiting">PASO PENDIENTE</span>
+              <span>Hola <strong>${this.escapeHtml(student.name)}</strong>, completa tu inscripción subiendo el comprobante Nequi ($24.900 COP).</span>
+            </div>
+            <div class="student-status-actions">
+              <button type="button" class="btn btn-primary btn-sm" onclick="App.showNequiPaymentStep(App.state.activeStudent)">
+                📤 Subir comprobante ➔
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.showStudentAccessModal(true)">
+                🔑 Ingresar con código
+              </button>
+            </div>
+          </div>
+        `;
+      }
       priceTags.forEach(el => { el.style.display = ''; });
       if (stickyCta) stickyCta.style.display = '';
       return;
     }
 
-    // Visitante nuevo (sin inscripción en este navegador)
+    // ESTADO 1: VISITANTE NUEVO (sin inscripción en este navegador)
     if (navActions) {
       navActions.innerHTML = `
         <button class="btn btn-secondary btn-sm btn-access-link" onclick="App.showStudentAccessModal()">
@@ -308,10 +385,17 @@ const App = {
       if (!btn.dataset.origText) btn.dataset.origText = btn.textContent.trim();
       btn.textContent = btn.dataset.origText;
     });
+    if (mobileMenuCta) {
+      mobileMenuCta.textContent = 'Quiero mi certificado ➔';
+    }
     accessLinks.forEach(el => {
       el.style.display = 'inline-flex';
       el.textContent = '🔑 ¿Ya tienes código de acceso aprobado? Ingresa aquí';
     });
+    if (statusBanner) {
+      statusBanner.style.display = 'none';
+      statusBanner.innerHTML = '';
+    }
     priceTags.forEach(el => { el.style.display = ''; });
     if (stickyCta) stickyCta.style.display = '';
   },
@@ -968,13 +1052,13 @@ const App = {
     document.getElementById('checkout-step-nequi').style.display = 'none';
     document.getElementById('checkout-step-review').style.display = 'block';
 
-    document.getElementById('checkout-modal-title').textContent = "Tu suscripción está esperando ser aprobada";
-    document.getElementById('checkout-modal-sub').textContent = "Verificación manual en proceso";
+    document.getElementById('checkout-modal-title').textContent = "Tu acceso está en revisión";
+    document.getElementById('checkout-modal-sub').textContent = "Recibimos tu comprobante • Soporte: +57 315 842 2894";
 
-    document.getElementById('review-student-name').textContent = student.name || '-';
-    document.getElementById('review-student-whatsapp').textContent = student.whatsapp || student.email || '-';
+    document.getElementById('review-student-name').textContent = (student && student.name) || '-';
+    document.getElementById('review-student-whatsapp').textContent = (student && (student.whatsapp || student.email)) || '-';
 
-    const waText = encodeURIComponent(`Hola, acabo de subir mi comprobante de Nequi de $24.900 COP para el curso IA en 7 Días. Mi nombre es ${student.name} (${student.email}). Quedo atento a mi código de acceso.`);
+    const waText = encodeURIComponent(`Hola, acabo de enviar mi comprobante de Nequi de $24.900 COP para el curso IA en 7 Días. Mi nombre es ${(student && student.name) || ''} (${(student && student.email) || ''}). Quedo atento a la aprobación de mi acceso.`);
     document.getElementById('review-wa-support-btn').href = `https://wa.me/573158422894?text=${waText}`;
   },
 
@@ -1136,13 +1220,57 @@ const App = {
     if (nameEl) nameEl.textContent = current.name;
     if (emailEl) emailEl.textContent = current.email;
 
-    // Barra de Progreso
+    // Barra de Progreso y Pasos Visuales
     const pctEl = document.getElementById('dash-progress-pct');
     const countEl = document.getElementById('dash-progress-count');
     const fillEl = document.getElementById('dash-progress-fill');
+    const stepsMiniEl = document.getElementById('dash-progress-steps-mini');
     if (pctEl) pctEl.textContent = `${progressPct}%`;
     if (countEl) countEl.textContent = `${completedCount} de ${totalCount} lecciones completadas en orden`;
     if (fillEl) fillEl.style.width = `${progressPct}%`;
+
+    const nextLesson = this.state.lessons.find(l => !completed.includes(Number(l.id)));
+
+    if (stepsMiniEl) {
+      stepsMiniEl.innerHTML = [1, 2, 3, 4, 5, 6, 7].map(dayNum => {
+        const isDone = completed.includes(dayNum);
+        const isCurrent = nextLesson && Number(nextLesson.day) === dayNum;
+        let cls = 'dash-step-chip';
+        if (isDone) cls += ' done';
+        else if (isCurrent) cls += ' current';
+        return `<span class="${cls}">Día ${dayNum} ${isDone ? '✓' : (isCurrent ? '•' : '')}</span>`;
+      }).join('');
+    }
+
+    // Bloque Destacado: Siguiente Lección + Botón "Continuar donde quedé"
+    const nextTagEl = document.getElementById('dash-next-lesson-tag');
+    const nextTitleEl = document.getElementById('dash-next-lesson-title');
+    const nextSubEl = document.getElementById('dash-next-lesson-sub');
+    const continueBtn = document.getElementById('btn-continue-lesson');
+
+    if (nextLesson) {
+      if (nextTagEl) {
+        nextTagEl.textContent = completedCount === 0
+          ? 'PRIMERA LECCIÓN PARA EMPEZAR'
+          : `SIGUIENTE LECCIÓN • DÍA ${nextLesson.day} DE ${totalCount}`;
+      }
+      if (nextTitleEl) nextTitleEl.textContent = `Día ${nextLesson.day}: ${nextLesson.title}`;
+      if (nextSubEl) nextSubEl.textContent = `${nextLesson.subtitle} (${nextLesson.duration || '15 min'})`;
+      if (continueBtn) {
+        continueBtn.textContent = completedCount === 0
+          ? '▶ Empezar Día 1 ahora ➔'
+          : `▶ Continuar donde quedé (Día ${nextLesson.day}) ➔`;
+        continueBtn.onclick = () => this.openLesson(nextLesson.id);
+      }
+    } else {
+      if (nextTagEl) nextTagEl.textContent = '🎉 PROGRAMA COMPLETADO AL 100%';
+      if (nextTitleEl) nextTitleEl.textContent = '¡Felicitaciones! Completaste las 7 lecciones del curso';
+      if (nextSubEl) nextSubEl.textContent = 'Tu Certificado Oficial en PDF ya está habilitado para descarga.';
+      if (continueBtn) {
+        continueBtn.textContent = '📥 Descargar mi Certificado en PDF ➔';
+        continueBtn.onclick = () => this.downloadCertificate();
+      }
+    }
 
     // Banner del Certificado (REQUISITO 2: Solo si cumplió el progreso real del 100%)
     const certBanner = document.getElementById('dash-cert-banner');

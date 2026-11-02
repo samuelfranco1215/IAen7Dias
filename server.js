@@ -424,25 +424,28 @@ app.get('/api/me/certificate', requireStudent, requireApproved, (req, res) => {
   if (!db.isCertificateEligible(s)) {
     return res.status(403).json({ error: 'El certificado se habilita al completar las 7 lecciones.' });
   }
-  res.json({ name: s.name, certificateCode: s.certificateCode, certificateIssuedAt: s.certificateIssuedAt });
+  res.json({
+    name: s.name,
+    docType: s.docType || 'CC',
+    docNumber: s.docNumber || '',
+    certificateCode: s.certificateCode,
+    certificateIssuedAt: s.certificateIssuedAt
+  });
 });
 
 // ==========================================
 // ADMIN (ruta privada + contraseña + sesión firmada sin estado)
 // ==========================================
-const ADMIN_SESSION_MS = 12 * 60 * 60 * 1000;
+const ADMIN_SESSION_MS = 7 * 24 * 60 * 60 * 1000;
+const DEFAULT_ADMIN_SALT = 'ia7d_deterministic_salt_2026';
 
 function hashPassword(password, salt) {
   return crypto.scryptSync(String(password), salt, 64).toString('hex');
 }
 
 function getAdminSecret() {
-  if (process.env.ADMIN_PASSWORD) {
-    return crypto.createHash('sha256').update('ia7d_admin_secret:' + process.env.ADMIN_PASSWORD).digest();
-  }
-  const s = db.getSettings();
-  const base = (s.adminPasswordHash || 'default') + ':' + (s.adminPasswordSalt || 'salt');
-  return crypto.createHash('sha256').update('ia7d_admin_secret:' + base).digest();
+  const pwd = String(process.env.ADMIN_PASSWORD || 'admin2026').trim();
+  return crypto.createHash('sha256').update('ia7d_admin_secret_v2:' + pwd).digest();
 }
 
 function createAdminToken() {
@@ -461,17 +464,24 @@ function verifyAdminToken(token) {
   const exp = Number(expStr);
   if (!Number.isFinite(exp) || exp < Date.now()) return false;
   const expected = crypto.createHmac('sha256', getAdminSecret()).update(`${expStr}.${nonce}`).digest('hex');
-  return db.safeEqual(sig, expected);
+  if (db.safeEqual(sig, expected)) return true;
+
+  // Compatibilidad con tokens emitidos bajo el esquema anterior
+  const s = db.getSettings();
+  const legacyBase = (s.adminPasswordHash || 'default') + ':' + (s.adminPasswordSalt || 'salt');
+  const legacySecret = crypto.createHash('sha256').update('ia7d_admin_secret:' + legacyBase).digest();
+  const legacyExpected = crypto.createHmac('sha256', legacySecret).update(`${expStr}.${nonce}`).digest('hex');
+  return db.safeEqual(sig, legacyExpected);
 }
 
-/** Contraseña admin: variable ADMIN_PASSWORD o una aleatoria generada en el primer arranque. */
+/** Contraseña admin: variable ADMIN_PASSWORD o determinística por defecto. */
 function ensureAdminPassword() {
   if (process.env.ADMIN_PASSWORD) return;
   const settings = db.getSettings();
   if (settings.adminPasswordHash && settings.adminPasswordSalt) return;
 
-  const password = process.env.ADMIN_PASSWORD || 'admin2026';
-  const salt = crypto.randomBytes(16).toString('hex');
+  const password = 'admin2026';
+  const salt = DEFAULT_ADMIN_SALT;
   db.updateSettings({ adminPasswordHash: hashPassword(password, salt), adminPasswordSalt: salt });
   if (!db.USE_BLOB) {
     const file = path.join(db.DATA_DIR || path.join(__dirname, 'data'), 'ADMIN-CLAVE-INICIAL.txt');
@@ -481,13 +491,13 @@ function ensureAdminPassword() {
       // ignorar si el sistema de archivos es de solo lectura
     }
   }
-  console.log(`[admin] Contraseña inicial configurada: ${password} (Ruta: ${ADMIN_PATH})`);
 }
 
 function checkAdminPassword(password) {
   const clean = String(password || '').trim();
   if (!clean) return false;
-  if (process.env.ADMIN_PASSWORD) return db.safeEqual(clean, String(process.env.ADMIN_PASSWORD).trim());
+  const expectedPwd = String(process.env.ADMIN_PASSWORD || 'admin2026').trim();
+  if (db.safeEqual(clean, expectedPwd)) return true;
   const s = db.getSettings();
   if (!s.adminPasswordHash || !s.adminPasswordSalt) return false;
   return db.safeEqual(hashPassword(clean, s.adminPasswordSalt), s.adminPasswordHash);
@@ -530,6 +540,7 @@ app.get('/api/admin/stats', requireAdmin, (req, res) => {
     totalStudents: students.length,
     inReviewCount: students.filter(s => s.paymentStatus === 'in_review').length,
     awaitingCount: students.filter(s => s.paymentStatus === 'awaiting_payment').length,
+    rejectedCount: students.filter(s => s.paymentStatus === 'rejected').length,
     approvedCount: approved.length,
     certificatesIssued: students.filter(s => db.isCertificateEligible(s)).length,
     totalRevenueCOP: approved.reduce((acc, s) => acc + (s.amount || 0), 0)

@@ -50,7 +50,8 @@ window.CertificateGenerator = {
     });
 
     const studentName = student.name || 'Estudiante Destacado';
-    const certCode = student.certificateCode || ('IA7D-2026-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+    const docInfo = student.docNumber ? `${student.docType || 'CC'} ${student.docNumber}` : '';
+    const certCode = student.certificateCode || ('IA7D-' + Math.random().toString(36).substring(2, 8).toUpperCase());
     
     // Formatear fecha en español
     const issueDate = student.certificateIssuedAt ? new Date(student.certificateIssuedAt) : new Date();
@@ -63,175 +64,171 @@ window.CertificateGenerator = {
     const width = 297;
     const height = 210;
 
-    // 1. Fondo suave crema / marfil
-    doc.setFillColor(252, 252, 254);
+    // 1. Fondo marfil cálido y sobrio (#FAF8F5)
+    doc.setFillColor(250, 248, 245);
     doc.rect(0, 0, width, height, 'F');
 
-    // 2. Marco exterior Azul Marino Profundo (#0f172a)
-    doc.setDrawColor(15, 23, 42);
-    doc.setLineWidth(4);
-    doc.rect(10, 10, width - 20, height - 20);
+    // 2. Marco exterior sobrio carbón (#1C1917)
+    doc.setDrawColor(28, 25, 23);
+    doc.setLineWidth(2.2);
+    doc.rect(12, 12, width - 24, height - 24);
 
-    // 3. Marco interior Dorado (#d97706)
-    doc.setDrawColor(217, 119, 6);
-    doc.setLineWidth(1);
-    doc.rect(14, 14, width - 28, height - 28);
+    // 3. Marco interior fino verde azulado (#0F766E)
+    doc.setDrawColor(15, 118, 110);
+    doc.setLineWidth(0.6);
+    doc.rect(15.5, 15.5, width - 31, height - 31);
 
-    // 4. Detalles en las 4 esquinas (adornos dorados)
-    const cornerSize = 12;
-    doc.setDrawColor(180, 83, 9);
-    doc.setLineWidth(1.5);
-    // Superior izquierda
-    doc.line(16, 16 + cornerSize, 16, 16);
-    doc.line(16, 16, 16 + cornerSize, 16);
-    // Superior derecha
-    doc.line(width - 16 - cornerSize, 16, width - 16, 16);
-    doc.line(width - 16, 16, width - 16, 16 + cornerSize);
-    // Inferior izquierda
-    doc.line(16, height - 16 - cornerSize, 16, height - 16);
-    doc.line(16, height - 16, 16 + cornerSize, height - 16);
-    // Inferior derecha
-    doc.line(width - 16 - cornerSize, height - 16, width - 16, height - 16);
-    doc.line(width - 16, height - 16 - cornerSize, width - 16, height - 16);
+    // 4. Línea superior de acento (#0F766E)
+    doc.setFillColor(15, 118, 110);
+    doc.rect(15.5, 15.5, width - 31, 3, 'F');
 
-    // 5. Logo Oficial y Encabezado de la Academia
+    // 5. Logo Oficial y Encabezado
     if (logoData) {
       try {
-        // Proporción original del logo recortado: 586 x 520 (~1.127:1)
-        doc.addImage(logoData, 'PNG', 26, 20, 27, 24);
+        doc.addImage(logoData, 'PNG', (width / 2) - 12, 23, 24, 21.3);
       } catch (e) {
         console.warn("No se pudo incrustar logo en PDF:", e);
       }
     }
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.setTextColor(100, 116, 139);
-    doc.text("ACADEMIA DIGITAL DE INTELIGENCIA ARTIFICIAL", width / 2, 32, { align: 'center' });
+    doc.setFontSize(9.5);
+    doc.setTextColor(87, 83, 78);
+    doc.text("IA EN 7 DÍAS • PROGRAMA DE FORMACIÓN PRÁCTICA", width / 2, 50, { align: 'center' });
 
     // 6. Título Principal
     doc.setFont("times", "bold");
-    doc.setFontSize(28);
-    doc.setTextColor(15, 23, 42);
-    doc.text("CERTIFICADO DE FINALIZACIÓN", width / 2, 46, { align: 'center' });
+    doc.setFontSize(26);
+    doc.setTextColor(28, 25, 23);
+    doc.text("CERTIFICADO DE FINALIZACIÓN", width / 2, 62, { align: 'center' });
 
-    // Línea divisoria elegante dorada
-    doc.setDrawColor(217, 119, 6);
-    doc.setLineWidth(0.8);
-    doc.line((width / 2) - 45, 51, (width / 2) + 45, 51);
+    // Línea divisoria sobria
+    doc.setDrawColor(180, 83, 9);
+    doc.setLineWidth(0.7);
+    doc.line((width / 2) - 38, 66.5, (width / 2) + 38, 66.5);
 
     // 7. Texto introductorio
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(12);
-    doc.setTextColor(71, 85, 105);
-    doc.text("Se hace constar con orgullo que", width / 2, 62, { align: 'center' });
+    doc.setFontSize(11);
+    doc.setTextColor(87, 83, 78);
+    doc.text("Se certifica que", width / 2, 76, { align: 'center' });
 
-    // 8. Nombre del Alumno (Destacado)
-    doc.setFont("times", "bolditalic");
-    doc.setFontSize(26);
-    doc.setTextColor(30, 58, 138); // Azul Real
-    doc.text(studentName, width / 2, 78, { align: 'center' });
+    // 8. Nombre del Alumno
+    doc.setFont("times", "bold");
+    doc.setFontSize(25);
+    doc.setTextColor(28, 25, 23);
+    doc.text(studentName, width / 2, 89, { align: 'center' });
 
-    // Subrayado sutil para el nombre
-    doc.setDrawColor(203, 213, 225);
+    if (docInfo) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(120, 113, 108);
+      doc.text(`Identificación: ${docInfo}`, width / 2, 95.5, { align: 'center' });
+    }
+
+    // Subrayado limpio
+    doc.setDrawColor(214, 211, 209);
     doc.setLineWidth(0.5);
-    const nameWidth = doc.getTextWidth(studentName);
-    doc.line((width / 2) - (nameWidth / 2) - 10, 81, (width / 2) + (nameWidth / 2) + 10, 81);
+    const nameWidth = Math.max(doc.getTextWidth(studentName), 90);
+    doc.line((width / 2) - (nameWidth / 2) - 10, 99, (width / 2) + (nameWidth / 2) + 10, 99);
 
-    // 9. Texto de acreditación
+    // 9. Texto de acreditación y Curso
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    doc.setTextColor(51, 65, 85);
+    doc.setTextColor(87, 83, 78);
     doc.text(
-      "ha completado satisfactoriamente el programa de entrenamiento práctico intensivo:",
+      "completó y aprobó satisfactoriamente las 7 lecciones prácticas del curso:",
       width / 2,
-      92,
+      108,
       { align: 'center' }
     );
 
-    // 10. Nombre del Curso (Grande)
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.setTextColor(15, 23, 42);
-    doc.text("IA EN 7 DÍAS", width / 2, 106, { align: 'center' });
+    doc.setFontSize(19);
+    doc.setTextColor(15, 118, 110);
+    doc.text("IA EN 7 DÍAS: INTELIGENCIA ARTIFICIAL APLICADA AL TRABAJO", width / 2, 119, { align: 'center' });
 
-    // 11. Descripción de competencias
+    // 10. Descripción sobria de competencias
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9.5);
-    doc.setTextColor(100, 116, 139);
+    doc.setTextColor(87, 83, 78);
     const descriptionText =
-      "Demostrando dominio en prompting avanzado (R-C-T-F-R), optimización con ChatGPT y Claude, " +
-      "creación de contenidos persuasivos, análisis de documentos, generación de imágenes con IA, " +
-      "interpretación de datos y configuración de asistentes personalizados. Intensidad estimada: 15 horas prácticas.";
+      "Cumpliendo el 100% de las actividades prácticas verificadas en estructuración de prompts (método R-C-T-F), " +
+      "redacción profesional asistida, análisis de documentos, automatización de hojas de cálculo, generación visual " +
+      "y auditoría de calidad con Inteligencia Artificial. Intensidad certificada: 15 horas teórico-prácticas.";
     
-    const splitDesc = doc.splitTextToSize(descriptionText, 210);
-    doc.text(splitDesc, width / 2, 118, { align: 'center' });
+    const splitDesc = doc.splitTextToSize(descriptionText, 215);
+    doc.text(splitDesc, width / 2, 128, { align: 'center' });
 
-    // 12. Sello Dorado Central / Medalla
+    // 11. Bloque inferior en 3 columnas limpias: Fecha | Sello de Verificación | Firma y Referencia
+    const footerY = 164;
+
+    // Columna Izquierda: Fecha de Emisión e ID de Referencia
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(87, 83, 78);
+    doc.text("FECHA DE EMISIÓN", 34, footerY - 8);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10.5);
+    doc.setTextColor(28, 25, 23);
+    doc.text(formattedDate, 34, footerY - 2);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(87, 83, 78);
+    doc.text("ID DE REFERENCIA", 34, footerY + 7);
+    doc.setFont("courier", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(15, 118, 110);
+    doc.text(certCode, 34, footerY + 13);
+
+    // Columna Central: Sello sobrio
     const sealX = width / 2;
-    const sealY = 152;
-    
-    // Círculo exterior dorado
-    doc.setFillColor(245, 158, 11);
-    doc.circle(sealX, sealY, 12, 'F');
-    
-    // Círculo concéntrico más oscuro
-    doc.setDrawColor(180, 83, 9);
-    doc.setLineWidth(0.6);
-    doc.circle(sealX, sealY, 10);
-
-    // Estrella o texto en el sello
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7);
-    doc.setTextColor(255, 255, 255);
-    doc.text("100% EXCELENCIA", sealX, sealY - 1, { align: 'center' });
-    doc.setFontSize(6.5);
-    doc.text("COMPLETADO", sealX, sealY + 2.5, { align: 'center' });
-
-    // 13. Firmas y Fechas
-    // Bloque Izquierdo: Fecha y Código de Verificación
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9.5);
-    doc.setTextColor(51, 65, 85);
-    doc.text("Fecha de Emisión:", 45, 156);
-    doc.setFont("helvetica", "normal");
-    doc.text(formattedDate, 45, 162);
-
-    doc.setFont("helvetica", "bold");
-    doc.text("Código de Autenticidad:", 45, 170);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(30, 58, 138);
-    doc.text(certCode, 45, 176);
-
-    // Bloque Derecho: Firma del Instructor
-    const sigLineX = width - 85;
-    doc.setDrawColor(15, 23, 42);
+    const sealY = footerY + 2;
+    doc.setFillColor(240, 253, 250);
+    doc.setDrawColor(15, 118, 110);
     doc.setLineWidth(0.8);
-    doc.line(sigLineX, 164, sigLineX + 50, 164);
+    doc.circle(sealX, sealY, 13, 'FD');
+    doc.setLineWidth(0.35);
+    doc.circle(sealX, sealY, 10.8, 'S');
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.8);
+    doc.setTextColor(15, 118, 110);
+    doc.text("VERIFICADO", sealX, sealY - 1.2, { align: 'center' });
+    doc.setFontSize(6.2);
+    doc.setTextColor(28, 25, 23);
+    doc.text("7 LECCIONES", sealX, sealY + 2.5, { align: 'center' });
+
+    // Columna Derecha: Firma del Responsable
+    const sigX = width - 62;
+    doc.setDrawColor(28, 25, 23);
+    doc.setLineWidth(0.6);
+    doc.line(sigX - 28, footerY + 2, sigX + 28, footerY + 2);
 
     doc.setFont("times", "italic");
-    doc.setFontSize(14);
-    doc.setTextColor(15, 23, 42);
-    doc.text("Equipo Académico", sigLineX + 25, 160, { align: 'center' });
+    doc.setFontSize(13.5);
+    doc.setTextColor(28, 25, 23);
+    doc.text("Samuel Calderón Franco", sigX, footerY - 2, { align: 'center' });
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9.5);
-    doc.setTextColor(15, 23, 42);
-    doc.text("DIRECTOR ACADÉMICO", sigLineX + 25, 170, { align: 'center' });
+    doc.setFontSize(9);
+    doc.setTextColor(28, 25, 23);
+    doc.text("DIRECTOR DEL PROGRAMA", sigX, footerY + 8, { align: 'center' });
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(100, 116, 139);
-    doc.text("IA en 7 Días • Colombia", sigLineX + 25, 175, { align: 'center' });
+    doc.setFontSize(8.2);
+    doc.setTextColor(120, 113, 108);
+    doc.text("IA en 7 Días • Colombia", sigX, footerY + 13, { align: 'center' });
 
-    // 14. Pie de página legal / Aclaración de constancia no formal
+    // 12. Pie de página legal
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(148, 163, 184);
+    doc.setFontSize(7.2);
+    doc.setTextColor(120, 113, 108);
     doc.text(
-      "Constancia de aprobación emitida por IA en 7 Días conforme a programas de educación continua y desarrollo de habilidades prácticas. No requiere convalidación ministerial.",
+      `Certificado de educación informal y actualización práctica emitido en Colombia • Verificación: iaen7dias.vercel.app • Ref: ${certCode}`,
       width / 2,
-      194,
+      191,
       { align: 'center' }
     );
 
