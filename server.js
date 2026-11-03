@@ -228,6 +228,7 @@ function studentPublicView(s) {
     receiptUploadedAt: s.receipt ? s.receipt.uploadedAt : null,
     progressPercentage: s.paymentStatus === 'approved' ? (s.progressPercentage || 0) : 0,
     completedLessons: s.paymentStatus === 'approved' ? (s.completedLessons || []) : [],
+    quizScores: s.paymentStatus === 'approved' ? (s.quizScores || {}) : {},
     evidenceLessons: s.paymentStatus === 'approved' ? Object.keys(s.evidence || {}).map(Number) : [],
     certificateUnlocked: eligible,
     certificateCode: eligible ? s.certificateCode : null,
@@ -403,10 +404,10 @@ app.get('/api/me/lessons/:id', requireStudent, requireApproved, (req, res) => {
 });
 
 app.post('/api/me/lessons/:id/complete', requireStudent, requireApproved, (req, res) => {
-  const { image, quizScore } = req.body || {};
+  const { image, quizScore, answers } = req.body || {};
   try {
-    const result = db.completeLesson(req.student.id, req.params.id, { image, quizScore });
-    if (result.error) return res.status(400).json({ error: result.error });
+    const result = db.completeLesson(req.student.id, req.params.id, { image, quizScore, answers });
+    if (result.error) return res.status(400).json({ error: result.error, failedEvaluation: !!result.failedEvaluation });
     res.json({ success: true, student: studentPublicView(result.student) });
   } catch (err) {
     res.status(400).json({ error: err.message });

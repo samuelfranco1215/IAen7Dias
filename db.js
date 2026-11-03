@@ -643,7 +643,7 @@ function loginWithAccessCode(email, code) {
   return res.student || null;
 }
 
-function completeLesson(studentId, lessonId, { image, quizScore }) {
+function completeLesson(studentId, lessonId, { image, quizScore, answers }) {
   const db = readDb();
   const s = db.students.find(x => x.id === studentId);
   if (!s) return { error: 'Alumno no encontrado' };
@@ -653,31 +653,71 @@ function completeLesson(studentId, lessonId, { image, quizScore }) {
   if (!Number.isInteger(n) || n < 1 || n > TOTAL_LESSONS) return { error: 'Lección no válida' };
   s.completedLessons = s.completedLessons || [];
   if (n > 1 && !s.completedLessons.includes(n - 1)) {
-    return { error: `Primero completa el Día ${n - 1}.` };
+    return { error: `Primero debes aprobar y completar el Día ${n - 1}.` };
   }
 
+  // 1) Validar que el alumno haya respondido correctamente el quiz de la lección
+  const lesson = (db.lessons || []).find(l => Number(l.id) === n);
+  if (lesson && Array.isArray(lesson.quiz) && lesson.quiz.length > 0) {
+    if (!answers || typeof answers !== 'object') {
+      return {
+        error: 'No aprobaste esta lección. Vuelve a intentarlo para continuar.',
+        failedEvaluation: true
+      };
+    }
+    for (let qIdx = 0; qIdx < lesson.quiz.length; qIdx++) {
+      const q = lesson.quiz[qIdx];
+      const submitted = answers[qIdx];
+      if (submitted === undefined || submitted === null || Number(submitted) !== Number(q.correctIndex)) {
+        return {
+          error: 'No aprobaste esta lección. Vuelve a intentarlo para continuar.',
+          failedEvaluation: true
+        };
+      }
+    }
+  }
+
+  if (quizScore !== undefined && Number(quizScore) < 100) {
+    return {
+      error: 'No aprobaste esta lección. Vuelve a intentarlo para continuar.',
+      failedEvaluation: true
+    };
+  }
+
+  // 2) Validar que haya subido la evidencia práctica requerida
   s.evidence = s.evidence || {};
   if (image) {
     s.evidence[n] = { image: saveImage(image, 'evidence', `${s.id}-d${n}`), dataUrl: image, submittedAt: new Date().toISOString() };
   }
   if (!s.evidence[n] || !s.evidence[n].image) {
-    return { error: 'Sube la captura de tu práctica antes de completar la lección.' };
+    return {
+      error: 'No aprobaste esta lección. Vuelve a intentarlo para continuar. (Falta subir la captura de tu práctica con IA).',
+      failedEvaluation: true
+    };
   }
 
   if (!s.completedLessons.includes(n)) s.completedLessons.push(n);
   s.completedLessons.sort((a, b) => a - b);
   s.quizScores = s.quizScores || {};
-  s.quizScores[n] = Number(quizScore) || 0;
+  s.quizScores[n] = 100;
   s.progressPercentage = Math.round((s.completedLessons.length / TOTAL_LESSONS) * 100);
 
-  // Certificado: SOLO con las 7 lecciones completadas en orden y pago aprobado
-  const allDone = Array.from({ length: TOTAL_LESSONS }, (_, i) => i + 1).every(d => s.completedLessons.includes(d));
-  if (allDone) {
+  // Certificado: SOLO con las 7 lecciones completadas en orden, evidencias subidas y evaluaciones aprobadas al 100%
+  const allApproved = Array.from({ length: TOTAL_LESSONS }, (_, i) => i + 1).every(d => {
+    const hasLessonDone = s.completedLessons.includes(d);
+    const hasEv = !!(s.evidence && s.evidence[d] && s.evidence[d].image);
+    const score = Number((s.quizScores || {})[d] || 0);
+    return hasLessonDone && hasEv && score >= 80;
+  });
+
+  if (allApproved) {
     s.certificateUnlocked = true;
     if (!s.certificateCode) {
       s.certificateCode = generateCertificateCode(s.name);
       s.certificateIssuedAt = new Date().toISOString();
     }
+  } else {
+    s.certificateUnlocked = false;
   }
 
   writeDb(db);
@@ -687,7 +727,13 @@ function completeLesson(studentId, lessonId, { image, quizScore }) {
 function isCertificateEligible(s) {
   if (!s || s.paymentStatus !== 'approved') return false;
   const done = s.completedLessons || [];
-  for (let d = 1; d <= TOTAL_LESSONS; d++) if (!done.includes(d)) return false;
+  const scores = s.quizScores || {};
+  const evidence = s.evidence || {};
+  for (let d = 1; d <= TOTAL_LESSONS; d++) {
+    if (!done.includes(d)) return false;
+    if (!evidence[d] || !evidence[d].image) return false;
+    if (scores[d] !== undefined && Number(scores[d]) < 80) return false;
+  }
   return !!s.certificateCode;
 }
 

@@ -1434,8 +1434,20 @@ const App = {
     this.state.currentLesson = lesson;
     const container = document.getElementById('lesson-content-area');
     const student = this.state.activeStudent;
-    const isCompleted = student && student.completedLessons && student.completedLessons.includes(Number(lesson.id));
-    const existingEvidence = student && student.evidence && student.evidence[lesson.id];
+    const numId = Number(lesson.id);
+    const isCompleted = !!(student && student.completedLessons && student.completedLessons.includes(numId));
+    const existingEvidence = !!(student && (
+      (student.evidence && student.evidence[numId]) ||
+      (Array.isArray(student.evidenceLessons) && student.evidenceLessons.includes(numId))
+    ));
+
+    // Inicializar estado de evaluación de la lección
+    this.state.currentQuizAnswers = {};
+    if (isCompleted && Array.isArray(lesson.quiz)) {
+      lesson.quiz.forEach((q, idx) => {
+        this.state.currentQuizAnswers[idx] = q.correctIndex;
+      });
+    }
 
     // Requisito 5: Manejo de Video limpio sin botones rotos
     let videoMarkup = '';
@@ -1613,23 +1625,36 @@ const App = {
             </div>
           </div>
 
-          <!-- 7. MINI QUIZ INTERACTIVO FORMATIVO (Opción múltiple sin errores de sintaxis) -->
+          <!-- 7. EVALUACIÓN OBLIGATORIA DE LA LECCIÓN -->
           ${lesson.quiz && lesson.quiz.length ? `
-            <div class="quiz-wrapper" style="margin-top: 2.5rem;">
-              <span class="pill pill-gold" style="margin-bottom: 0.75rem;">Mini Quiz de Consolidación</span>
+            <div class="quiz-wrapper" id="lesson-quiz-section" style="margin-top: 2.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <span class="pill pill-gold">Evaluación Obligatoria para Aprobar</span>
+                <button type="button" id="btn-retry-quiz" class="btn btn-secondary btn-sm" style="display: ${isCompleted ? 'inline-flex' : 'none'}; font-size: 0.76rem;" onclick="App.resetLessonQuiz()">
+                  🔄 Repetir evaluación
+                </button>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                Responde correctamente para aprobar esta lección y desbloquear la siguiente. Si fallas, puedes volver a intentarlo las veces que necesites.
+              </p>
               <div id="quiz-container">
                 ${lesson.quiz.map((q, qIdx) => `
                   <div style="margin-bottom: 1.5rem;" id="quiz-q-${qIdx}">
                     <p style="font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem;">${qIdx + 1}. ${this.escapeHtml(q.question)}</p>
                     <div>
-                      ${q.options.map((opt, optIdx) => `
-                        <div class="quiz-option-item" id="quiz-opt-${qIdx}-${optIdx}" onclick="App.handleQuizAnswer(${qIdx}, ${optIdx})">
-                          <span style="font-weight: 700; width: 22px; color: var(--text-dim);">${String.fromCharCode(65 + optIdx)})</span>
-                          <span>${this.escapeHtml(opt)}</span>
-                        </div>
-                      `).join('')}
+                      ${q.options.map((opt, optIdx) => {
+                        const preSelectedCorrect = isCompleted && Number(q.correctIndex) === optIdx;
+                        return `
+                          <div class="quiz-option-item ${preSelectedCorrect ? 'correct' : ''}" id="quiz-opt-${qIdx}-${optIdx}" onclick="App.handleQuizAnswer(${qIdx}, ${optIdx})">
+                            <span style="font-weight: 700; width: 22px; color: var(--text-dim);">${String.fromCharCode(65 + optIdx)})</span>
+                            <span>${this.escapeHtml(opt)}</span>
+                          </div>
+                        `;
+                      }).join('')}
                     </div>
-                    <div id="quiz-feedback-${qIdx}" style="display: none; padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.88rem; margin-top: 0.75rem;"></div>
+                    <div id="quiz-feedback-${qIdx}" style="display: ${isCompleted ? 'block' : 'none'}; padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.88rem; margin-top: 0.75rem; ${isCompleted ? 'background: #F0FDFA; border: 1px solid #99F6E4; color: #0F766E;' : ''}">
+                      ${isCompleted ? `<strong>✓ Evaluación aprobada:</strong> ${this.escapeHtml(q.explanation)}` : ''}
+                    </div>
                   </div>
                 `).join('')}
               </div>
@@ -1647,15 +1672,19 @@ const App = {
             </div>
           ` : ''}
 
-          <!-- Botón Marcar Completada -->
-          <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <!-- Alerta de evaluación no aprobada -->
+          <div id="lesson-eval-error" style="display: none; margin-top: 1.75rem; padding: 1rem 1.15rem; border-radius: var(--radius-sm); background: #FEF2F2; border: 1.5px solid #FECACA; color: #991B1B; font-size: 0.92rem; font-weight: 600; line-height: 1.5;">
+          </div>
+
+          <!-- Botón Aprobar y Completar Lección -->
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-hairline); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
               <p style="font-size: 0.85rem; color: var(--text-dim); margin: 0;">
-                Se guardará tu captura de pantalla y se desbloqueará el Día ${Number(lesson.day) + 1}.
+                Debes responder bien la evaluación y subir tu captura práctica para aprobar y desbloquear el Día ${Math.min(Number(lesson.day) + 1, 7)}.
               </p>
             </div>
             <button id="btn-complete-lesson" class="btn btn-primary btn-lg" onclick="App.markLessonCompleted(${lesson.id})">
-              ${isCompleted ? '✓ Lección Completada (Avanzar)' : '✓ Marcar como Completada ➔'}
+              ${isCompleted ? '✓ Lección Aprobada (Avanzar)' : '✓ Aprobar y Completar Lección ➔'}
             </button>
           </div>
         </div>
@@ -1741,36 +1770,89 @@ const App = {
     const q = this.state.currentLesson && this.state.currentLesson.quiz && this.state.currentLesson.quiz[qIdx];
     if (!q) return;
 
-    const correctIdx = q.correctIndex;
+    this.state.currentQuizAnswers = this.state.currentQuizAnswers || {};
+    this.state.currentQuizAnswers[qIdx] = selectedIdx;
+
+    const correctIdx = Number(q.correctIndex);
     const explanation = q.explanation;
     const feedbackEl = document.getElementById(`quiz-feedback-${qIdx}`);
     const selectedEl = document.getElementById(`quiz-opt-${qIdx}-${selectedIdx}`);
-    const correctEl = document.getElementById(`quiz-opt-${qIdx}-${correctIdx}`);
+    const retryBtn = document.getElementById('btn-retry-quiz');
+    const evalErrorEl = document.getElementById('lesson-eval-error');
 
+    // Limpiar selección previa de esta pregunta para permitir reintentar las veces que sea necesario
     document.querySelectorAll(`[id^="quiz-opt-${qIdx}-"]`).forEach(el => {
-      el.style.pointerEvents = 'none';
+      el.classList.remove('correct', 'incorrect');
+      el.style.pointerEvents = 'auto';
     });
 
-    if (selectedIdx === correctIdx) {
+    if (retryBtn) retryBtn.style.display = 'inline-flex';
+
+    if (Number(selectedIdx) === correctIdx) {
       if (selectedEl) selectedEl.classList.add('correct');
       if (feedbackEl) {
         feedbackEl.style.display = 'block';
         feedbackEl.style.background = '#F0FDFA';
         feedbackEl.style.border = '1px solid #99F6E4';
         feedbackEl.style.color = '#0F766E';
-        feedbackEl.innerHTML = `<strong>✓ Correcto:</strong> ${this.escapeHtml(explanation)}`;
+        feedbackEl.innerHTML = `<strong>✓ ¡Respuesta correcta!</strong> ${this.escapeHtml(explanation)}`;
+      }
+      if (evalErrorEl && this.isCurrentQuizApproved()) {
+        evalErrorEl.style.display = 'none';
       }
     } else {
       if (selectedEl) selectedEl.classList.add('incorrect');
-      if (correctEl) correctEl.classList.add('correct');
       if (feedbackEl) {
         feedbackEl.style.display = 'block';
         feedbackEl.style.background = '#FEF2F2';
         feedbackEl.style.border = '1px solid #FECACA';
         feedbackEl.style.color = '#991B1B';
-        feedbackEl.innerHTML = `<strong>Retroalimentación:</strong> ${this.escapeHtml(explanation)}`;
+        feedbackEl.innerHTML = `
+          <div><strong>✕ Respuesta incorrecta:</strong> No aprobaste esta lección. Vuelve a intentarlo para continuar.</div>
+          <div style="margin-top: 0.4rem; font-weight: 400; font-size: 0.84rem;">Revisa la explicación de la lección y selecciona otra opción o pulsa "Intentar de nuevo".</div>
+          <button type="button" class="btn btn-secondary btn-sm" style="margin-top: 0.55rem; background: #FFFFFF; color: #991B1B; border-color: #FECACA;" onclick="App.resetLessonQuiz(${qIdx})">
+            🔄 Intentar de nuevo
+          </button>
+        `;
+      }
+      if (evalErrorEl) {
+        evalErrorEl.textContent = '⚠️ No aprobaste esta lección. Vuelve a intentarlo para continuar.';
+        evalErrorEl.style.display = 'block';
       }
     }
+  },
+
+  resetLessonQuiz: function (specificQIdx) {
+    const quiz = (this.state.currentLesson && this.state.currentLesson.quiz) || [];
+    this.state.currentQuizAnswers = this.state.currentQuizAnswers || {};
+    const evalErrorEl = document.getElementById('lesson-eval-error');
+    if (evalErrorEl) evalErrorEl.style.display = 'none';
+
+    quiz.forEach((_, qIdx) => {
+      if (specificQIdx !== undefined && specificQIdx !== qIdx) return;
+      delete this.state.currentQuizAnswers[qIdx];
+      document.querySelectorAll(`[id^="quiz-opt-${qIdx}-"]`).forEach(el => {
+        el.classList.remove('correct', 'incorrect');
+        el.style.pointerEvents = 'auto';
+      });
+      const feedbackEl = document.getElementById(`quiz-feedback-${qIdx}`);
+      if (feedbackEl) {
+        feedbackEl.style.display = 'none';
+        feedbackEl.innerHTML = '';
+      }
+    });
+  },
+
+  isCurrentQuizApproved: function () {
+    const quiz = (this.state.currentLesson && this.state.currentLesson.quiz) || [];
+    if (!quiz.length) return true;
+    const answers = this.state.currentQuizAnswers || {};
+    for (let i = 0; i < quiz.length; i++) {
+      if (answers[i] === undefined || Number(answers[i]) !== Number(quiz[i].correctIndex)) {
+        return false;
+      }
+    }
+    return true;
   },
 
   markLessonCompleted: async function (lessonId) {
@@ -1780,16 +1862,49 @@ const App = {
       return;
     }
 
-    const hasEvidence = this.state.currentEvidenceImage || (student.evidence && student.evidence[lessonId]);
-    if (!hasEvidence) {
-      alert("📸 Falta tu evidencia: Debes adjuntar la captura de pantalla de tu práctica con la IA para completar esta lección.");
+    const numId = Number(lessonId);
+    const evalErrorEl = document.getElementById('lesson-eval-error');
+
+    // 1. Verificar que haya respondido y aprobado la evaluación (quiz) al 100%
+    if (!this.isCurrentQuizApproved()) {
+      const msg = 'No aprobaste esta lección. Vuelve a intentarlo para continuar.';
+      if (evalErrorEl) {
+        evalErrorEl.textContent = `⚠️ ${msg} (Debes responder correctamente la evaluación de selección múltiple).`;
+        evalErrorEl.style.display = 'block';
+      }
+      this.showToast(`✕ ${msg}`);
+      const quizSection = document.getElementById('lesson-quiz-section');
+      if (quizSection) {
+        quizSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
+
+    // 2. Verificar que haya subido la captura de evidencia de la práctica
+    const hasEvidence = !!(this.state.currentEvidenceImage || (
+      (student.evidence && student.evidence[numId]) ||
+      (Array.isArray(student.evidenceLessons) && student.evidenceLessons.includes(numId))
+    ));
+    if (!hasEvidence) {
+      const msg = 'No aprobaste esta lección. Vuelve a intentarlo para continuar.';
+      if (evalErrorEl) {
+        evalErrorEl.textContent = `⚠️ ${msg} (Falta adjuntar la captura de pantalla de tu práctica con la IA).`;
+        evalErrorEl.style.display = 'block';
+      }
+      this.showToast(`📸 ${msg}`);
+      const evZone = document.querySelector('.evidence-section');
+      if (evZone) {
+        evZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    if (evalErrorEl) evalErrorEl.style.display = 'none';
 
     const btn = document.getElementById('btn-complete-lesson');
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = "Guardando progreso...";
+      btn.innerHTML = "Verificando y guardando aprobación...";
     }
 
     try {
@@ -1801,16 +1916,22 @@ const App = {
         },
         body: JSON.stringify({
           image: this.state.currentEvidenceImage || undefined,
+          answers: this.state.currentQuizAnswers,
           quizScore: 100
         })
       });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        alert(data.error || "No se pudo completar la lección.");
+        const errMsg = data.error || 'No aprobaste esta lección. Vuelve a intentarlo para continuar.';
+        if (evalErrorEl) {
+          evalErrorEl.textContent = `⚠️ ${errMsg}`;
+          evalErrorEl.style.display = 'block';
+        }
+        this.showToast(`✕ ${errMsg}`);
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = "✓ Marcar como Completada ➔";
+          btn.innerHTML = "✓ Aprobar y Completar Lección ➔";
         }
         return;
       }
@@ -1819,9 +1940,9 @@ const App = {
       this.updateNavForStudent();
 
       if (data.student.certificateUnlocked) {
-        this.showToast("🎓 ¡Felicitaciones! Has completado las 7 lecciones y desbloqueaste tu Certificado Oficial en PDF.");
+        this.showToast("🎓 ¡Felicitaciones! Aprobaste las 7 lecciones y desbloqueaste tu Certificado de Finalización en PDF.");
       } else {
-        this.showToast("✓ Lección completada exitosamente.");
+        this.showToast("✓ ¡Lección aprobada! Se ha desbloqueado la siguiente lección.");
       }
 
       // Avanzar automáticamente a la siguiente lección
