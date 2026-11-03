@@ -1265,7 +1265,7 @@ const App = {
     } else {
       if (nextTagEl) nextTagEl.textContent = '🎉 PROGRAMA COMPLETADO AL 100%';
       if (nextTitleEl) nextTitleEl.textContent = '¡Felicitaciones! Completaste las 7 lecciones del curso';
-      if (nextSubEl) nextSubEl.textContent = 'Tu Certificado Oficial en PDF ya está habilitado para descarga.';
+      if (nextSubEl) nextSubEl.textContent = 'Tu constancia digital de finalización en PDF ya está habilitada para descarga.';
       if (continueBtn) {
         continueBtn.textContent = '📥 Descargar mi Certificado en PDF ➔';
         continueBtn.onclick = () => this.downloadCertificate();
@@ -1281,16 +1281,16 @@ const App = {
           <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
             <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-lg">
             <div>
-              <span class="pill pill-gold" style="margin-bottom: 0.35rem;">Certificado Oficial Desbloqueado</span>
-              <h3 style="font-size: 1.25rem; color: var(--text-main);">¡Felicitaciones! Tu Certificado en PDF está Listo</h3>
+              <span class="pill pill-gold" style="margin-bottom: 0.35rem;">Constancia Digital Desbloqueada</span>
+              <h3 style="font-size: 1.25rem; color: var(--text-main);">¡Felicitaciones! Tu Certificado de Finalización en PDF está Listo</h3>
               <p style="color: var(--text-muted); font-size: 0.88rem;">
-                Completaste las 7 lecciones con sus evidencias aprobadas. Código de verificación: <strong>${current.certificateCode}</strong>
+                Completaste las 7 lecciones prácticas (constancia digital no oficial). ID de referencia: <strong>${current.certificateCode}</strong>
               </p>
             </div>
           </div>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <button class="btn btn-gold btn-md" onclick="App.downloadCertificate()">
-              📥 Descargar Certificado Oficial (PDF 300 DPI)
+              📥 Descargar Certificado en PDF
             </button>
           </div>
         `;
@@ -1301,10 +1301,10 @@ const App = {
           <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
             <img src="images/logo-crop.png" alt="IA en 7 Días" class="official-logo-img logo-lg" style="opacity: 0.85;">
             <div>
-              <span class="pill pill-subtle" style="margin-bottom: 0.35rem;">Certificado Protegido</span>
-              <h3 style="font-size: 1.15rem; color: var(--text-main);">Desbloqueo exclusivo al completar el 100% (7 lecciones)</h3>
+              <span class="pill pill-subtle" style="margin-bottom: 0.35rem;">Constancia Digital de Finalización</span>
+              <h3 style="font-size: 1.15rem; color: var(--text-main);">Se habilita al completar el 100% (7 lecciones)</h3>
               <p style="color: var(--text-muted); font-size: 0.85rem;">
-                Te faltan <strong>${needed} lección${needed === 1 ? '' : 'es'}</strong> con evidencia de práctica para emitir tu certificado oficial.
+                Te faltan <strong>${needed} lección${needed === 1 ? '' : 'es'}</strong> con evidencia de práctica para descargar tu constancia digital (no oficial).
               </p>
             </div>
           </div>
