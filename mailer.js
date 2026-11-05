@@ -325,9 +325,13 @@ async function sendViaResend({ apiKey, from, to, subject, text, html }) {
       body: JSON.stringify({
         from,
         to: [to],
+        reply_to: to,
         subject,
         text,
-        html
+        html,
+        headers: {
+          'X-Entity-Ref-ID': `ia7d-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+        }
       }),
       signal: controller.signal
     });
@@ -456,3 +460,4 @@ module.exports = {
   buildPendingPaymentEmailContent,
   sendPendingPaymentEmail
 };
+
