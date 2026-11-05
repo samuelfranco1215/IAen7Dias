@@ -508,18 +508,39 @@ function saveReceipt(studentId, { image, reference }) {
   if (!s) return { error: 'Alumno no encontrado' };
   if (s.paymentStatus === 'approved') return { error: 'Tu pago ya fue aprobado.' };
 
+  const cleanRef = String(reference || '').trim();
+  const receiptHash = sha256(`${String(image || '').slice(0, 4096)}:${String(image || '').length}:${cleanRef}`);
+
+  // Evitar duplicados si el alumno envía exactamente el mismo comprobante mientras ya está en revisión
+  if (s.paymentStatus === 'in_review' && s.receipt && s.receipt.hash === receiptHash) {
+    return { student: s, duplicateReceipt: true };
+  }
+
   const file = saveImage(image, 'receipts', s.id);
   if (s.receipt) s.receiptHistory = [...(s.receiptHistory || []), s.receipt];
   s.receipt = {
     file,
     dataUrl: image,
-    reference: reference || '',
-    uploadedAt: new Date().toISOString()
+    reference: cleanRef,
+    hash: receiptHash,
+    uploadedAt: new Date().toISOString(),
+    notifiedAt: null,
+    notificationProvider: null
   };
   s.paymentStatus = 'in_review';
   s.rejectionReason = null;
   writeDb(db);
-  return { student: s };
+  return { student: s, duplicateReceipt: false };
+}
+
+function markReceiptNotified(studentId, { provider, notifiedAt } = {}) {
+  const db = readDb();
+  const s = db.students.find(x => x.id === studentId);
+  if (!s || !s.receipt) return null;
+  s.receipt.notifiedAt = notifiedAt || new Date().toISOString();
+  s.receipt.notificationProvider = provider || 'email';
+  writeDb(db);
+  return s;
 }
 
 /** Aprueba el pago UNA sola vez y genera el código de acceso. */
@@ -783,6 +804,7 @@ module.exports = {
   createStudent,
   updateStudent,
   saveReceipt,
+  markReceiptNotified,
   approveStudent,
   rejectStudent,
   revokeStudent,

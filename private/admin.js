@@ -167,6 +167,106 @@ const AdminApp = {
     await this.loadStats();
     await this.loadStudents();
     await this.loadLessons();
+    await this.loadEmailConfig();
+  },
+
+  loadEmailConfig: async function () {
+    const badge = document.getElementById('email-config-badge');
+    if (!badge) return;
+    try {
+      const res = await this.api('/api/admin/email-config');
+      const data = await res.json();
+      if (data.hasDedicatedCredentials) {
+        const label = data.activeProvider === 'gmail_smtp' ? '✓ Activo (Gmail SMTP)' : '✓ Activo (Resend API)';
+        badge.textContent = label;
+        badge.style.background = '#F0FDFA';
+        badge.style.color = '#0F766E';
+        badge.style.borderColor = '#99F6E4';
+      } else {
+        badge.textContent = '⚠ Configura Clave Gmail o Vercel';
+        badge.style.background = '#FEF3C7';
+        badge.style.color = '#B45309';
+        badge.style.borderColor = '#FDE68A';
+      }
+    } catch (e) {
+      badge.textContent = 'Estado desconocido';
+    }
+  },
+
+  saveEmailConfig: async function () {
+    const input = document.getElementById('admin-gmail-app-pass');
+    const feedback = document.getElementById('email-config-feedback');
+    const val = input ? input.value.trim() : '';
+    if (!val) {
+      alert('Pega tu contraseña de aplicación de Gmail (16 letras) o clave de API.');
+      return;
+    }
+    const payload = val.startsWith('re_') ? { resendApiKey: val } : { gmailAppPassword: val };
+    try {
+      const res = await this.api('/api/admin/email-config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'No se pudo guardar la configuración.');
+      }
+      if (input) input.value = '';
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#F0FDFA';
+        feedback.style.border = '1px solid #99F6E4';
+        feedback.style.color = '#0F766E';
+        feedback.textContent = `✓ Configuración guardada. Las notificaciones se enviarán automáticamente a ${data.toEmail}.`;
+      }
+      await this.loadEmailConfig();
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#FEF2F2';
+        feedback.style.border = '1px solid #FECACA';
+        feedback.style.color = '#B91C1C';
+        feedback.textContent = err.message;
+      }
+    }
+  },
+
+  sendTestEmail: async function () {
+    const btn = document.getElementById('btn-test-email');
+    const feedback = document.getElementById('email-config-feedback');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Enviando prueba...';
+    }
+    if (feedback) feedback.style.display = 'none';
+    try {
+      const res = await this.api('/api/admin/email-test', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'No se pudo enviar el correo de prueba.');
+      }
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#F0FDFA';
+        feedback.style.border = '1px solid #99F6E4';
+        feedback.style.color = '#0F766E';
+        feedback.textContent = `✓ Correo de prueba enviado a ${data.to} con asunto "${data.subject}". Revisa tu bandeja de entrada (o Spam).`;
+      }
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#FEF2F2';
+        feedback.style.border = '1px solid #FECACA';
+        feedback.style.color = '#B91C1C';
+        feedback.textContent = `✕ No se pudo enviar el correo: ${err.message}`;
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '📨 Enviar correo de prueba';
+      }
+    }
   },
 
   loadStats: async function () {

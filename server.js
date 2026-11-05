@@ -14,6 +14,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const db = require('./db');
+const mailer = require('./mailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -247,7 +248,12 @@ function studentAdminView(s) {
     createdAt: s.createdAt,
     paymentStatus: s.paymentStatus,
     amount: s.amount,
-    receipt: s.receipt ? { reference: s.receipt.reference, uploadedAt: s.receipt.uploadedAt } : null,
+    receipt: s.receipt ? {
+      reference: s.receipt.reference,
+      uploadedAt: s.receipt.uploadedAt,
+      notifiedAt: s.receipt.notifiedAt || null,
+      notificationProvider: s.receipt.notificationProvider || null
+    } : null,
     receiptHistoryCount: (s.receiptHistory || []).length,
     rejectionReason: s.rejectionReason || null,
     approvedAt: s.approvedAt || null,
@@ -379,14 +385,38 @@ app.post('/api/me/logout', requireStudent, (req, res) => {
   res.json({ success: true });
 });
 
-app.post('/api/me/receipt', requireStudent, (req, res) => {
+app.post('/api/me/receipt', requireStudent, async (req, res) => {
   const { image, reference } = req.body || {};
   if (!image) return res.status(400).json({ error: 'Adjunta la captura del comprobante de Nequi.' });
   const ref = String(reference || '').replace(/[^A-Za-z0-9 -]/g, '').slice(0, 40);
   try {
     const result = db.saveReceipt(req.student.id, { image, reference: ref });
     if (result.error) return res.status(400).json({ error: result.error });
-    res.json({ success: true, student: studentPublicView(result.student) });
+
+    let emailNotified = false;
+    if (!result.duplicateReceipt) {
+      try {
+        const emailResult = await mailer.sendPendingPaymentEmail(result.student, {
+          req,
+          settings: db.getSettings()
+        });
+        if (emailResult && emailResult.ok) {
+          emailNotified = true;
+          db.markReceiptNotified(result.student.id, { provider: emailResult.provider });
+        } else if (emailResult && emailResult.error) {
+          console.warn('[receipt] No se pudo enviar notificación por correo:', emailResult.error);
+        }
+      } catch (mailErr) {
+        console.warn('[receipt] Error inesperado enviando correo al admin:', mailErr.message);
+      }
+    }
+
+    res.json({
+      success: true,
+      student: studentPublicView(result.student),
+      duplicateReceipt: !!result.duplicateReceipt,
+      emailNotified
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -612,6 +642,82 @@ app.put('/api/admin/lessons/:id/video', requireAdmin, (req, res) => {
   const updated = db.updateLesson(req.params.id, { video });
   if (!updated) return res.status(404).json({ error: 'Lección no encontrada' });
   res.json({ success: true, video: updated.video });
+});
+
+// Configuración y prueba de notificaciones automáticas por correo al admin
+app.get('/api/admin/email-config', requireAdmin, (req, res) => {
+  const settings = db.getSettings();
+  const cfg = mailer.resolveEmailConfig(settings);
+  res.json({
+    toEmail: cfg.toEmail,
+    gmailUser: cfg.gmailUser,
+    hasGmailAppPassword: Boolean(cfg.gmailAppPassword),
+    hasResendApiKey: Boolean(cfg.resendApiKey),
+    activeProvider: cfg.activeProvider,
+    hasDedicatedCredentials: cfg.hasDedicatedCredentials,
+    envConfigured: Boolean(process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || process.env.RESEND_API_KEY)
+  });
+});
+
+app.put('/api/admin/email-config', requireAdmin, (req, res) => {
+  const body = req.body || {};
+  const settings = db.getSettings();
+  const prev = (settings && settings.emailNotifications) || {};
+  const next = { ...prev };
+
+  if (typeof body.gmailAppPassword === 'string') {
+    const cleanPass = body.gmailAppPassword.replace(/\s+/g, '').trim();
+    if (cleanPass) next.gmailAppPassword = cleanPass;
+    else if (body.clearGmailAppPassword) delete next.gmailAppPassword;
+  }
+  if (typeof body.resendApiKey === 'string') {
+    const cleanKey = body.resendApiKey.trim();
+    if (cleanKey) next.resendApiKey = cleanKey;
+    else if (body.clearResendApiKey) delete next.resendApiKey;
+  }
+
+  db.updateSettings({ emailNotifications: next });
+  const cfg = mailer.resolveEmailConfig(db.getSettings());
+  res.json({
+    success: true,
+    toEmail: cfg.toEmail,
+    activeProvider: cfg.activeProvider,
+    hasGmailAppPassword: Boolean(cfg.gmailAppPassword),
+    hasResendApiKey: Boolean(cfg.resendApiKey),
+    hasDedicatedCredentials: cfg.hasDedicatedCredentials
+  });
+});
+
+app.post('/api/admin/email-test', requireAdmin, async (req, res) => {
+  const mockStudent = {
+    name: 'Alumno de Prueba (Verificación)',
+    docType: 'CC',
+    docNumber: '1114830468',
+    whatsapp: '+57 315 842 2894',
+    email: 'samuelfranco1215@gmail.com',
+    receipt: {
+      reference: 'PRUEBA-NEQUI-001',
+      uploadedAt: new Date().toISOString()
+    }
+  };
+  const result = await mailer.sendPendingPaymentEmail(mockStudent, {
+    req,
+    settings: db.getSettings(),
+    isTest: true
+  });
+  if (!result.ok) {
+    return res.status(400).json({
+      success: false,
+      error: result.error || 'No se pudo enviar el correo de prueba.',
+      to: result.to
+    });
+  }
+  res.json({
+    success: true,
+    provider: result.provider,
+    to: result.to,
+    subject: result.subject
+  });
 });
 
 // Cualquier /api desconocida -> 404 JSON
