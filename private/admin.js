@@ -172,6 +172,7 @@ const AdminApp = {
 
   loadEmailConfig: async function () {
     const badge = document.getElementById('email-config-badge');
+    const input = document.getElementById('admin-gmail-app-pass');
     if (!badge) return;
     try {
       const res = await this.api('/api/admin/email-config');
@@ -182,11 +183,17 @@ const AdminApp = {
         badge.style.background = '#F0FDFA';
         badge.style.color = '#0F766E';
         badge.style.borderColor = '#99F6E4';
+        if (input && data.maskedKey) {
+          input.placeholder = `✓ Clave guardada (${data.maskedKey}) — pega otra solo si deseas cambiarla`;
+        }
       } else {
         badge.textContent = '⚠ Configura Clave Gmail o Vercel';
         badge.style.background = '#FEF3C7';
         badge.style.color = '#B45309';
         badge.style.borderColor = '#FDE68A';
+        if (input) {
+          input.placeholder = 'Contraseña de aplicación Gmail (16 letras) o API Key (re_...)...';
+        }
       }
     } catch (e) {
       badge.textContent = 'Estado desconocido';

@@ -645,6 +645,18 @@ app.put('/api/admin/lessons/:id/video', requireAdmin, (req, res) => {
 });
 
 // Configuración y prueba de notificaciones automáticas por correo al admin
+function maskSecretKey(cfg) {
+  if (cfg.resendApiKey) {
+    const k = cfg.resendApiKey;
+    return k.length > 8 ? `${k.slice(0, 5)}••••••••••••${k.slice(-4)}` : 're_••••••••';
+  }
+  if (cfg.gmailAppPassword) {
+    const p = cfg.gmailAppPassword;
+    return p.length > 6 ? `${p.slice(0, 2)}••••••••••••${p.slice(-2)}` : '••••••••••••••••';
+  }
+  return '';
+}
+
 app.get('/api/admin/email-config', requireAdmin, (req, res) => {
   const settings = db.getSettings();
   const cfg = mailer.resolveEmailConfig(settings);
@@ -655,6 +667,7 @@ app.get('/api/admin/email-config', requireAdmin, (req, res) => {
     hasResendApiKey: Boolean(cfg.resendApiKey),
     activeProvider: cfg.activeProvider,
     hasDedicatedCredentials: cfg.hasDedicatedCredentials,
+    maskedKey: maskSecretKey(cfg),
     envConfigured: Boolean(process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || process.env.RESEND_API_KEY)
   });
 });
@@ -684,7 +697,8 @@ app.put('/api/admin/email-config', requireAdmin, (req, res) => {
     activeProvider: cfg.activeProvider,
     hasGmailAppPassword: Boolean(cfg.gmailAppPassword),
     hasResendApiKey: Boolean(cfg.resendApiKey),
-    hasDedicatedCredentials: cfg.hasDedicatedCredentials
+    hasDedicatedCredentials: cfg.hasDedicatedCredentials,
+    maskedKey: maskSecretKey(cfg)
   });
 });
 

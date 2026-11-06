@@ -130,7 +130,16 @@ function buildPendingPaymentEmailContent(student, req, isTest = false) {
   const formattedDate = formatColombiaDate(uploadedAt);
   const statusLabel = 'Pendiente de aprobación';
   const adminUrl = getAdminPanelUrl(req);
-  const subject = EMAIL_SUBJECT;
+  const shortTime = new Date().toLocaleTimeString('es-CO', {
+    timeZone: 'America/Bogota',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  const subject = isTest
+    ? `${EMAIL_SUBJECT} — Prueba (${shortTime})`
+    : `${EMAIL_SUBJECT} — ${name} (${shortTime})`;
 
   const text = [
     'Nuevo pago por revisar - IA en 7 Días',
