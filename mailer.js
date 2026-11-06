@@ -156,71 +156,22 @@ function buildPendingPaymentEmailContent(student, req, isTest = false) {
     adminUrl
   ].join('\n');
 
-  const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>${escapeHtml(subject)}</title>
-</head>
-<body style="margin:0;padding:24px;background-color:#F7F5F2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1C1917;">
-  <div style="max-width:560px;margin:0 auto;background:#FFFFFF;border:1px solid #E7E5E4;border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(28,25,23,0.06);">
-    <div style="background:#0F766E;color:#FFFFFF;padding:18px 24px;">
-      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;opacity:0.9;">IA en 7 Días • Notificación Automática</div>
-      <h1 style="margin:6px 0 0;font-size:20px;font-weight:800;">Nuevo pago por revisar</h1>
-    </div>
-    <div style="padding:24px;">
-      <p style="margin:0 0 16px;font-size:14px;line-height:1.5;color:#57534E;">
-        Un alumno completó su inscripción y subió su comprobante de pago Nequi. Su acceso se encuentra <strong>pendiente de aprobación</strong>.
-      </p>
-      <table style="width:100%;border-collapse:collapse;font-size:14px;background:#FAF8F5;border:1px solid #E7E5E4;border-radius:8px;overflow:hidden;">
-        <tbody>
-          <tr style="border-bottom:1px solid #E7E5E4;">
-            <td style="padding:10px 14px;color:#57534E;font-weight:600;width:42%;">Nombre del alumno</td>
-            <td style="padding:10px 14px;color:#1C1917;font-weight:700;">${escapeHtml(name)}</td>
-          </tr>
-          <tr style="border-bottom:1px solid #E7E5E4;">
-            <td style="padding:10px 14px;color:#57534E;font-weight:600;">Cédula</td>
-            <td style="padding:10px 14px;color:#1C1917;">${escapeHtml(fullDocument)}</td>
-          </tr>
-          <tr style="border-bottom:1px solid #E7E5E4;">
-            <td style="padding:10px 14px;color:#57534E;font-weight:600;">Teléfono / WhatsApp</td>
-            <td style="padding:10px 14px;color:#1C1917;">${escapeHtml(whatsapp)}</td>
-          </tr>
-          <tr style="border-bottom:1px solid #E7E5E4;">
-            <td style="padding:10px 14px;color:#57534E;font-weight:600;">Correo del alumno</td>
-            <td style="padding:10px 14px;color:#1C1917;">${escapeHtml(email)}</td>
-          </tr>
-          <tr style="border-bottom:1px solid #E7E5E4;">
-            <td style="padding:10px 14px;color:#57534E;font-weight:600;">Referencia Nequi</td>
-            <td style="padding:10px 14px;color:#1C1917;">${escapeHtml(reference)}</td>
-          </tr>
-          <tr style="border-bottom:1px solid #E7E5E4;">
-            <td style="padding:10px 14px;color:#57534E;font-weight:600;">Fecha</td>
-            <td style="padding:10px 14px;color:#1C1917;">${escapeHtml(formattedDate)}</td>
-          </tr>
-          <tr>
-            <td style="padding:10px 14px;color:#57534E;font-weight:600;">Estado</td>
-            <td style="padding:10px 14px;">
-              <span style="display:inline-block;background:#FEF3C7;color:#B45309;border:1px solid #FDE68A;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;">
-                ⏳ ${escapeHtml(statusLabel)}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="margin-top:22px;text-align:center;">
-        <a href="${escapeHtml(adminUrl)}" target="_blank" rel="noopener"
-           style="display:inline-block;background:#0F766E;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:12px 22px;border-radius:8px;">
-          Abrir Panel Admin para Revisar Pago ➔
-        </a>
-      </div>
-      <p style="margin:16px 0 0;font-size:12px;color:#78716C;text-align:center;">
-        Enlace directo: <a href="${escapeHtml(adminUrl)}" style="color:#0F766E;">${escapeHtml(adminUrl)}</a>
-      </p>
-    </div>
-  </div>
-</body>
-</html>`;
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#1C1917;max-width:540px;">
+  <p style="margin:0 0 12px;">Hola Samuel,</p>
+  <p style="margin:0 0 14px;">Se registró un <strong>nuevo pago por revisar</strong> en <strong>IA en 7 Días</strong>:</p>
+  <ul style="margin:0 0 16px;padding-left:18px;">
+    <li><strong>Nombre del alumno:</strong> ${escapeHtml(name)}</li>
+    <li><strong>Cédula:</strong> ${escapeHtml(fullDocument)}</li>
+    <li><strong>Teléfono / WhatsApp:</strong> ${escapeHtml(whatsapp)}</li>
+    <li><strong>Correo del alumno:</strong> ${escapeHtml(email)}</li>
+    <li><strong>Referencia Nequi:</strong> ${escapeHtml(reference)}</li>
+    <li><strong>Fecha:</strong> ${escapeHtml(formattedDate)}</li>
+    <li><strong>Estado:</strong> ${escapeHtml(statusLabel)}</li>
+  </ul>
+  <p style="margin:0 0 8px;"><strong>Link al panel admin:</strong><br>
+    <a href="${escapeHtml(adminUrl)}" target="_blank" rel="noopener">${escapeHtml(adminUrl)}</a>
+  </p>
+</div>`;
 
   return { subject, text, html, adminUrl, formattedDate, fullDocument, statusLabel };
 }
