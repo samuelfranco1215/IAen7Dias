@@ -677,16 +677,30 @@ app.put('/api/admin/email-config', requireAdmin, (req, res) => {
   const settings = db.getSettings();
   const prev = (settings && settings.emailNotifications) || {};
   const next = { ...prev };
+  const adminPwd = String(process.env.ADMIN_PASSWORD || 'admin2026').trim();
+
+  if (typeof body.resendApiKey === 'string') {
+    const cleanKey = body.resendApiKey.trim();
+    if (cleanKey && cleanKey.startsWith('re_')) {
+      next.resendApiKey = cleanKey;
+      delete next.gmailAppPassword;
+    } else if (body.clearResendApiKey) {
+      delete next.resendApiKey;
+    }
+  }
 
   if (typeof body.gmailAppPassword === 'string') {
     const cleanPass = body.gmailAppPassword.replace(/\s+/g, '').trim();
-    if (cleanPass) next.gmailAppPassword = cleanPass;
-    else if (body.clearGmailAppPassword) delete next.gmailAppPassword;
-  }
-  if (typeof body.resendApiKey === 'string') {
-    const cleanKey = body.resendApiKey.trim();
-    if (cleanKey) next.resendApiKey = cleanKey;
-    else if (body.clearResendApiKey) delete next.resendApiKey;
+    if (cleanPass && cleanPass !== adminPwd && !cleanPass.startsWith('re_')) {
+      if (cleanPass.length !== 16) {
+        return res.status(400).json({
+          error: 'La contraseña de aplicación de Gmail debe tener exactamente 16 letras (o pega una API Key de Resend que empiece por re_).'
+        });
+      }
+      next.gmailAppPassword = cleanPass;
+    } else if (body.clearGmailAppPassword) {
+      delete next.gmailAppPassword;
+    }
   }
 
   db.updateSettings({ emailNotifications: next });

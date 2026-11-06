@@ -173,6 +173,8 @@ const AdminApp = {
   loadEmailConfig: async function () {
     const badge = document.getElementById('email-config-badge');
     const input = document.getElementById('admin-gmail-app-pass');
+    const keyInfo = document.getElementById('email-active-key-info');
+    if (input) input.value = '';
     if (!badge) return;
     try {
       const res = await this.api('/api/admin/email-config');
@@ -183,16 +185,24 @@ const AdminApp = {
         badge.style.background = '#F0FDFA';
         badge.style.color = '#0F766E';
         badge.style.borderColor = '#99F6E4';
+        if (keyInfo) {
+          keyInfo.style.color = '#0F766E';
+          keyInfo.textContent = `✓ Clave activa guardada en Supabase: ${data.maskedKey || 'configurada'} (permanente)`;
+        }
         if (input && data.maskedKey) {
-          input.placeholder = `✓ Clave guardada (${data.maskedKey}) — pega otra solo si deseas cambiarla`;
+          input.placeholder = `Clave actual: ${data.maskedKey} (pega otra solo para reemplazarla)`;
         }
       } else {
-        badge.textContent = '⚠ Configura Clave Gmail o Vercel';
+        badge.textContent = '⚠ Configura Clave Gmail o Resend';
         badge.style.background = '#FEF3C7';
         badge.style.color = '#B45309';
         badge.style.borderColor = '#FDE68A';
+        if (keyInfo) {
+          keyInfo.style.color = '#B45309';
+          keyInfo.textContent = '⚠ Aún no hay clave guardada. Pega tu API Key re_... a la derecha.';
+        }
         if (input) {
-          input.placeholder = 'Contraseña de aplicación Gmail (16 letras) o API Key (re_...)...';
+          input.placeholder = 'Pega aquí tu API Key de Resend (re_...)...';
         }
       }
     } catch (e) {
