@@ -130,7 +130,7 @@ function buildPendingPaymentEmailContent(student, req, isTest = false) {
   const formattedDate = formatColombiaDate(uploadedAt);
   const statusLabel = 'Pendiente de aprobación';
   const adminUrl = getAdminPanelUrl(req);
-  const subject = isTest ? `${EMAIL_SUBJECT} (Prueba)` : EMAIL_SUBJECT;
+  const subject = EMAIL_SUBJECT;
 
   const text = [
     'Nuevo pago por revisar - IA en 7 Días',
@@ -227,7 +227,7 @@ function sendViaSmtpTls({ host, port, user, pass, to, subject, text, html }) {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
-      try { socket.destroy(); } catch (e) {}
+      try { socket.destroy(); } catch (e) { }
       if (err) reject(err);
       else resolve(val);
     };
@@ -280,7 +280,7 @@ function sendViaSmtpTls({ host, port, user, pass, to, subject, text, html }) {
     let stepIndex = 0;
     let buffer = '';
 
-    const socket = tls.connect({ host, port, servername: host }, () => {});
+    const socket = tls.connect({ host, port, servername: host }, () => { });
 
     socket.setEncoding('utf8');
     socket.on('error', (err) => done(err));
@@ -325,13 +325,9 @@ async function sendViaResend({ apiKey, from, to, subject, text, html }) {
       body: JSON.stringify({
         from,
         to: [to],
-        reply_to: to,
         subject,
         text,
-        html,
-        headers: {
-          'X-Entity-Ref-ID': `ia7d-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-        }
+        html
       }),
       signal: controller.signal
     });
