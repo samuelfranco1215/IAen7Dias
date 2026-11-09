@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kit Móvil de Redes y Anuncios • IA en 7 Días</title>
+  <title>Kit Móvil de Redes, Videos y Anuncios • IA en 7 Días</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="images/favicon.png?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@
       padding: 1.25rem 1rem 4rem;
       line-height: 1.5;
     }
-    .container { max-width: 980px; margin: 0 auto; }
+    .container { max-width: 1120px; margin: 0 auto; }
     .header {
       background: var(--card);
       border: 1px solid var(--border);
@@ -53,7 +53,7 @@
       margin-bottom: 1.5rem;
       box-shadow: 0 8px 24px -12px rgba(20, 20, 19, 0.06);
     }
-    .section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .section-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.35rem; }
     .section-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
     .profile-grid {
       display: grid;
@@ -104,11 +104,45 @@
       cursor: pointer;
       border: none;
       font-family: inherit;
-      shrink: 0;
       text-align: center;
     }
     .btn-emerald { background: var(--emerald); color: #fff; }
     .btn-bronze { background: var(--bronze); color: #fff; }
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 1rem;
+    }
+    .video-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .video-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      background: #FEF3C7;
+      color: var(--bronze);
+      margin-bottom: 0.35rem;
+    }
+    .video-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      max-height: 210px;
+      overflow-y: auto;
+    }
     .ads-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -167,16 +201,16 @@
       <div class="brand">
         <img id="official-logo" src="images/logo-crop.png?v=4" alt="IA en 7 Días">
         <div>
-          <h1>Kit Móvil • Instagram, TikTok y WhatsApp</h1>
-          <p>Ábrelo desde tu teléfono para descargar las fotos a tu galería y copiar la bio en 1 toque</p>
+          <h1>Banco Completo • 10 Guiones de Video + 8 Anuncios + Kit de Perfil</h1>
+          <p>Ábrelo desde tu teléfono o PC para descargar las imágenes y copiar guiones y descripciones en 1 toque</p>
         </div>
       </div>
     </div>
 
     <!-- 1. Perfil de Instagram y TikTok -->
     <div class="section-card">
-      <h2 class="section-title">1. Crear Perfil en Instagram y TikTok desde el Teléfono</h2>
-      <p class="section-sub">Toca "Descargar Foto" para guardarla en tu carrete y "Copiar" en cada dato para pegarlo en la app.</p>
+      <h2 class="section-title">1. Kit para Crear el Perfil en Instagram y TikTok</h2>
+      <p class="section-sub">Toca "Descargar Foto" para guardarla en tu galería y "Copiar" en cada dato.</p>
       <div class="profile-grid">
         <div class="avatar-box">
           <div class="avatar-preview">
@@ -220,52 +254,110 @@
       </div>
     </div>
 
-    <!-- 2. Anuncios descargables -->
+    <!-- 2. 10 Guiones de Video para TikTok / Reels -->
     <div class="section-card">
-      <h2 class="section-title">2. Publicaciones e Historias Listas para Subir</h2>
-      <p class="section-sub">Descarga en formato Cuadrado (1080×1080) o Historia/TikTok (1080×1920) y copia su descripción.</p>
-      <div class="ads-grid">
-        <div class="ad-card">
-          <strong>Anuncio #1: Ahorro de Tiempo</strong>
-          <canvas id="ad-canvas-0" width="1080" height="1080"></canvas>
-          <div class="btn-row">
-            <button class="btn btn-emerald" onclick="downloadAd(0, 'square')">⬇ Post 1:1</button>
-            <button class="btn btn-bronze" onclick="downloadAd(0, 'story')">📱 Story 9:16</button>
-          </div>
-          <div id="ad-copy-0" class="ad-copy"></div>
-          <button class="btn btn-emerald" onclick="copyById('ad-copy-0')">📋 Copiar Descripción #1</button>
-        </div>
+      <h2 class="section-title">🎬 2. 10 Guiones Completos de Video para TikTok / Instagram Reels</h2>
+      <p class="section-sub">Incluye opciones grabando solo la pantalla (sin mostrar la cara) y opciones hablando a cámara.</p>
+      <div id="videos-container" class="videos-grid"></div>
+    </div>
 
-        <div class="ad-card">
-          <strong>Anuncio #2: El 90% usa mal ChatGPT</strong>
-          <canvas id="ad-canvas-1" width="1080" height="1080"></canvas>
-          <div class="btn-row">
-            <button class="btn btn-emerald" onclick="downloadAd(1, 'square')">⬇ Post 1:1</button>
-            <button class="btn btn-bronze" onclick="downloadAd(1, 'story')">📱 Story 9:16</button>
-          </div>
-          <div id="ad-copy-1" class="ad-copy"></div>
-          <button class="btn btn-emerald" onclick="copyById('ad-copy-1')">📋 Copiar Descripción #2</button>
-        </div>
-
-        <div class="ad-card">
-          <strong>Anuncio #3: Hoja de Vida + Nequi</strong>
-          <canvas id="ad-canvas-2" width="1080" height="1080"></canvas>
-          <div class="btn-row">
-            <button class="btn btn-emerald" onclick="downloadAd(2, 'square')">⬇ Post 1:1</button>
-            <button class="btn btn-bronze" onclick="downloadAd(2, 'story')">📱 Story 9:16</button>
-          </div>
-          <div id="ad-copy-2" class="ad-copy"></div>
-          <button class="btn btn-emerald" onclick="copyById('ad-copy-2')">📋 Copiar Descripción #3</button>
-        </div>
-      </div>
+    <!-- 3. 8 Anuncios descargables -->
+    <div class="section-card">
+      <h2 class="section-title">📸 3. 8 Diseños Publicitarios Descargables (Post 1:1 e Historia/TikTok 9:16)</h2>
+      <p class="section-sub">Descarga cada imagen en alta resolución y copia su texto publicitario.</p>
+      <div id="ads-container" class="ads-grid"></div>
     </div>
   </div>
 
   <div id="toast" class="toast">✓ Copiado</div>
 
   <script>
+    const VIDEOS = [
+      {
+        title: 'Video 1: La fórmula RCFF para que ChatGPT trabaje por ti',
+        type: 'Sin mostrar la cara (Grabando pantalla)',
+        hook: 'Deja de pedirle a ChatGPT "hazme un correo" o "hazme un resumen". Así lo usa el 90% y por eso les responde tan mal.',
+        visual: 'Graba con el celular la pantalla del computador escribiendo en ChatGPT una orden genérica vs. un prompt de 4 pasos.',
+        script: `En lugar de darle órdenes sueltas, usa la estructura de 4 pasos que enseñamos en el Día 1 de IA en 7 Días:\n1. Rol ("Actúa como analista senior...")\n2. Contexto ("Para un cliente que lleva 2 semanas sin responder...")\n3. Formato ("En una tabla o correo de máximo 120 palabras")\n4. Filtro ("Sin sonar robótico ni usar palabras cliché").\n\nSi quieres aprender a dominar ChatGPT y Claude en 15 minutos al día con ejercicios reales y constancia en PDF, entra al link de nuestro perfil. Vale solo $24.900 pesos por Nequi.`,
+        caption: `El secreto no es usar más herramientas de IA, sino saber darles contexto. 🧠⚡ En IA en 7 Días aprendes en lecciones de 15 minutos ($24.900 COP pago único por Nequi). 👉 Link en el perfil. #inteligenciaartificial #chatgptcolombia #productividad #colombia #iaen7dias`
+      },
+      {
+        title: 'Video 2: Cómo resumir un PDF de 40 páginas en 20 segundos',
+        type: 'Sin mostrar la cara (Grabando pantalla)',
+        hook: 'Si te mandaron a leer un documento de 40 páginas para hoy a las 5:00 PM, no lo leas completo todavía.',
+        visual: 'Muestra un PDF largo en pantalla, súbelo a Claude o ChatGPT y muestra cómo extrae los compromisos en una tabla.',
+        script: `Súbelo a Claude o ChatGPT y escríbele exactamente esto:\n"Extrae los 5 compromisos clave, las fechas límite y cualquier riesgo oculto en una tabla con número de página exacto".\n\nEn 15 segundos tienes el mapa completo sin inventar datos. Esto es parte de lo que practicas en nuestro reto IA en 7 Días: 7 lecciones de 15 minutos por un pago único de $24.900 pesos colombianos por Nequi. Entra al link de la bio.`,
+        caption: `Ahorra horas de lectura pesada todos los días 📄⚡ Domina ChatGPT y Claude en 1 semana por $24.900 COP (Pago por Nequi). 👉 Link en nuestro perfil. #claudeai #chatgpt #oficina #productividadlaboral #colombia #iaen7dias`
+      },
+      {
+        title: 'Video 3: Qué responder cuando en una entrevista te preguntan por IA',
+        type: 'Hablando a cámara (Selfie / Escritorio)',
+        hook: 'Hoy en casi cualquier trabajo en Colombia te preguntan si sabes usar Inteligencia Artificial… pero decir "sí, yo uso ChatGPT" ya no alcanza.',
+        visual: 'Hablando a cámara y mostrando en el celular el aula de iaen7dias.vercel.app y el Certificado de Finalización en PDF.',
+        script: `Las empresas no buscan gente que copie y pegue textos de ChatGPT. Buscan personas que sepan automatizar informes, analizar datos y ahorrar horas de trabajo real.\n\nPor eso creamos IA en 7 Días: un microcurso 100% práctico donde cada día haces un reto real de 15 minutos y al completar el Día 7 descargas tu Certificado de Finalización en PDF para tu sección de cursos en la Hoja de Vida o LinkedIn. Cuesta solo $24.900 COP por Nequi. Link en el perfil.`,
+        caption: `Suma IA práctica a tu perfil profesional esta misma semana 🎓🇨🇴 7 lecciones de 15 minutos + Certificado de Finalización en PDF por solo $24.900 COP (Nequi). 👉 Link en la bio. #empleocolombia #linkedincolombia #hojadevida #cursoscolombia #iaen7dias`
+      },
+      {
+        title: 'Video 4: Antes vs. Después (Viernes a las 6:00 PM en la oficina)',
+        type: 'Sin mostrar la cara / Comparación rápida',
+        hook: 'Tu compañero a las 6:00 PM redactando el informe semanal a mano… vs. tú a las 3:30 PM después de automatizarlo con IA.',
+        visual: 'Transición rápida de una tabla desordenada a un informe ejecutivo limpio generado con IA.',
+        script: `La Inteligencia Artificial no te va a quitar el trabajo: te va a quitar las 2 horas diarias de tareas repetitivas que nadie quiere hacer.\n\nEn IA en 7 Días te llevamos de cero a dominar ChatGPT y Claude en solo 15 minutos al día, desde tu celular o computador. Vale menos que un almuerzo ($24.900 pesos colombianos), pagas por Nequi y empiezas el Día 1 hoy mismo. Link en el perfil.`,
+        caption: `Sal temprano del trabajo dominando la IA de verdad ⏳✨ Microcurso práctico de 7 días por $24.900 COP (Nequi). 👉 Inscríbete en el link del perfil. #oficinacolombia #vidadeoficina #chatgpt #productividad #iaen7dias`
+      },
+      {
+        title: 'Video 5: Las 3 palabras prohibidas que delatan que usaste ChatGPT',
+        type: 'Hablando a cámara o Texto en pantalla',
+        hook: 'Si tus correos tienen estas 3 frases, todo tu equipo ya sabe que los copiaste y pegaste de ChatGPT.',
+        visual: 'Muestra en pantalla frases típicas robóticas y cómo reemplazarlas entrenando tu propio tono.',
+        script: `1. "En el vertiginoso mundo actual..."\n2. "Es crucial destacar que..."\n3. "En resumen, la sinergia..."\n\nPara que la IA escriba con tu propio tono profesional, tienes que entrenarla con un ejemplo tuyo antes de pedirle el texto. En el Día 2 de IA en 7 Días te enseñamos cómo clonar tu estilo de redacción en 5 minutos. El curso completo cuesta $24.900 COP por Nequi. Entra al link del perfil.`,
+        caption: `Que no se note el copiar y pegar 🤫✍️ Aprende a entrenar a ChatGPT con tu propio estilo profesional en IA en 7 Días ($24.900 COP por Nequi). 👉 Link en la bio. #redaccion #chatgpttips #trucosia #iaen7dias #colombia`
+      },
+      {
+        title: 'Video 6: Cómo pasar una foto de una tabla impresa a Excel en 30 seg',
+        type: 'Sin mostrar la cara (Celular + PC)',
+        hook: '¿Todavía pasas datos de hojas impresas o PDFs a Excel digitando celda por celda?',
+        visual: 'Toma foto a una tabla impresa, súbela a ChatGPT/Claude y muestra cómo entrega la tabla lista para Excel.',
+        script: `Tómale una foto clara con tu celular, súbela a la IA y dile:\n"Convierte esta imagen en una tabla descargable en formato CSV/Excel verificando que los totales sumen exacto".\n\nLo que antes te tomaba toda la mañana ahora toma 30 segundos. Aprende este y otros 6 sistemas prácticos en nuestro reto IA en 7 Días. Inscripción única de $24.900 COP por Nequi en el link de nuestro perfil.`,
+        caption: `No vuelvas a digitar tablas a mano 📊⚡ Aprende IA aplicada al trabajo real en 7 lecciones de 15 minutos ($24.900 COP por Nequi). 👉 Link en nuestro perfil. #exceltips #contabilidadcolombia #administracion #iaen7dias`
+      },
+      {
+        title: 'Video 7: Por qué nuestro curso dura 15 min al día (y no 40 horas)',
+        type: 'Hablando a cámara / Mostrando la web',
+        hook: 'Nadie que trabaje 8 horas al día tiene tiempo para ver un curso de 40 horas de teoría sobre Inteligencia Artificial.',
+        visual: 'Muestra el diseño editorial limpio de iaen7dias.vercel.app en el celular o computador.',
+        script: `Cuando compras un curso eterno de 50 videos, ves los primeros dos y lo abandonas.\n\nPor eso diseñamos IA en 7 Días como un reto corto y directo al grano: 1 lección diaria de 15 minutos durante 7 días. Haces el ejercicio real, subes tu evidencia para desbloquear el siguiente día y al terminar el Día 7 descargas tu Certificado de Finalización en PDF. Todo por un único pago de $24.900 COP por Nequi.`,
+        caption: `Menos teoría de relleno y más práctica real en 15 minutos al día 🎯📚 Inscríbete hoy por $24.900 COP (Pago por Nequi) en el link del perfil. #educaciononline #cursospracticos #inteligenciaartificial #iaen7dias #colombia`
+      },
+      {
+        title: 'Video 8: Cómo preparar cualquier reunión difícil en 5 minutos',
+        type: 'Sin mostrar la cara (Grabando pantalla)',
+        hook: 'Tienes una reunión importante en 15 minutos y no has preparado las posibles preguntas difíciles de tu jefe o cliente.',
+        visual: 'Muestra en pantalla el prompt de "Simulación de Objeciones" en ChatGPT o Claude.',
+        script: `Usa el prompt de Simulación de Objeciones:\n"Voy a presentar esta propuesta [pega tu idea]. Hazme las 5 preguntas más difíciles que me haría un gerente escéptico y dame la respuesta exacta con argumentos claros para cada una".\n\nLlegas a la reunión con todas las respuestas listas. En IA en 7 Días te entregamos las plantillas exactas para tu trabajo diario por solo $24.900 COP (pago por Nequi). Link en el perfil.`,
+        caption: `Llega preparado a cualquier reunión o comité 🛡️💼 Domina la IA en 7 lecciones de 15 minutos ($24.900 COP por Nequi). 👉 Link en la bio. #negocioscolombia #emprendimientocolombia #liderazgo #iaen7dias`
+      },
+      {
+        title: 'Video 9: ¿Qué puedes hacer hoy en Colombia con $24.900 pesos?',
+        type: 'Texto dinámico en pantalla',
+        hook: 'Con $24.900 pesos en Colombia hoy te compras una hamburguesa… o aprendes la habilidad que te ahorra 10 horas de trabajo a la semana.',
+        visual: 'Muestra el precio $24.900 COP en la web oficial, los 7 días del temario y el botón de inscripción por Nequi.',
+        script: `No necesitas pagar cursos en dólares ni tener tarjeta de crédito.\n\nEn iaen7dias.vercel.app tienes:\n• 7 días de entrenamiento práctico en ChatGPT, Claude y productividad.\n• Revisión de tus retos paso a paso.\n• Certificado de Finalización descargable en PDF.\n• Y pagas directo por Nequi un único valor de $24.900 COP. Entra al link de nuestro perfil y empieza tu Día 1.`,
+        caption: `La mejor inversión de $24.900 COP que puedes hacer esta semana 💡🇨🇴 Pago directo por Nequi, sin mensualidades. 👉 Link en nuestro perfil. #ahorro #inversionpersonal #finanzaspersonales #colombia #iaen7dias`
+      },
+      {
+        title: 'Video 10: Tour de 25 segundos por dentro de IA en 7 Días',
+        type: 'Grabando pantalla del celular',
+        hook: 'Así funciona por dentro el reto práctico IA en 7 Días desde que te inscribes hasta que descargas tu certificado.',
+        visual: 'Recorrido en celular por la página principal, el formulario de inscripción con Nequi y la vista de los 7 módulos.',
+        script: `1. Entras a iaen7dias.vercel.app y realizas tu inscripción única de $24.900 COP por Nequi.\n2. Recibes tu código de acceso personal e ingresas al aula.\n3. Completas en orden los 7 retos prácticos de 15 minutos subiendo tu evidencia real.\n4. Al completar el Día 7, descargas tu Certificado de Finalización en PDF con tu nombre y documento. Empieza hoy en el link del perfil.`,
+        caption: `Conoce paso a paso nuestro microcurso práctico IA en 7 Días 🚀✨ Inscripción única $24.900 COP por Nequi. 👉 Link en la bio. #iaen7dias #cursosia #aprendizaje #colombia #chatgpt`
+      }
+    ];
+
     const ADS = [
       {
+        title: 'Anuncio #1: Ahorro de Tiempo',
         pill: 'MICROCURSO PRÁCTICO • COLOMBIA',
         headline1: 'Sal de trabajar',
         headlineAccent: '2 horas antes',
@@ -275,9 +367,10 @@
         priceLabel: 'INSCRIPCIÓN ÚNICA EN COLOMBIA',
         price: '$24.900 COP',
         cta: 'Inscríbete hoy • Pago Nequi',
-        copy: `¿Sigues haciendo en 3 horas lo que hoy toma 10 minutos con Inteligencia Artificial? ⏳\n\nEn IA en 7 Días aprendes paso a paso, dedicando solo 15 minutos al día:\n✅ Prompts profesionales en ChatGPT y Claude para informes, correos y propuestas.\n✅ Análisis de datos, resúmenes ejecutivos y automatización de tareas.\n✅ Certificado de Finalización en PDF al completar los 7 días.\n\n💳 Inscripción única: $24.900 COP (Sin mensualidades).\n📱 Pago inmediato por Nequi en Colombia.\n\n👇 Empieza hoy tu Día 1 en el link de nuestro perfil:\nhttps://iaen7dias.vercel.app`
+        copy: `¿Sigues haciendo en 3 horas lo que hoy toma 10 minutos con Inteligencia Artificial? ⏳\n\nEn IA en 7 Días aprendes paso a paso, dedicando solo 15 minutos al día:\n✅ Prompts profesionales en ChatGPT y Claude para informes, correos y propuestas.\n✅ Análisis de datos, resúmenes ejecutivos y automatización de tareas.\n✅ Certificado de Finalización en PDF al completar los 7 días.\n\n💳 Inscripción única: $24.900 COP (Sin mensualidades).\n📱 Pago inmediato por Nequi en Colombia.\n\n👇 Empieza hoy tu Día 1 aquí:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=feed&utm_campaign=ad1_tiempo`
       },
       {
+        title: 'Anuncio #2: El 90% usa mal ChatGPT',
         pill: 'RETOS DE 15 MINUTOS AL DÍA',
         headline1: 'El 90% usa ChatGPT',
         headlineAccent: 'como si fuera Google.',
@@ -287,9 +380,10 @@
         priceLabel: 'PAGO ÚNICO • SIN MENSUALIDADES',
         price: '$24.900 COP',
         cta: 'iaen7dias.vercel.app • Nequi',
-        copy: `El 90% de las personas usa ChatGPT como si fuera Google… y por eso obtienen respuestas genéricas que no sirven para trabajar. 🧠\n\nCreamos el microcurso práctico IA en 7 Días para profesionales, independientes y estudiantes en Colombia que quieren dominar la IA en 15 minutos al día:\n\n🔹 Sin saber programar.\n🔹 Con ejercicios reales calificados paso a paso.\n🔹 Incluye Certificado de Finalización en PDF (Educación Informal).\n🔹 Precio único de lanzamiento: $24.900 COP (Pago por Nequi).\n\n👇 Entra al link de nuestro perfil e inscríbete hoy:\nhttps://iaen7dias.vercel.app`
+        copy: `El 90% de las personas usa ChatGPT como si fuera Google… y por eso obtienen respuestas genéricas que no sirven para trabajar. 🧠\n\nCreamos el microcurso práctico IA en 7 Días para profesionales, independientes y estudiantes en Colombia que quieren dominar la IA en 15 minutos al día:\n\n🔹 Sin saber programar.\n🔹 Con ejercicios reales calificados paso a paso.\n🔹 Incluye Certificado de Finalización en PDF (Educación Informal).\n🔹 Precio único de lanzamiento: $24.900 COP (Pago por Nequi).\n\n👇 Mira el temario de los 7 días e inscríbete aquí:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=feed&utm_campaign=ad2_curiosidad`
       },
       {
+        title: 'Anuncio #3: Hoja de Vida + Nequi',
         pill: 'CONSTANCIA EN PDF INCLUIDA',
         headline1: 'Suma Inteligencia',
         headlineAccent: 'Artificial a tu CV',
@@ -299,7 +393,72 @@
         priceLabel: 'OFERTA DE LANZAMIENTO',
         price: '$24.900 COP',
         cta: 'Cupos abiertos • Pago Nequi',
-        copy: `Por menos de lo que cuesta un domicilio del fin de semana ($24.900 COP), esta semana puedes sumar la habilidad más buscada del 2026 a la sección de cursos de tu Hoja de Vida o LinkedIn. 🎓✨\n\nIA en 7 Días — Microcurso Práctico en Colombia:\n• 7 lecciones de 15 minutos (desde tu celular o PC).\n• Ejercicios aplicados al trabajo real.\n• Certificado de Finalización descargable en PDF (Educación Informal).\n• Pago inmediato por Nequi sin tarjeta de crédito.\n\n👉 Inscríbete hoy en el link de la bio:\nhttps://iaen7dias.vercel.app`
+        copy: `Por menos de lo que cuesta un domicilio del fin de semana ($24.900 COP), esta semana puedes sumar la habilidad más buscada del 2026 a la sección de cursos de tu Hoja de Vida o LinkedIn. 🎓✨\n\nIA en 7 Días — Microcurso Práctico en Colombia:\n• 7 lecciones de 15 minutos (desde tu celular o PC).\n• Ejercicios aplicados al trabajo real.\n• Certificado de Finalización descargable en PDF (Educación Informal).\n• Pago inmediato por Nequi sin tarjeta de crédito.\n\n👉 Inscríbete hoy en:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=stories&utm_campaign=ad3_cv`
+      },
+      {
+        title: 'Anuncio #4: Cero Teoría Aburrida',
+        pill: '100% PRÁCTICO • 15 MIN/DÍA',
+        headline1: 'No más cursos',
+        headlineAccent: 'de 40 horas',
+        headline2: 'que nunca terminas.',
+        sub: 'Un reto directo al grano: 1 ejercicio real de 15 minutos cada día durante 1 semana.',
+        bullets: ['✓ Aprende haciendo desde el Día 1', '✓ Plantillas listas para copiar', '✓ Certificado de Finalización PDF'],
+        priceLabel: 'UN SOLO PAGO • ACCESO TOTAL',
+        price: '$24.900 COP',
+        cta: 'Empieza el Día 1 • Nequi',
+        copy: `¿Cuántos cursos largos has comprado y dejado en el segundo video? 😅\n\nIA en 7 Días está diseñado para personas ocupadas: dedicas solo 15 minutos al día, aplicas un ejercicio real en ChatGPT o Claude y desbloqueas el siguiente nivel.\n\n💳 Valor único: $24.900 COP (Pago fácil por Nequi).\n📄 Incluye Certificado de Finalización en PDF al completar los 7 días.\n\n👇 Inscríbete en 1 minuto aquí:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=feed&utm_campaign=ad4_ceroteoria`
+      },
+      {
+        title: 'Anuncio #5: Informes y Oficina',
+        pill: 'IA PARA OFICINA Y NEGOCIOS',
+        headline1: 'Tus informes y',
+        headlineAccent: 'análisis listos',
+        headline2: 'en 5 minutos con IA.',
+        sub: 'Aprende a resumir documentos largos, redactar correos difíciles y ordenar tablas sin esfuerzo.',
+        bullets: ['✓ Domina ChatGPT y Claude', '✓ Casos reales de oficina', '✓ Certificado de Finalización PDF'],
+        priceLabel: 'INSCRIPCIÓN ÚNICA COLOMBIA',
+        price: '$24.900 COP',
+        cta: 'Inscríbete hoy • Pago Nequi',
+        copy: `Redacta correos complejos, resume PDFs de 50 páginas y organiza tablas de trabajo en minutos, no en horas. 📊⚡\n\nEn IA en 7 Días aprendes exactamente cómo aplicar la Inteligencia Artificial en tus tareas administrativas, profesionales o de negocio:\n• 7 lecciones de 15 minutos.\n• Sin saber programar.\n• Pago único de $24.900 COP por Nequi.\n\n👉 Empieza hoy mismo en:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=feed&utm_campaign=ad5_oficina`
+      },
+      {
+        title: 'Anuncio #6: Independientes y Pymes',
+        pill: 'PARA INDEPENDIENTES Y PYMES',
+        headline1: 'Como tener un',
+        headlineAccent: 'equipo de apoyo',
+        headline2: 'trabajando 24/7 contigo.',
+        sub: 'Usa la IA para crear propuestas comerciales, contenido, respuestas a clientes y planeación.',
+        bullets: ['✓ Multiplica tu productividad', '✓ Prompts listos para negocios', '✓ Constancia en PDF incluida'],
+        priceLabel: 'INVERSIÓN ÚNICA POR NEQUI',
+        price: '$24.900 COP',
+        cta: 'Entra hoy • iaen7dias.vercel.app',
+        copy: `Si eres independiente, emprendedor o profesional en Colombia, saber usar bien la IA es como tener un asistente senior 24/7. 🚀\n\nEn IA en 7 Días aprendes en 15 minutos diarios a crear propuestas, estructurar ideas, analizar datos y responder más rápido.\n\n💳 Único pago: $24.900 COP por Nequi.\n👉 Regístrate aquí:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=feed&utm_campaign=ad6_emprendedores`
+      },
+      {
+        title: 'Anuncio #7: Sin Tarjeta (Pago Nequi)',
+        pill: 'ACCESO FÁCIL EN COLOMBIA',
+        headline1: 'Aprende IA hoy',
+        headlineAccent: 'pagando con Nequi',
+        headline2: 'sin dólares ni tarjetas.',
+        sub: 'Entrenamiento práctico de 7 días pensado 100% en español para profesionales en Colombia.',
+        bullets: ['✓ Sin suscripciones mensuales', '✓ Activación rápida de acceso', '✓ Certificado de Finalización PDF'],
+        priceLabel: 'PAGO ÚNICO EN PESOS',
+        price: '$24.900 COP',
+        cta: 'Paga con Nequi • Inscríbete',
+        copy: `Olvídate de pagar suscripciones en dólares o necesitar tarjeta de crédito para aprender Inteligencia Artificial. 🇨🇴✨\n\nEn IA en 7 Días haces un único pago de $24.900 COP por Nequi y accedes al entrenamiento práctico completo de 7 días + Certificado de Finalización en PDF.\n\n👇 Separa tu cupo hoy en:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=feed&utm_campaign=ad7_nequi`
+      },
+      {
+        title: 'Anuncio #8: El Reto de 7 Días',
+        pill: 'EL RETO DE 1 SEMANA',
+        headline1: 'Día 1: Novato.',
+        headlineAccent: 'Día 7: Dominas',
+        headline2: 'la IA en tu trabajo.',
+        sub: 'Un sistema paso a paso con evaluación real para que en una semana uses la IA mejor que el 95%.',
+        bullets: ['✓ 7 módulos desbloqueables', '✓ Revisión de cada evidencia', '✓ Certificado de Finalización PDF'],
+        priceLabel: 'INSCRIPCIÓN ABIERTA HOY',
+        price: '$24.900 COP',
+        cta: 'Acepta el Reto • $24.900 COP',
+        copy: `En solo 7 días (dedicando 15 minutos diarios) notarás el cambio en la velocidad y calidad de tu trabajo. 🎯\n\nAcepta el reto práctico IA en 7 Días:\n✅ Día 1 a 3: Ingeniería de prompts y redacción experta.\n✅ Día 4 a 5: Síntesis de documentos, tablas y análisis.\n✅ Día 6 a 7: Automatización personal + Certificado de Finalización en PDF.\n\n💳 Pago único $24.900 COP por Nequi.\n👉 Comienza el Día 1 aquí:\nhttps://iaen7dias.vercel.app/?utm_source=meta_ads&utm_medium=feed&utm_campaign=ad8_reto`
       }
     ];
 
@@ -448,11 +607,59 @@
     function initKit() {
       const logoImg = document.getElementById('official-logo');
       renderAvatar(logoImg);
+
+      // Render 10 Videos
+      const vContainer = document.getElementById('videos-container');
+      vContainer.innerHTML = '';
+      VIDEOS.forEach((v, i) => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
+          <div>
+            <span class="video-tag">${v.type}</span>
+            <h3 style="font-size:0.95rem;font-weight:800;margin-bottom:0.5rem;">${v.title}</h3>
+            <div id="vid-full-${i}" class="video-box">🪝 GANCHO (0-3s):\n${v.hook}\n\n🎥 EN PANTALLA:\n${v.visual}\n\n🗣 GUION:\n${v.script}\n\n📝 DESCRIPCIÓN:\n${v.caption}</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-emerald" onclick="copyVideo(${i}, 'script')">📋 Copiar Guion</button>
+            <button class="btn btn-bronze" onclick="copyVideo(${i}, 'caption')">#️⃣ Copiar Post</button>
+          </div>
+        `;
+        vContainer.appendChild(card);
+      });
+
+      // Render 8 Ads
+      const aContainer = document.getElementById('ads-container');
+      aContainer.innerHTML = '';
       ADS.forEach((ad, i) => {
+        const card = document.createElement('div');
+        card.className = 'ad-card';
+        card.innerHTML = `
+          <strong>${ad.title}</strong>
+          <canvas id="ad-canvas-${i}" width="1080" height="1080"></canvas>
+          <div class="btn-row">
+            <button class="btn btn-emerald" onclick="downloadAd(${i}, 'square')">⬇ Post 1:1</button>
+            <button class="btn btn-bronze" onclick="downloadAd(${i}, 'story')">📱 Story 9:16</button>
+          </div>
+          <div id="ad-copy-${i}" class="ad-copy"></div>
+          <button class="btn btn-emerald" onclick="copyById('ad-copy-${i}')">📋 Copiar Descripción #${i + 1}</button>
+        `;
+        aContainer.appendChild(card);
         const c = document.getElementById('ad-canvas-' + i);
         drawAd(c.getContext('2d'), ad, 1080, 1080, logoImg);
         document.getElementById('ad-copy-' + i).textContent = ad.copy;
       });
+    }
+
+    function copyVideo(idx, part) {
+      const v = VIDEOS[idx];
+      if (part === 'script') {
+        navigator.clipboard.writeText(`🎬 ${v.title}\n\n🪝 GANCHO:\n${v.hook}\n\n🎥 EN PANTALLA:\n${v.visual}\n\n🗣 GUION:\n${v.script}`);
+        showToast('✓ Guion copiado');
+      } else {
+        navigator.clipboard.writeText(v.caption);
+        showToast('✓ Descripción y hashtags copiados');
+      }
     }
 
     function downloadAvatar() {
