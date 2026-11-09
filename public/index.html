@@ -16,11 +16,12 @@
   <meta property="og:description"
     content="Domina ChatGPT, Claude y productividad con IA en 7 lecciones prácticas de 15 minutos al día. Pago único $24.900 COP en Colombia con Certificado en PDF.">
   <meta property="og:url" content="https://iaen7dias.vercel.app/">
-  <meta property="og:image" content="https://iaen7dias.vercel.app/images/logo.jpg">
+  <meta property="og:image" content="https://iaen7dias.vercel.app/images/logo-crop.png?v=4">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="IA en 7 Días • Microcurso Práctico de Inteligencia Artificial">
   <meta name="twitter:description"
     content="7 lecciones prácticas de 15 minutos para usar IA en tu trabajo diario. Incluye Certificado de Finalización en PDF.">
+  <meta name="twitter:image" content="https://iaen7dias.vercel.app/images/logo-crop.png?v=4">
   <link rel="icon" type="image/png" href="images/favicon.png?v=4">
   <link rel="apple-touch-icon" href="images/favicon.png?v=4">
   <script type="application/ld+json">
@@ -85,15 +86,8 @@
       </div>
 
       <!-- Botón menú hamburguesa (solo móvil <= 768px) -->
-      <button
-        type="button"
-        id="mobile-menu-btn"
-        class="mobile-menu-btn"
-        aria-label="Abrir menú"
-        aria-expanded="false"
-        aria-controls="mobile-menu-panel"
-        onclick="App.toggleMobileMenu()"
-      >
+      <button type="button" id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Abrir menú" aria-expanded="false"
+        aria-controls="mobile-menu-panel" onclick="App.toggleMobileMenu()">
         <span class="hamburger-box" aria-hidden="true">
           <span class="hamburger-line line-1"></span>
           <span class="hamburger-line line-2"></span>
@@ -103,22 +97,12 @@
     </div>
 
     <!-- Capa oscura semitransparente detrás del menú móvil -->
-    <div
-      id="mobile-menu-backdrop"
-      class="mobile-menu-backdrop"
-      aria-hidden="true"
-      onclick="App.closeMobileMenu(true)"
-    ></div>
+    <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" aria-hidden="true" onclick="App.closeMobileMenu(true)">
+    </div>
 
     <!-- Panel desplegable móvil -->
-    <div
-      id="mobile-menu-panel"
-      class="mobile-menu-panel"
-      role="dialog"
-      aria-modal="false"
-      aria-label="Menú de navegación móvil"
-      aria-hidden="true"
-    >
+    <div id="mobile-menu-panel" class="mobile-menu-panel" role="dialog" aria-modal="false"
+      aria-label="Menú de navegación móvil" aria-hidden="true">
       <nav class="mobile-menu-nav" aria-label="Secciones del sitio">
         <a href="#como-funciona" class="mobile-menu-link" onclick="App.handleMobileNavLink(event, 'como-funciona')">
           Cómo funciona
@@ -132,19 +116,12 @@
       </nav>
 
       <div class="mobile-menu-footer">
-        <button
-          type="button"
-          class="mobile-menu-code-link"
-          onclick="App.handleMobileMenuCodeClick()"
-        >
+        <button type="button" class="mobile-menu-code-link" onclick="App.handleMobileMenuCodeClick()">
           Ingresar con código
         </button>
 
-        <button
-          type="button"
-          class="btn btn-primary btn-lg btn-block mobile-menu-cta-btn"
-          onclick="App.handleMobileMenuCtaClick()"
-        >
+        <button type="button" class="btn btn-primary btn-lg btn-block mobile-menu-cta-btn"
+          onclick="App.handleMobileMenuCtaClick()">
           Quiero mi certificado ➔
         </button>
       </div>
@@ -204,7 +181,8 @@
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                <span><strong>Certificado PDF descargable:</strong> constancia digital de finalización (no oficial) personalizada al completar el curso.</span>
+                <span><strong>Certificado PDF descargable:</strong> constancia digital de finalización (no oficial)
+                  personalizada al completar el curso.</span>
               </div>
             </div>
 
@@ -357,7 +335,8 @@
             <div class="step-content">
               <span class="step-pill-tag tag-gold">📜 Constancia Digital • Descarga en PDF</span>
               <h3>3. Certificado de finalización</h3>
-              <p>Al completar las lecciones del programa, descargas tu constancia digital de finalización en PDF (formación práctica no oficial) con tu nombre e ID de referencia.</p>
+              <p>Al completar las lecciones del programa, descargas tu constancia digital de finalización en PDF
+                (formación práctica no oficial) con tu nombre e ID de referencia.</p>
             </div>
           </div>
         </div>
@@ -404,7 +383,8 @@
             Quiero mi certificado por $24.900 COP ➔
           </button>
           <p style="font-size: 0.76rem; color: var(--text-dim); margin-top: 0.75rem; line-height: 1.45;">
-            Nota: El certificado entregado es una constancia digital propia de finalización práctica (no oficial ni conducente a título de educación formal).
+            Nota: El certificado entregado es una constancia digital propia de finalización práctica (no oficial ni
+            conducente a título de educación formal).
           </p>
         </div>
       </div>
@@ -580,7 +560,8 @@
           <div class="progress-banner-left">
             <div class="progress-banner-header">
               <div>
-                <span class="pill pill-subtle" style="font-size: 0.72rem; margin-bottom: 0.35rem;">Progreso del Programa</span>
+                <span class="pill pill-subtle" style="font-size: 0.72rem; margin-bottom: 0.35rem;">Progreso del
+                  Programa</span>
                 <h3 style="font-size: 1.25rem; margin: 0;">Tu Avance en el Curso</h3>
               </div>
               <div class="progress-pct-badge">
@@ -592,16 +573,20 @@
               <div class="progress-bar-fill" id="dash-progress-fill" style="width: 0%;"></div>
             </div>
             <div class="progress-steps-mini" id="dash-progress-steps-mini"></div>
-            <p style="font-size: 0.88rem; color: var(--text-muted); font-weight: 500; margin-top: 0.55rem;" id="dash-progress-count">
+            <p style="font-size: 0.88rem; color: var(--text-muted); font-weight: 500; margin-top: 0.55rem;"
+              id="dash-progress-count">
               0 de 7 lecciones completadas en orden
             </p>
           </div>
 
           <div class="next-lesson-highlight" id="dash-next-lesson-box">
             <div class="next-lesson-tag" id="dash-next-lesson-tag">SIGUIENTE LECCIÓN</div>
-            <h4 class="next-lesson-title" id="dash-next-lesson-title">Día 1: Tus primeros resultados profesionales con IA</h4>
-            <p class="next-lesson-sub" id="dash-next-lesson-sub">Duración estimada: 15 min • Práctica guiada paso a paso</p>
-            <button type="button" id="btn-continue-lesson" class="btn btn-primary btn-lg btn-block" onclick="App.continueNextLesson()">
+            <h4 class="next-lesson-title" id="dash-next-lesson-title">Día 1: Tus primeros resultados profesionales con
+              IA</h4>
+            <p class="next-lesson-sub" id="dash-next-lesson-sub">Duración estimada: 15 min • Práctica guiada paso a paso
+            </p>
+            <button type="button" id="btn-continue-lesson" class="btn btn-primary btn-lg btn-block"
+              onclick="App.continueNextLesson()">
               ▶ Continuar donde quedé ➔
             </button>
           </div>
@@ -679,7 +664,8 @@
               <span>$24.900 COP</span>
             </div>
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.88rem;">
-              <span style="color: var(--text-muted);">Certificado PDF de finalización (constancia digital no oficial)</span>
+              <span style="color: var(--text-muted);">Certificado PDF de finalización (constancia digital no
+                oficial)</span>
               <span style="color: var(--accent-green); font-weight: 600;">Incluido</span>
             </div>
             <div
@@ -695,7 +681,8 @@
               <span class="data-exp-icon">🔒</span>
               <strong>¿Para qué necesitamos tus datos?</strong>
             </div>
-            <p class="data-exp-summary">Solo recopilamos la información indispensable para tu constancia digital y acceso:
+            <p class="data-exp-summary">Solo recopilamos la información indispensable para tu constancia digital y
+              acceso:
             </p>
             <ul class="data-exp-items">
               <li>
@@ -758,7 +745,9 @@
                 <span>Acepto los <a href="/terminos-y-condiciones.html" target="_blank" rel="noopener"
                     style="color: var(--accent-primary); text-decoration: underline;">Términos y Condiciones</a>, la <a
                     href="/politica-de-devoluciones.html" target="_blank" rel="noopener"
-                    style="color: var(--accent-primary); text-decoration: underline;">Política de Devoluciones</a> y autorizo el tratamiento de mis datos personales conforme a la Ley 1581 de 2012 (Habeas Data), la <a href="/politica-de-privacidad.html" target="_blank" rel="noopener"
+                    style="color: var(--accent-primary); text-decoration: underline;">Política de Devoluciones</a> y
+                  autorizo el tratamiento de mis datos personales conforme a la Ley 1581 de 2012 (Habeas Data), la <a
+                    href="/politica-de-privacidad.html" target="_blank" rel="noopener"
                     style="color: var(--accent-primary); text-decoration: underline;">Política de Privacidad</a> y el <a
                     href="/aviso-legal.html" target="_blank" rel="noopener"
                     style="color: var(--accent-primary); text-decoration: underline;">Aviso Legal</a>.</span>
@@ -871,7 +860,8 @@
           </h3>
           <p
             style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.55; max-width: 440px; margin: 0 auto 1.15rem;">
-            Debes esperar la aprobación manual de tu transferencia de <strong>$24.900 COP</strong>. Apenas se valide, te enviaremos tu código único de acceso para entrar al Aula Virtual.
+            Debes esperar la aprobación manual de tu transferencia de <strong>$24.900 COP</strong>. Apenas se valide, te
+            enviaremos tu código único de acceso para entrar al Aula Virtual.
           </p>
 
           <!-- Indicador visual claro de que debe esperar aprobación -->
@@ -894,7 +884,9 @@
             style="background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 8px; padding: 0.95rem 1rem; margin-bottom: 1.15rem; text-align: left; font-size: 0.85rem; display: grid; gap: 0.35rem;">
             <div><strong>Alumno:</strong> <span id="review-student-name">-</span></div>
             <div><strong>WhatsApp registrado:</strong> <span id="review-student-whatsapp">-</span></div>
-            <div><strong>WhatsApp oficial de soporte:</strong> <a href="https://wa.me/573158422894" target="_blank" rel="noopener" style="color: var(--accent-primary); font-weight: 700; text-decoration: underline;">+57 315 842 2894</a></div>
+            <div><strong>WhatsApp oficial de soporte:</strong> <a href="https://wa.me/573158422894" target="_blank"
+                rel="noopener" style="color: var(--accent-primary); font-weight: 700; text-decoration: underline;">+57
+                315 842 2894</a></div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 0.7rem;">
@@ -902,7 +894,8 @@
               🔄 Verificar si ya fue aprobado
             </button>
             <a id="review-wa-support-btn" href="https://wa.me/573158422894" target="_blank" rel="noopener"
-              class="btn btn-secondary btn-lg btn-block" style="border-color: var(--accent-primary); color: var(--accent-primary);">
+              class="btn btn-secondary btn-lg btn-block"
+              style="border-color: var(--accent-primary); color: var(--accent-primary);">
               💬 Soporte WhatsApp: +57 315 842 2894
             </a>
             <button type="button" class="btn btn-secondary btn-block" onclick="App.showStudentAccessModal(true)">
