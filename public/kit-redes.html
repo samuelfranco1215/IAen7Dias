@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kit Móvil de Redes y Anuncios • IA en 7 Días</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="images/favicon.png?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,600;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F5F2;
+      --card: #FFFFFF;
+      --ink: #141413;
+      --muted: #57534E;
+      --emerald: #0F766E;
+      --emerald-dark: #115E59;
+      --bronze: #B45309;
+      --border: #E5E0D8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 1.25rem 1rem 4rem;
+      line-height: 1.5;
+    }
+    .container { max-width: 980px; margin: 0 auto; }
+    .header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand { display: flex; align-items: center; gap: 0.85rem; }
+    .brand img { height: 46px; border-radius: 8px; background: #fff; padding: 3px 6px; border: 1px solid var(--border); }
+    .brand h1 { font-size: 1.2rem; font-weight: 800; }
+    .brand p { font-size: 0.85rem; color: var(--muted); }
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 24px -12px rgba(20, 20, 19, 0.06);
+    }
+    .section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .section-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    @media (max-width: 680px) {
+      .profile-grid { grid-template-columns: 1fr; }
+    }
+    .avatar-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 1rem;
+      border-radius: 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .avatar-preview {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--emerald);
+      background: #fff;
+    }
+    .avatar-preview canvas { width: 100%; height: 100%; display: block; }
+    .field-list { display: flex; flex-direction: column; gap: 0.65rem; }
+    .field-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .field-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); }
+    .field-val { font-size: 0.88rem; font-weight: 700; white-space: pre-wrap; word-break: break-word; }
+    .btn {
+      padding: 0.65rem 0.95rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      shrink: 0;
+      text-align: center;
+    }
+    .btn-emerald { background: var(--emerald); color: #fff; }
+    .btn-bronze { background: var(--bronze); color: #fff; }
+    .ads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .ad-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .ad-card canvas {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .ad-copy {
+      font-size: 0.8rem;
+      background: #fff;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      white-space: pre-wrap;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-row .btn { flex: 1; }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <img id="official-logo" src="images/logo-crop.png?v=4" alt="IA en 7 Días">
+        <div>
+          <h1>Kit Móvil • Instagram, TikTok y WhatsApp</h1>
+          <p>Ábrelo desde tu teléfono para descargar las fotos a tu galería y copiar la bio en 1 toque</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Perfil de Instagram y TikTok -->
+    <div class="section-card">
+      <h2 class="section-title">1. Crear Perfil en Instagram y TikTok desde el Teléfono</h2>
+      <p class="section-sub">Toca "Descargar Foto" para guardarla en tu carrete y "Copiar" en cada dato para pegarlo en la app.</p>
+      <div class="profile-grid">
+        <div class="avatar-box">
+          <div class="avatar-preview">
+            <canvas id="avatar-canvas" width="800" height="800"></canvas>
+          </div>
+          <button class="btn btn-emerald" style="width:100%" onclick="downloadAvatar()">⬇ Descargar Foto</button>
+        </div>
+        <div class="field-list">
+          <div class="field-item">
+            <div>
+              <div class="field-label">Usuario (@username)</div>
+              <div id="f-user" class="field-val">iaen7dias.co</div>
+            </div>
+            <button class="btn btn-emerald" onclick="copyById('f-user')">Copiar</button>
+          </div>
+          <div class="field-item">
+            <div>
+              <div class="field-label">Nombre visible</div>
+              <div id="f-name" class="field-val">IA en 7 Días | Curso Práctico de IA 🇨🇴</div>
+            </div>
+            <button class="btn btn-emerald" onclick="copyById('f-name')">Copiar</button>
+          </div>
+          <div class="field-item">
+            <div>
+              <div class="field-label">Biografía (Instagram / TikTok)</div>
+              <div id="f-bio" class="field-val">🧠 Domina ChatGPT y Claude en 15 min/día
+⚡ 7 retos prácticos + Constancia en PDF
+💳 Pago único $24.900 COP por Nequi
+👇 Empieza tu Día 1 aquí:</div>
+            </div>
+            <button class="btn btn-emerald" onclick="copyById('f-bio')">Copiar</button>
+          </div>
+          <div class="field-item">
+            <div>
+              <div class="field-label">Sitio web (Link en Bio)</div>
+              <div id="f-link" class="field-val">https://iaen7dias.vercel.app</div>
+            </div>
+            <button class="btn btn-bronze" onclick="copyById('f-link')">Copiar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Anuncios descargables -->
+    <div class="section-card">
+      <h2 class="section-title">2. Publicaciones e Historias Listas para Subir</h2>
+      <p class="section-sub">Descarga en formato Cuadrado (1080×1080) o Historia/TikTok (1080×1920) y copia su descripción.</p>
+      <div class="ads-grid">
+        <div class="ad-card">
+          <strong>Anuncio #1: Ahorro de Tiempo</strong>
+          <canvas id="ad-canvas-0" width="1080" height="1080"></canvas>
+          <div class="btn-row">
+            <button class="btn btn-emerald" onclick="downloadAd(0, 'square')">⬇ Post 1:1</button>
+            <button class="btn btn-bronze" onclick="downloadAd(0, 'story')">📱 Story 9:16</button>
+          </div>
+          <div id="ad-copy-0" class="ad-copy"></div>
+          <button class="btn btn-emerald" onclick="copyById('ad-copy-0')">📋 Copiar Descripción #1</button>
+        </div>
+
+        <div class="ad-card">
+          <strong>Anuncio #2: El 90% usa mal ChatGPT</strong>
+          <canvas id="ad-canvas-1" width="1080" height="1080"></canvas>
+          <div class="btn-row">
+            <button class="btn btn-emerald" onclick="downloadAd(1, 'square')">⬇ Post 1:1</button>
+            <button class="btn btn-bronze" onclick="downloadAd(1, 'story')">📱 Story 9:16</button>
+          </div>
+          <div id="ad-copy-1" class="ad-copy"></div>
+          <button class="btn btn-emerald" onclick="copyById('ad-copy-1')">📋 Copiar Descripción #2</button>
+        </div>
+
+        <div class="ad-card">
+          <strong>Anuncio #3: Hoja de Vida + Nequi</strong>
+          <canvas id="ad-canvas-2" width="1080" height="1080"></canvas>
+          <div class="btn-row">
+            <button class="btn btn-emerald" onclick="downloadAd(2, 'square')">⬇ Post 1:1</button>
+            <button class="btn btn-bronze" onclick="downloadAd(2, 'story')">📱 Story 9:16</button>
+          </div>
+          <div id="ad-copy-2" class="ad-copy"></div>
+          <button class="btn btn-emerald" onclick="copyById('ad-copy-2')">📋 Copiar Descripción #3</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">✓ Copiado</div>
+
+  <script>
+    const ADS = [
+      {
+        pill: 'MICROCURSO PRÁCTICO • COLOMBIA',
+        headline1: 'Sal de trabajar',
+        headlineAccent: '2 horas antes',
+        headline2: 'dominando la IA en 7 días.',
+        sub: '7 lecciones prácticas de 15 minutos al día en ChatGPT y Claude. Sin saber programar.',
+        bullets: ['✓ Prompts de nivel experto', '✓ Ejercicios reales guiados', '✓ Certificado de Finalización PDF'],
+        priceLabel: 'INSCRIPCIÓN ÚNICA EN COLOMBIA',
+        price: '$24.900 COP',
+        cta: 'Inscríbete hoy • Pago Nequi',
+        copy: `¿Sigues haciendo en 3 horas lo que hoy toma 10 minutos con Inteligencia Artificial? ⏳\n\nEn IA en 7 Días aprendes paso a paso, dedicando solo 15 minutos al día:\n✅ Prompts profesionales en ChatGPT y Claude para informes, correos y propuestas.\n✅ Análisis de datos, resúmenes ejecutivos y automatización de tareas.\n✅ Certificado de Finalización en PDF al completar los 7 días.\n\n💳 Inscripción única: $24.900 COP (Sin mensualidades).\n📱 Pago inmediato por Nequi en Colombia.\n\n👇 Empieza hoy tu Día 1 en el link de nuestro perfil:\nhttps://iaen7dias.vercel.app`
+      },
+      {
+        pill: 'RETOS DE 15 MINUTOS AL DÍA',
+        headline1: 'El 90% usa ChatGPT',
+        headlineAccent: 'como si fuera Google.',
+        headline2: 'Úsalo como un experto.',
+        sub: 'Pasa de respuestas genéricas a informes, análisis y automatización real para tu trabajo.',
+        bullets: ['✓ 7 días de práctica real', '✓ Acceso 24/7 en celular o PC', '✓ Certificado de Finalización PDF'],
+        priceLabel: 'PAGO ÚNICO • SIN MENSUALIDADES',
+        price: '$24.900 COP',
+        cta: 'iaen7dias.vercel.app • Nequi',
+        copy: `El 90% de las personas usa ChatGPT como si fuera Google… y por eso obtienen respuestas genéricas que no sirven para trabajar. 🧠\n\nCreamos el microcurso práctico IA en 7 Días para profesionales, independientes y estudiantes en Colombia que quieren dominar la IA en 15 minutos al día:\n\n🔹 Sin saber programar.\n🔹 Con ejercicios reales calificados paso a paso.\n🔹 Incluye Certificado de Finalización en PDF (Educación Informal).\n🔹 Precio único de lanzamiento: $24.900 COP (Pago por Nequi).\n\n👇 Entra al link de nuestro perfil e inscríbete hoy:\nhttps://iaen7dias.vercel.app`
+      },
+      {
+        pill: 'CONSTANCIA EN PDF INCLUIDA',
+        headline1: 'Suma Inteligencia',
+        headlineAccent: 'Artificial a tu CV',
+        headline2: 'en solo 1 semana.',
+        sub: 'Por menos de lo que cuesta un almuerzo, domina la habilidad más pedida por las empresas en 2026.',
+        bullets: ['✓ 100% en español y sin código', '✓ Soporte y revisión de retos', '✓ Constancia descargable en PDF'],
+        priceLabel: 'OFERTA DE LANZAMIENTO',
+        price: '$24.900 COP',
+        cta: 'Cupos abiertos • Pago Nequi',
+        copy: `Por menos de lo que cuesta un domicilio del fin de semana ($24.900 COP), esta semana puedes sumar la habilidad más buscada del 2026 a la sección de cursos de tu Hoja de Vida o LinkedIn. 🎓✨\n\nIA en 7 Días — Microcurso Práctico en Colombia:\n• 7 lecciones de 15 minutos (desde tu celular o PC).\n• Ejercicios aplicados al trabajo real.\n• Certificado de Finalización descargable en PDF (Educación Informal).\n• Pago inmediato por Nequi sin tarjeta de crédito.\n\n👉 Inscríbete hoy en el link de la bio:\nhttps://iaen7dias.vercel.app`
+      }
+    ];
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function renderAvatar(logoImg) {
+      const c = document.getElementById('avatar-canvas');
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#F7F5F2';
+      ctx.fillRect(0, 0, 800, 800);
+      ctx.beginPath();
+      ctx.arc(400, 400, 365, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = '#E5E0D8';
+      ctx.stroke();
+      if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+        const targetW = 500;
+        const targetH = (logoImg.naturalHeight / logoImg.naturalWidth) * targetW;
+        ctx.drawImage(logoImg, (800 - targetW) / 2, (800 - targetH) / 2, targetW, targetH);
+      }
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+          ctx.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, y);
+    }
+
+    function drawAd(ctx, ad, width, height, logoImg) {
+      const isStory = height > width;
+      ctx.fillStyle = '#F7F5F2';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#0F766E';
+      ctx.fillRect(0, 0, width, 18);
+
+      const padX = 76;
+      const topY = isStory ? 160 : 68;
+      const cardY = topY;
+      const cardH = height - topY * 2;
+
+      roundRect(ctx, padX - 24, cardY, width - (padX - 24) * 2, cardH, 32);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+      ctx.strokeStyle = '#E5E0D8';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      let curY = cardY + (isStory ? 80 : 48);
+      if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+        const lh = isStory ? 110 : 86;
+        const lw = (logoImg.naturalWidth / logoImg.naturalHeight) * lh;
+        ctx.drawImage(logoImg, padX + 20, curY, lw, lh);
+      }
+
+      ctx.font = '800 20px "Plus Jakarta Sans", sans-serif';
+      const pillW = ctx.measureText(ad.pill).width + 40;
+      const pillX = width - padX - 20 - pillW;
+      roundRect(ctx, pillX, curY + 15, pillW, 50, 25);
+      ctx.fillStyle = '#FEF3C7';
+      ctx.fill();
+      ctx.strokeStyle = '#F59E0B';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#B45309';
+      ctx.fillText(ad.pill, pillX + 20, curY + 47);
+
+      curY += isStory ? 185 : 145;
+      ctx.fillStyle = '#141413';
+      ctx.font = `800 ${isStory ? 72 : 60}px "Plus Jakarta Sans", sans-serif`;
+      ctx.fillText(ad.headline1, padX + 20, curY);
+
+      curY += isStory ? 86 : 72;
+      ctx.fillStyle = '#0F766E';
+      ctx.font = `italic 700 ${isStory ? 78 : 66}px "Newsreader", Georgia, serif`;
+      ctx.fillText(ad.headlineAccent, padX + 20, curY);
+
+      curY += isStory ? 84 : 70;
+      ctx.fillStyle = '#141413';
+      ctx.font = `800 ${isStory ? 64 : 54}px "Plus Jakarta Sans", sans-serif`;
+      ctx.fillText(ad.headline2, padX + 20, curY);
+
+      curY += isStory ? 72 : 52;
+      ctx.fillStyle = '#57534E';
+      ctx.font = `500 ${isStory ? 33 : 28}px "Plus Jakarta Sans", sans-serif`;
+      wrapText(ctx, ad.sub, padX + 20, curY, width - (padX + 20) * 2, isStory ? 46 : 38);
+
+      curY += isStory ? 135 : 98;
+      ad.bullets.forEach((b) => {
+        roundRect(ctx, padX + 20, curY - 34, width - (padX + 20) * 2, isStory ? 66 : 52, 14);
+        ctx.fillStyle = '#F7F5F2';
+        ctx.fill();
+        ctx.fillStyle = '#0F766E';
+        ctx.font = `700 ${isStory ? 30 : 25}px "Plus Jakarta Sans", sans-serif`;
+        ctx.fillText(b, padX + 42, curY - 1);
+        curY += isStory ? 84 : 64;
+      });
+
+      const footerH = isStory ? 245 : 160;
+      const footerY = cardY + cardH - footerH - (isStory ? 48 : 30);
+      roundRect(ctx, padX + 20, footerY, width - (padX + 20) * 2, footerH, 24);
+      ctx.fillStyle = '#141413';
+      ctx.fill();
+
+      ctx.fillStyle = '#FCD34D';
+      ctx.font = '800 20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(ad.priceLabel, padX + 50, footerY + (isStory ? 56 : 46));
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = `800 ${isStory ? 66 : 54}px "Plus Jakarta Sans", sans-serif`;
+      ctx.fillText(ad.price, padX + 50, footerY + (isStory ? 128 : 108));
+
+      const btnW = isStory ? width - (padX + 50) * 2 : 395;
+      const btnH = isStory ? 66 : 72;
+      const btnX = isStory ? padX + 50 : width - padX - 50 - btnW;
+      const btnY = isStory ? footerY + 156 : footerY + (footerH - btnH) / 2;
+      roundRect(ctx, btnX, btnY, btnW, btnH, 16);
+      ctx.fillStyle = '#0F766E';
+      ctx.fill();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '800 25px "Plus Jakarta Sans", sans-serif';
+      const txtW = ctx.measureText(ad.cta).width;
+      ctx.fillText(ad.cta, btnX + (btnW - txtW) / 2, btnY + btnH / 2 + 9);
+    }
+
+    function initKit() {
+      const logoImg = document.getElementById('official-logo');
+      renderAvatar(logoImg);
+      ADS.forEach((ad, i) => {
+        const c = document.getElementById('ad-canvas-' + i);
+        drawAd(c.getContext('2d'), ad, 1080, 1080, logoImg);
+        document.getElementById('ad-copy-' + i).textContent = ad.copy;
+      });
+    }
+
+    function downloadAvatar() {
+      const c = document.getElementById('avatar-canvas');
+      const a = document.createElement('a');
+      a.download = 'foto-perfil-iaen7dias.png';
+      a.href = c.toDataURL('image/png');
+      a.click();
+      showToast('✓ Foto de perfil descargada');
+    }
+
+    function downloadAd(idx, format) {
+      const logoImg = document.getElementById('official-logo');
+      const temp = document.createElement('canvas');
+      temp.width = 1080;
+      temp.height = format === 'story' ? 1920 : 1080;
+      drawAd(temp.getContext('2d'), ADS[idx], temp.width, temp.height, logoImg);
+      const a = document.createElement('a');
+      a.download = `iaen7dias-anuncio-${idx + 1}-${format}.png`;
+      a.href = temp.toDataURL('image/png');
+      a.click();
+      showToast('✓ Imagen descargada');
+    }
+
+    function copyById(id) {
+      const txt = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(txt);
+      showToast('✓ Copiado al portapapeles');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    window.addEventListener('load', () => {
+      const logoImg = document.getElementById('official-logo');
+      if (logoImg.complete) initKit();
+      else logoImg.onload = initKit;
+      if (document.fonts) document.fonts.ready.then(initKit);
+    });
+  </script>
+</body>
+</html>
