@@ -2292,6 +2292,85 @@ img {
 }
 
 /* ============================================================
+   BOTÓN FLOTANTE OFICIAL DE WHATSAPP
+   ============================================================ */
+.whatsapp-float-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  background-color: #25D366;
+  color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.38), 0 4px 12px rgba(20, 20, 19, 0.12);
+  z-index: 9990;
+  text-decoration: none;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
+  cursor: pointer;
+}
+
+.whatsapp-float-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.52), 0 6px 16px rgba(20, 20, 19, 0.16);
+}
+
+.whatsapp-float-btn:active {
+  transform: scale(0.96);
+}
+
+.whatsapp-float-btn img,
+.whatsapp-float-btn svg {
+  width: 34px;
+  height: 34px;
+  display: block;
+}
+
+/* Tooltip sutil al pasar el mouse en computadores */
+.whatsapp-float-tooltip {
+  position: absolute;
+  right: 68px;
+  background: #141413;
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.whatsapp-float-btn:hover .whatsapp-float-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* En celulares con barra flotante inferior, subirlo ligeramente para que no se superponga */
+@media (max-width: 768px) {
+  .whatsapp-float-btn {
+    bottom: 84px;
+    right: 18px;
+    width: 52px;
+    height: 52px;
+  }
+  .whatsapp-float-btn img,
+  .whatsapp-float-btn svg {
+    width: 30px;
+    height: 30px;
+  }
+  .whatsapp-float-tooltip {
+    display: none;
+  }
+}
+
+/* ============================================================
    ENLACES LEGALES DEL FOOTER, PÁGINAS LEGALES Y BANNER DE COOKIES
    ============================================================ */
 .footer-legal-links {
