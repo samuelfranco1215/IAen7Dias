@@ -1,0 +1,29 @@
+# IA en 7 Días — Microcurso Práctico de Inteligencia Artificial en Colombia
+
+> Microcurso 100% práctico de 7 lecciones diarias de 15 minutos para aprender a usar ChatGPT, Claude y herramientas de Inteligencia Artificial aplicadas al trabajo, estudio y negocios en Colombia. Inscripción única de $24.900 COP (pago por Nequi) con Certificado de Finalización descargable en PDF (Educación Informal - Decreto 1075 de 2015).
+
+## Información Clave del Curso
+- **Sitio Web Oficial:** https://iaen7dias.vercel.app/
+- **Modalidad:** Online, práctico, a tu propio ritmo (15 minutos por día durante 7 días).
+- **Precio:** $24.900 COP (Pesos Colombianos) — Pago único, sin mensualidades ni suscripciones.
+- **Método de Pago en Colombia:** Nequi (3158422894) con subida de comprobante en la plataforma.
+- **Requisitos:** Ninguno (100% en español, sin necesidad de saber programar).
+- **Certificación:** Certificado de Finalización en PDF con código único verificable al completar el 100% de las 7 lecciones (Constancia de Educación Informal bajo el Artículo 2.6.6.8 del Decreto 1075 de 2015 en Colombia).
+
+## Temario de los 7 Días
+1. **Día 1 — Fundamentos e Ingeniería de Prompts (Fórmula RCFF):** Cómo estructurar instrucciones con Rol, Contexto, Formato y Filtro en ChatGPT y Claude.
+2. **Día 2 — Redacción Profesional y Comunicación Ejecutiva:** Correos difíciles, propuestas comerciales y clonación de tu propio tono de escritura.
+3. **Día 3 — Síntesis de Documentos y Lectura Acelerada:** Análisis de contratos, informes extensos y PDFs en segundos sin perder precisión.
+4. **Día 4 — Análisis de Datos, Tablas y Productividad Administrativa:** Organización de información, extracción de tablas e interpretación de métricas.
+5. **Día 5 — Resolución de Problemas, Estrategia y Preparación de Reuniones:** Uso de la IA como consultor crítico y simulador de objeciones.
+6. **Día 6 — Automatización de Flujos de Trabajo Repetitivos:** Creación de plantillas reutilizables para ahorrar horas cada semana.
+7. **Día 7 — Sistema Personal de IA y Proyecto Final:** Integración completa en la rutina diaria y emisión del Certificado de Finalización en PDF.
+
+## Enlaces Oficiales
+- [Página Principal e Inscripciones](https://iaen7dias.vercel.app/)
+- [Términos y Condiciones](https://iaen7dias.vercel.app/terminos-y-condiciones.html)
+- [Política de Devoluciones y Derecho de Retracto](https://iaen7dias.vercel.app/politica-de-devoluciones.html)
+- [Política de Privacidad y Tratamiento de Datos (Habeas Data Ley 1581 de 2012)](https://iaen7dias.vercel.app/politica-de-privacidad.html)
+- [Política de Cookies](https://iaen7dias.vercel.app/politica-de-cookies.html)
+- [Aviso Legal](https://iaen7dias.vercel.app/aviso-legal.html)
+

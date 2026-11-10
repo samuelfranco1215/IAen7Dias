@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /gestion-ia7d-privado
+Disallow: /kit-redes.html
 Disallow: /api/
 
 Sitemap: https://iaen7dias.vercel.app/sitemap.xml
+
