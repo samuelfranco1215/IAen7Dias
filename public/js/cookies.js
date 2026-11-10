@@ -86,23 +86,36 @@ const CookieConsent = {
   },
 
   GA_MEASUREMENT_ID: 'G-8E3WE93D7M',
+  CLARITY_PROJECT_ID: 'zb8f1dv7fd',
 
-  loadGoogleAnalytics: function () {
-    if (window._ga_loaded) return;
-    window._ga_loaded = true;
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.GA_MEASUREMENT_ID}`;
-    document.head.appendChild(script);
+  loadAnalytics: function () {
+    // 1. Google Analytics 4
+    if (!window._ga_loaded) {
+      window._ga_loaded = true;
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${this.GA_MEASUREMENT_ID}`;
+      document.head.appendChild(script);
 
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { window.dataLayer.push(arguments); }
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', this.GA_MEASUREMENT_ID, {
-      anonymize_ip: true,
-      send_page_view: true
-    });
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', this.GA_MEASUREMENT_ID, {
+        anonymize_ip: true,
+        send_page_view: true
+      });
+    }
+
+    // 2. Microsoft Clarity (Heatmaps & Session Recordings)
+    if (!window._clarity_loaded) {
+      window._clarity_loaded = true;
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", this.CLARITY_PROJECT_ID);
+    }
   },
 
   applyPreference: function (pref) {
@@ -111,7 +124,7 @@ const CookieConsent = {
       // Activar cookie analítica propia ligera solo bajo consentimiento
       const maxAge = 180 * 24 * 60 * 60;
       document.cookie = `ia7d_analytics_optin=1; Path=/; Max-Age=${maxAge}; SameSite=Lax`;
-      this.loadGoogleAnalytics();
+      this.loadAnalytics();
     } else {
       document.documentElement.setAttribute('data-cookies-non-essential', 'disabled');
       this.clearNonEssentialCookies();
